@@ -22,6 +22,10 @@
         display: flex;
         justify-content: space-between;
       }
+
+      #settings {
+        display: none;
+      }
     </style>
 
     <!--
@@ -39,11 +43,12 @@
       <div id="chart"> 
         <!-- usage chart will go here -->
       </div>
-      <button onclick="toggleSettings()">Settings</button>
+      <button id="settings-button">Expand / Collapse</button>
     </div>
 
     <div id="settings"> <!-- settings section, what you see after clicking settings, dropdown extended section -->
       <div class="list"> <!-- blacklist section -->
+        <h2>BlackList</h2>
         <div class="input-section"> 
           <input /> <!-- url -->
           <input /> <!-- time -->
@@ -57,10 +62,13 @@
               <option value="yellow">Yellow</option>
               <option value="blue">Blue</option>
             </select>
+            <button>Edit</button>
+            <button>Delete</button>
         </div>
       </div> <!-- end blacklist section -->
 
       <div class="list"> <!-- whitelist section -->
+        <h2>WhiteList</h2>
         <div class="input-section">
           <input /> <!-- url -->
           <input /> <!-- time -->
@@ -74,13 +82,24 @@
               <option value="yellow">Yellow</option>
               <option value="blue">Blue</option>
             </select>
+            <button>Edit</button>
+            <button>Delete</button>
         </div>
       </div> <!-- end whitelist section -->
 
       <div id="bedtime-section"> 
-        <p>Bedtime</p>
-        <input />
+        <h2>Bedtime / Wake time</h2>
+        <div>
+          <img />
+          <input />
+        </div>
+        <div>
+          <img />
+          <input />
+        </div>
       </div>
+
     </div> <!-- end settings section -->
+
   </body>
 </html>

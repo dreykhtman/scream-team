@@ -95,6 +95,16 @@ function saveBackgroundColor(url, color) {
   chrome.storage.sync.set(items);
 }
 
+//This function toggles the appearance and disappearance of the settings portion of our extension
+function toggleSettings(){
+  let settings = document.getElementById('settings');
+  if (settings.style.display === "none") {
+    settings.style.display = "block";
+  } else {
+    settings.style.display = "none";
+  }
+}
+
 // This extension loads the saved background color for the current tab if one
 // exists. The user can select a new background color from the dropdown for the
 // current page, and it will be saved as part of the extension's isolated
@@ -104,37 +114,33 @@ function saveBackgroundColor(url, color) {
 // chrome.storage.local allows the extension data to be synced across multiple
 // user devices.
 document.addEventListener('DOMContentLoaded', () => {
-  getCurrentTabUrl((url) => {
-    var dropdown = document.getElementById('dropdown');
 
-    // Load the saved background color for this page and modify the dropdown
-    // value, if needed.
-    getSavedBackgroundColor(url, (savedColor) => {
-      if (savedColor) {
-        changeBackgroundColor(savedColor);
-        dropdown.value = savedColor;
-      }
-    });
-
-    // Ensure the background color is changed and saved when the dropdown
-    // selection changes.
-    dropdown.addEventListener('change', () => {
-      changeBackgroundColor(dropdown.value);
-      saveBackgroundColor(url, dropdown.value);
-    });
+  let settingsButton = document.getElementById('settings-button');
+  settingsButton.addEventListener('click', () => {
+    console.log('In here?')
+    toggleSettings();
   });
+
+  // getCurrentTabUrl((url) => {
+  //   var dropdown = document.getElementById('dropdown');
+
+  //   // Load the saved background color for this page and modify the dropdown
+  //   // value, if needed.
+  //   getSavedBackgroundColor(url, (savedColor) => {
+  //     if (savedColor) {
+  //       changeBackgroundColor(savedColor);
+  //       dropdown.value = savedColor;
+  //     }
+  //   });
+
+  //   // Ensure the background color is changed and saved when the dropdown
+  //   // selection changes.
+  //   dropdown.addEventListener('change', () => {
+  //     changeBackgroundColor(dropdown.value);
+  //     saveBackgroundColor(url, dropdown.value);
+  //   });
+  // });
 });
 
-//This function toggles the appearance and disappearance of the settings portion of our extension
-document.addEventListener('toggleSettings', () => {
-  let x = document.getElementById("settings");
-  x.addEventListener('click', () => {
-    function toggleSettings() {
-      if (x.style.display === "none") {
-          x.style.display = "block";
-      } else {
-          x.style.display = "none";
-      }
-    }
-  })
-});
+
+

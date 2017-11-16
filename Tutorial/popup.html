@@ -36,15 +36,51 @@
   <body>
     <h1>Background Color Changer</h1>
     <div id="container">
-      <span>Choose a color</span>
-      <select id="dropdown">
-        <option selected disabled hidden value=''></option>
-        <option value="white">White</option>
-        <option value="pink">Pink</option>
-        <option value="green">Green</option>
-        <option value="yellow">Yellow</option>
-        <option value="blue">Blue</option>
-      </select>
+      <div id="chart"> 
+        <!-- usage chart will go here -->
+      </div>
+      <button onclick="toggleSettings()">Settings</button>
     </div>
+
+    <div id="settings"> <!-- settings section, what you see after clicking settings, dropdown extended section -->
+      <div class="list"> <!-- blacklist section -->
+        <div class="input-section"> 
+          <input /> <!-- url -->
+          <input /> <!-- time -->
+        </div>
+        <div class="dropdown-list-section">
+          <select id="dropdown"> <!-- dropdown list of sites -->
+              <option selected disabled hidden value=''></option>
+              <option value="white">White</option>
+              <option value="pink">Pink</option>
+              <option value="green">Green</option>
+              <option value="yellow">Yellow</option>
+              <option value="blue">Blue</option>
+            </select>
+        </div>
+      </div> <!-- end blacklist section -->
+
+      <div class="list"> <!-- whitelist section -->
+        <div class="input-section">
+          <input /> <!-- url -->
+          <input /> <!-- time -->
+        </div>
+        <div class="dropdown-list-section">
+          <select id="dropdown"> <!-- dropdown list of sites -->
+              <option selected disabled hidden value=''></option>
+              <option value="white">White</option>
+              <option value="pink">Pink</option>
+              <option value="green">Green</option>
+              <option value="yellow">Yellow</option>
+              <option value="blue">Blue</option>
+            </select>
+        </div>
+      </div> <!-- end whitelist section -->
+
+      <div id="bedtime-section"> 
+        <p>Bedtime</p>
+        <input />
+      </div>
+    </div> <!-- end settings section -->
   </body>
 </html>

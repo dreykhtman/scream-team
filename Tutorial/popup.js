@@ -124,3 +124,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+//This function toggles the appearance and disappearance of the settings portion of our extension
+document.addEventListener('toggleSettings', () => {
+  let x = document.getElementById("settings");
+  x.addEventListener('click', () => {
+    function toggleSettings() {
+      if (x.style.display === "none") {
+          x.style.display = "block";
+      } else {
+          x.style.display = "none";
+      }
+    }
+  })
+});

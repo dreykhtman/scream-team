@@ -96,12 +96,23 @@ function saveBackgroundColor(url, color) {
 }
 
 //This function toggles the appearance and disappearance of the settings portion of our extension
+
+// function toggleSettings(){
+//   let settings = document.getElementById('settings');
+//   if (settings.style.display === "none") {
+//     settings.style.display = "block";
+//   } else {
+//     settings.style.display = "none";
+//   }
+// }
+
 function toggleSettings(){
   let settings = document.getElementById('settings');
-  if (settings.style.display === "none") {
-    settings.style.display = "block";
+  console.log('settings.className= ',settings.className)
+  if (settings.className === 'hide') {
+    settings.className = 'show';
   } else {
-    settings.style.display = "none";
+    settings.className = 'hide';
   }
 }
 

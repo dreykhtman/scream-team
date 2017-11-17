@@ -7,49 +7,23 @@
 <html>
   <head>
     <title>Getting Started Extension's Popup</title>
-    <style type="text/css">
-      body {
-        margin: 10px;
-        white-space: nowrap;
-      }
-
-      h1 {
-        font-size: 15px;
-      }
-
-      #container {
-        align-items: center;
-        display: flex;
-        justify-content: space-between;
-      }
-
-      #settings {
-        display: none;
-      }
-    </style>
-
-    <!--
-      - JavaScript and HTML must be in separate files: see our Content Security
-      - Policy documentation[1] for details and explanation.
-      -
-      - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
-    -->
+    <link rel='stylesheet' type='text/css' href='styles.css'>
     <script src="popup.js"></script>
   </head>
 
   <body>
     <h1>Background Color Changer</h1>
     <div id="container">
-      <div id="chart"> 
+      <div id="chart">
         <!-- usage chart will go here -->
       </div>
       <button id="settings-button">Expand / Collapse</button>
     </div>
 
-    <div id="settings"> <!-- settings section, what you see after clicking settings, dropdown extended section -->
+    <div id="settings" class="hide"> <!-- settings section, what you see after clicking settings, dropdown extended section -->
       <div class="list"> <!-- blacklist section -->
         <h2>BlackList</h2>
-        <div class="input-section"> 
+        <div class="input-section">
           <input /> <!-- url -->
           <input /> <!-- time -->
         </div>
@@ -87,7 +61,7 @@
         </div>
       </div> <!-- end whitelist section -->
 
-      <div id="bedtime-section"> 
+      <div id="bedtime-section">
         <h2>Bedtime / Wake time</h2>
         <div>
           <img />

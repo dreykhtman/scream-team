@@ -17,6 +17,7 @@
 <html>
   <!-- <head>
     <title>Getting Started Extension's Popup</title>
+<<<<<<< HEAD:Scream-Project/popup.html
     <style type="text/css">
       body {
         margin: 10px;
@@ -42,19 +43,75 @@
     -->
     <!-- <script src="popup.js"></script>
   </head> -->
+=======
+    <link rel='stylesheet' type='text/css' href='styles.css'>
+    <script src="popup.js"></script>
+  </head>
+>>>>>>> creating_expandable_pop_up:Tutorial/popup.html
 
   <!-- <body>
     <h1>Background Color Changer</h1>
     <div id="container">
-      <span>Choose a color</span>
-      <select id="dropdown">
-        <option selected disabled hidden value=''></option>
-        <option value="white">White</option>
-        <option value="pink">Pink</option>
-        <option value="green">Green</option>
-        <option value="yellow">Yellow</option>
-        <option value="blue">Blue</option>
-      </select>
+      <div id="chart">
+        <!-- usage chart will go here -->
+      </div>
+      <button id="settings-button">Expand / Collapse</button>
     </div>
+
+    <div id="settings" class="hide"> <!-- settings section, what you see after clicking settings, dropdown extended section -->
+      <div class="list"> <!-- blacklist section -->
+        <h2>BlackList</h2>
+        <div class="input-section">
+          <input /> <!-- url -->
+          <input /> <!-- time -->
+        </div>
+        <div class="dropdown-list-section">
+          <select id="dropdown"> <!-- dropdown list of sites -->
+              <option selected disabled hidden value=''></option>
+              <option value="white">White</option>
+              <option value="pink">Pink</option>
+              <option value="green">Green</option>
+              <option value="yellow">Yellow</option>
+              <option value="blue">Blue</option>
+            </select>
+            <button>Edit</button>
+            <button>Delete</button>
+        </div>
+      </div> <!-- end blacklist section -->
+
+      <div class="list"> <!-- whitelist section -->
+        <h2>WhiteList</h2>
+        <div class="input-section">
+          <input /> <!-- url -->
+          <input /> <!-- time -->
+        </div>
+        <div class="dropdown-list-section">
+          <select id="dropdown"> <!-- dropdown list of sites -->
+              <option selected disabled hidden value=''></option>
+              <option value="white">White</option>
+              <option value="pink">Pink</option>
+              <option value="green">Green</option>
+              <option value="yellow">Yellow</option>
+              <option value="blue">Blue</option>
+            </select>
+            <button>Edit</button>
+            <button>Delete</button>
+        </div>
+      </div> <!-- end whitelist section -->
+
+      <div id="bedtime-section">
+        <h2>Bedtime / Wake time</h2>
+        <div>
+          <img />
+          <input />
+        </div>
+        <div>
+          <img />
+          <input />
+        </div>
+      </div>
+
+    </div> <!-- end settings section -->
+
   </body>
 </html> -->

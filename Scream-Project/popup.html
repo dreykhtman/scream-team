@@ -12,7 +12,7 @@
   </head>
 
   <body>
-    <h1>Background Color Changer</h1>
+    <h1>Life Hack</h1>
     <div id="container">
       <div id="chart">
         <!-- usage chart will go here -->
@@ -24,10 +24,15 @@
       <div class="list"> <!-- blacklist section -->
         <h2>BlackList</h2>
         <div class="input-section">
-          <input /> <!-- url -->
-          <input /> <!-- time -->
+          <label>URL</label>
+          <input type="text" placeholder="www.google.com"/> <!-- url -->
+          <label>Hrs</label> <!-- time -->
+          <input type="number" placeholder="1"/>
+          <label>Mins</label>
+          <input type="number" placeholder="30"/>
         </div>
         <div class="dropdown-list-section">
+          <span>Blacklisted Sites</span>
           <select id="dropdown"> <!-- dropdown list of sites -->
               <option selected disabled hidden value=''></option>
               <option value="white">White</option>
@@ -44,10 +49,15 @@
       <div class="list"> <!-- whitelist section -->
         <h2>WhiteList</h2>
         <div class="input-section">
-          <input /> <!-- url -->
-          <input /> <!-- time -->
+          <label>URL</label>
+          <input type="text" placeholder="www.google.com"/> <!-- url -->
+          <label>Hrs</label> <!-- time -->
+          <input type="number" placeholder="1"/>
+          <label>Mins</label>
+          <input type="number" placeholder="30"/>
         </div>
         <div class="dropdown-list-section">
+          <span>Whitelisted Sites</span>
           <select id="dropdown"> <!-- dropdown list of sites -->
               <option selected disabled hidden value=''></option>
               <option value="white">White</option>

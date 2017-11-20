@@ -25,17 +25,19 @@
 
     <div id="settings" class="hide"> <!-- settings section, what you see after clicking settings, dropdown extended section -->
       <div class="list"> <!-- blacklist section -->
-        <h2>BlackList</h2>
+        <h2>Red Light</h2>
         <div class="input-section">
-          <label>URL</label>
-          <input type="text" placeholder="www.google.com"/> <!-- url -->
+          <form id="redlistForm">
+              <label for="smalls">URL</label>
+              <input id="redlist-url" type="text" placeholder="www.google.com"/> <!-- url -->
+
           <label>Hrs</label> <!-- time -->
-          <input type="number" placeholder="1"/>
+          <input id="redlist-hrs" type="number" placeholder="1"/>
           <label>Mins</label>
-          <input type="number" placeholder="30"/>
+          <input id="redlist-mins" type="number" placeholder="30"/>
         </div>
         <div class="dropdown-list-section">
-          <span>Blacklisted Sites</span>
+          <span>Redlisted Sites</span>
           <select id="dropdown"> <!-- dropdown list of sites -->
               <option selected disabled hidden value=''></option>
               <option value="white">White</option>
@@ -46,21 +48,24 @@
             </select>
             <button>Edit</button>
             <button>Delete</button>
+            <input id="submit" type="submit">
+          </form>
         </div>
       </div> <!-- end blacklist section -->
 
-      <div class="list"> <!-- whitelist section -->
-        <h2>WhiteList</h2>
+      <div class="list"> <!-- Green List section -->
+        <form id="greenlistForm">
+        <h2>Green List</h2>
         <div class="input-section">
           <label>URL</label>
-          <input type="text" placeholder="www.google.com"/> <!-- url -->
+          <input id = "greenlist-url" type="text" placeholder="www.google.com"/> <!-- url -->
           <label>Hrs</label> <!-- time -->
-          <input type="number" placeholder="1"/>
+          <input id= "greenlist-hrs" type="number" placeholder="1"/>
           <label>Mins</label>
-          <input type="number" placeholder="30"/>
+          <input id="greenlist-mins" type="number" placeholder="30"/>
         </div>
         <div class="dropdown-list-section">
-          <span>Whitelisted Sites</span>
+          <span>Green Listed Sites</span>
           <select id="dropdown"> <!-- dropdown list of sites -->
               <option selected disabled hidden value=''></option>
               <option value="white">White</option>
@@ -71,6 +76,8 @@
             </select>
             <button>Edit</button>
             <button>Delete</button>
+            <input id="submit" type="submit">
+          </form>
         </div>
       </div> <!-- end whitelist section -->
 
@@ -87,6 +94,6 @@
       </div>
 
     </div> <!-- end settings section -->
-
+    <script src="popup.js"></script>
   </body>
 </html>

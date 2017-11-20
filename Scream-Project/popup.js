@@ -10,22 +10,18 @@ function toggleSettings(){
 }
 
 function getInput() {
-
   chrome.storage.sync.get(null, function(items) {
-    // var allKeys = Object.keys(items)
     console.log('this is what comes back', items);
   })
 }
 
 //wait for DOM to load
 document.addEventListener('DOMContentLoaded', () => {
-
       let settingsButton = document.getElementById('settings-button');
       settingsButton.addEventListener('click', () => {
         toggleSettings();
         getInput()
       });
-
     });
 
 //parse url for domain
@@ -33,10 +29,9 @@ function getDomain(url) {
   return url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
 }
 
-
 let data = {};
 
-function saveInput(event) {
+function saveRedlistInput(event) {
 
   let urlObj = {
     type: '',
@@ -46,26 +41,64 @@ function saveInput(event) {
   }
 
   event.preventDefault()
-  let url = getDomain(document.getElementById('blacklist-url').value);
-  urlObj.type = 'redlight'
+  let url = getDomain(document.getElementById('redlist-url').value);
+  let hrs = document.getElementById('redlist-hrs').value
+  let mins = document.getElementById('redlist-mins').value
+  urlObj = {
+    type:'redlist',
+    goalHrs: hrs,
+    goalMins: mins
+  }
   data[url] = urlObj
-  console.log('redlight', data)
-  chrome.storage.sync.set({[url]: data}, () => {
-    console.log('this has been saved ')
+  console.log('redlist', data)
+  chrome.storage.sync.set({[url]: data[url]}, () => {
+    console.log('this has been saved')
   })
 }
 
 
 
-let form = document.getElementById('form');
 
-form.addEventListener('submit', (e) => {
+function saveGreenlistInput(event) {
+
+    let urlObj = {
+      type: '',
+      goalHrs: 0,
+      goalMins: 0,
+      browsingTime: 0
+    }
+
+    event.preventDefault()
+    let url = getDomain(document.getElementById('greenlist-url').value);
+    let hrs = document.getElementById('greenlist-hrs').value
+    let mins = document.getElementById('greenlist-mins').value
+    urlObj = {
+      type:'greenlist',
+      goalHrs: hrs,
+      goalMins: mins
+    }
+    data[url] = urlObj
+    console.log('greenlist', data)
+    chrome.storage.sync.set({[url]: data[url]}, () => {
+      console.log('this has been saved')
+    })
+  }
+
+
+let redlistForm = document.getElementById('redlistForm');
+let greenlistForm = document.getElementById('greenlistForm');
+
+redlistForm.addEventListener('submit', (e) => {
   e.preventDefault()
-    saveInput(e)
+    saveRedlistInput(e)
     getInput()
 })
 
-
+greenlistForm.addEventListener('submit', (e) => {
+  e.preventDefault()
+    saveGreenlistInput(e)
+    getInput()
+})
 
 
 

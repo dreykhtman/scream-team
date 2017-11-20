@@ -8,7 +8,9 @@
   <head>
     <title>Getting Started Extension's Popup</title>
     <link rel='stylesheet' type='text/css' href='styles.css'>
-    <script src="popup.js"></script>
+    <script src="scripts/d3.v4.js"></script>
+    <script data-main="popup.js" src="popup.js"></script>
+    <script defer src="scripts/piechart.js"></script>
   </head>
 
   <body>
@@ -16,6 +18,7 @@
     <div id="container">
       <div id="chart">
         <!-- usage chart will go here -->
+        <svg height="300" width="300"></svg>
       </div>
       <button id="settings-button">Expand / Collapse</button>
     </div>

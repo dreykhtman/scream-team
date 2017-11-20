@@ -122,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
   settingsButton.addEventListener('click', () => {
     console.log('In here?')
     toggleSettings();
+    getInput()
   });
 
 });
@@ -136,7 +137,8 @@ function saveInput(event) {
   event.preventDefault()
   let input = document.getElementById('blacklist-url').value;
   let domain = getDomain(input)
-chrome.storage.local.set({"blacklist-url": blacklist.push(domain)}, () => {
+  blacklist.push(domain)
+chrome.storage.sync.set({"blacklist-url": blacklist}, () => {
     console.log('this has been saved ', domain)
   })
 }
@@ -144,8 +146,8 @@ chrome.storage.local.set({"blacklist-url": blacklist.push(domain)}, () => {
 function getInput() {
   // chrome.storage.sync.get("blacklist-url", (domain) => {
   //   console.log('this is the input',domain)
-  chrome.storage.local.get('blacklist-url', function(items) {
-    console.log('all Items', items);
+  chrome.storage.sync.get('blacklist-url', function(items) {
+    console.log('this is what comes back'   , items);
   })
 }
 
@@ -156,7 +158,6 @@ let form = document.getElementById('form');
 
 form.addEventListener('submit', (e) => {
     saveInput(e)
-    getInput()
 })
 
 

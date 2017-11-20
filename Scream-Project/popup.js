@@ -124,26 +124,26 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleSettings();
   });
 
-  // getCurrentTabUrl((url) => {
-  //   var dropdown = document.getElementById('dropdown');
-
-  //   // Load the saved background color for this page and modify the dropdown
-  //   // value, if needed.
-  //   getSavedBackgroundColor(url, (savedColor) => {
-  //     if (savedColor) {
-  //       changeBackgroundColor(savedColor);
-  //       dropdown.value = savedColor;
-  //     }
-  //   });
-
-  //   // Ensure the background color is changed and saved when the dropdown
-  //   // selection changes.
-  //   dropdown.addEventListener('change', () => {
-  //     changeBackgroundColor(dropdown.value);
-  //     saveBackgroundColor(url, dropdown.value);
-  //   });
-  // });
 });
+
+
+
+function saveInput(event) {
+  event.preventDefault()
+  let input = document.getElementById('url').value
+  chrome.storage.sync.set({'url': input}, () => {
+    console.log('this has been saved ', input)
+  })
+}
+
+let form = document.getElementById('form');
+console.log(form)
+
+
+form.addEventListener('submit', (e) => {
+  saveInput(e)
+})
+
 
 
 

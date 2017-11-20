@@ -8,7 +8,6 @@
   <head>
     <title>Getting Started Extension's Popup</title>
     <link rel='stylesheet' type='text/css' href='styles.css'>
-    <script src="popup.js"></script>
   </head>
 
   <body>
@@ -24,8 +23,12 @@
       <div class="list"> <!-- blacklist section -->
         <h2>BlackList</h2>
         <div class="input-section">
-          <label>URL</label>
-          <input type="text" placeholder="www.google.com"/> <!-- url -->
+          <form id="form">
+              <label for="url">URL</label>
+              <input id="url" type="text" placeholder="www.google.com"/> <!-- url -->
+              <input id="time" type="submit">
+          </form>
+
           <label>Hrs</label> <!-- time -->
           <input type="number" placeholder="1"/>
           <label>Mins</label>
@@ -84,6 +87,6 @@
       </div>
 
     </div> <!-- end settings section -->
-
+    <script src="popup.js"></script>
   </body>
 </html>

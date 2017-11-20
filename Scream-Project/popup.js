@@ -15,12 +15,20 @@ function getInput() {
   })
 }
 
+function populateDropdown() {
+  console.log('hiiiii', options)
+  let redlist = [];
+  let greenlist = [];
+
+}
+
 //wait for DOM to load
 document.addEventListener('DOMContentLoaded', () => {
       let settingsButton = document.getElementById('settings-button');
       settingsButton.addEventListener('click', () => {
         toggleSettings();
         getInput()
+        populateDropdown()
       });
     });
 

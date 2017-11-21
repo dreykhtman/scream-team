@@ -81,19 +81,23 @@
         </div>
       </div> <!-- end whitelist section -->
 
-      <div id="settings-bedtime-section">
+      <div id="settings-bedtime-section"> <!-- bedtime & waketime section -->
         <h2>Bedtime / Wake time</h2>
-        <div class="settings-bedtime-section-input">
-          <img />
-          <label>Bedtime</label>
-          <input />
-        </div>
-        <div class="settings-bedtime-section-input">
-          <img />
-          <label>Wake Up</label>
-          <input />
-        </div>
-      </div>
+        <form id="settings-bedtime-section-form">
+          <label>Set Bedtime</label>
+          <input id="settings-bedtime-section-form-input" type="time" name="timeInput"/>
+          <input id="settings-bedtime-section-form-submit" type="submit">
+        </form>
+        <h3>Your Current Bedtime: </h3>
+        <p id="settings-bedtime-section-load-bedtime"></p>
+        <form id="settings-bedtime-section-waketime-form">
+          <label>Set Wake Up Time</label>
+          <input id="settings-bedtime-section-waketime-form-input" name="timeInput" type="time"/>
+          <input id="settings-bedtime-section-waketime-form-submit" type="submit">
+        </form>
+        <h3>Your Current Wake Time: </h3>
+        <p id="settings-bedtime-section-load-waketime"></p>
+      </div> <!-- end bedtime & waketime section -->
     </div> <!-- end settings section -->
   </body>
 </html>

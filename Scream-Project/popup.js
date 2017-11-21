@@ -45,32 +45,27 @@ document.addEventListener('DOMContentLoaded', () => {
         redlistForm.addEventListener('submit', (e) => {
           e.preventDefault()
             saveInput(e, 'red')
-            // getInput()
         })
 
         greenlistForm.addEventListener('submit', (e) => {
           e.preventDefault()
             saveInput(e, 'green')
-            // getInput()
         })
       });
 
       function saveInput(event, type) {
-
           event.preventDefault()
           console.log(type)
           let url = getDomain(document.getElementById(`settings-${type}list-section-form-url`).value);
           let hrs = document.getElementById(`settings-${type}list-section-form-hrs`).value
           let mins = document.getElementById(`settings-${type}list-section-form-mins`).value
-          urlObj = {
+          let urlObj = {
             type: type,
             goalHrs: hrs,
             goalMins: mins,
             browsingTime: 0
           }
-          data[url] = urlObj
-          chrome.storage.sync.set({[url]: data[url]}, () => {
-            console.log('this has been saved', urlObj)
+          chrome.storage.sync.set({[url]: urlObj}, () => {
           })
         }
 
@@ -82,7 +77,7 @@ function getDomain(url) {
   return url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
 }
 
-// let data = {};
+
 
 
 

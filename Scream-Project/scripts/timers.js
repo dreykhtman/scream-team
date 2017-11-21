@@ -3,9 +3,11 @@ let _endTime;
 let browsingTime;
 let _url;
 
-// document.addEventListener('DOMContentLoaded', () => {
-//   getCurrentTabUrl(getDomain);
-// });
+document.addEventListener('DOMContentLoaded', () => {
+chrome.tabs.onActivated.addListener(() => {
+  _startTime = new Date();
+  getCurrentTabUrl(getDomain);
+});
 
 function getCurrentTabUrl(callback) {
   let queryInfo = {
@@ -23,12 +25,7 @@ function getCurrentTabUrl(callback) {
 
 function getDomain(url) {
   _url = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
-  alert(_url);
 }
-
-chrome.tabs.onActivated.addListener(() => {
-  _startTime = new Date();
-  getCurrentTabUrl(getDomain);
 
   // localStorage.setItem('domain', _startTime);
   // firstAlarm();

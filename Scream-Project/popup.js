@@ -37,7 +37,7 @@ function getDomain(url) {
   return url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
 }
 
-let data = {};
+// let data = {};
 
 function saveRedlistInput(event) {
 

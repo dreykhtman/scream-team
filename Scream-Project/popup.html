@@ -15,30 +15,30 @@
 
   <body>
     <h1>Life Hack</h1>
-    <div id="container">
-      <div id="chart">
+    <div class="initial-view">
+      <div id="piechart">
         <!-- usage chart will go here -->
         <svg height="300" width="300"></svg>
       </div>
-      <button id="settings-button">Expand / Collapse</button>
+      <button id="initial-view-toggle-button">Expand / Collapse</button>
     </div>
 
     <div id="settings" class="hide"> <!-- settings section, what you see after clicking settings, dropdown extended section -->
-      <div class="list"> <!-- blacklist section -->
-        <h2>Red List</h2>
-        <div class="input-section">
-          <form id="redlistForm">
-              <label for="smalls">URL</label>
-              <input id="redlist-url" type="text" placeholder="www.google.com"/> <!-- url -->
+      <div class="settings-redlist"> <!-- blacklist section -->
+        <h2>Less of these:</h2>
+        <div class="settings-redlist-section">
+          <form id="settings-redlist-section-form">
+              <label for="settings-redlist-section-form-url">URL</label>
+              <input id="settings-redlist-section-form-url" type="text" placeholder="www.google.com"/> <!-- url -->
 
           <label>Hrs</label> <!-- time -->
-          <input id="redlist-hrs" type="number" placeholder="1"/>
+          <input id="settings-redlist-section-form-hrs" type="number" placeholder="1"/>
           <label>Mins</label>
-          <input id="redlist-mins" type="number" placeholder="30"/>
+          <input id="settings-redlist-section-form-mins" type="number" placeholder="30"/>
         </div>
-        <div class="dropdown-list-section">
+        <div class="settings-redlist-section-form-dropdown">
           <span>Redlisted Sites</span>
-          <select id="dropdown"> <!-- dropdown list of sites -->
+          <select id="settings-redlist-section-form-dropdown-options"> <!-- dropdown list of sites -->
               <option selected disabled hidden value=''></option>
               <option value="white">White</option>
               <option value="pink">Pink</option>
@@ -48,52 +48,52 @@
             </select>
             <button>Edit</button>
             <button>Delete</button>
-            <input id="submit" type="submit">
+            <input id="settings-redlist-section-form-submit" type="submit">
           </form>
         </div>
       </div> <!-- end blacklist section -->
 
-      <div class="list"> <!-- Green List section -->
-        <form id="greenlistForm">
-        <h2>Green List</h2>
-        <div class="input-section">
-          <label>URL</label>
-          <input id = "greenlist-url" type="text" placeholder="www.google.com"/> <!-- url -->
-          <label>Hrs</label> <!-- time -->
-          <input id= "greenlist-hrs" type="number" placeholder="1"/>
-          <label>Mins</label>
-          <input id="greenlist-mins" type="number" placeholder="30"/>
-        </div>
-        <div class="dropdown-list-section">
-          <span>Green Listed Sites</span>
-          <select id="dropdown"> <!-- dropdown list of sites -->
-              <option selected disabled hidden value=''></option>
-              <option value="white">White</option>
-              <option value="pink">Pink</option>
-              <option value="green">Green</option>
-              <option value="yellow">Yellow</option>
-              <option value="blue">Blue</option>
-            </select>
-            <button>Edit</button>
-            <button>Delete</button>
-            <input id="submit" type="submit">
+      <div class="settings-greenlist"> <!-- Green List section -->
+        <h2>More of these: </h2>
+        <div class="settings-greenlist-section">
+          <form id="settings-greenlist-section-form">
+            <label>URL</label>
+            <input id = "settings-greenlist-section-form-url" type="text" placeholder="www.google.com"/> <!-- url -->
+            <label>Hrs</label> <!-- time -->
+            <input id= "settings-greenlist-section-form-hrs" type="number" placeholder="1"/>
+            <label>Mins</label>
+            <input id="settings-greenlist-section-form-mins" type="number" placeholder="30"/>
+          </div>
+          <div class="settings-greenlist-section-form-dropdown">
+            <span>Green Listed Sites</span>
+            <select id="settings-greenlist-section-form-dropdown-options"> <!-- dropdown list of sites -->
+                <option selected disabled hidden value=''></option>
+                <option value="white">White</option>
+                <option value="pink">Pink</option>
+                <option value="green">Green</option>
+                <option value="yellow">Yellow</option>
+                <option value="blue">Blue</option>
+              </select>
+              <button>Edit</button>
+              <button>Delete</button>
+              <input id="settings-greenlist-section-form-submit" type="submit">
           </form>
         </div>
       </div> <!-- end whitelist section -->
 
-      <div id="bedtime-section">
+      <div id="settings-bedtime-section">
         <h2>Bedtime / Wake time</h2>
-        <div>
+        <div class="settings-bedtime-section-input">
           <img />
+          <label>Bedtime</label>
           <input />
         </div>
-        <div>
+        <div class="settings-bedtime-section-input">
           <img />
+          <label>Wake Up</label>
           <input />
         </div>
       </div>
-
     </div> <!-- end settings section -->
-    <script src="popup.js"></script>
   </body>
 </html>

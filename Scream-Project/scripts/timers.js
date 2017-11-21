@@ -3,33 +3,51 @@ let _endTime;
 let browsingTime;
 let _currentUrl;
 
-document.addEventListener('DOMContentLoaded', () => {
-  chrome.tabs.onActivated.addListener(() => {
+// document.addEventListener('DOMContentLoaded', () => {
+//   chrome.tabs.onUpdated.addListener(() => {
+//     getCurrentTabUrl(getSiteInfo);
+//   });
+//   chrome.tabs.onRemoved.addListener(() => {
+//     // alert(_startTime)
+//   });
+// });
+
+chrome.tabs.onUpdated.addListener(() => {
   getCurrentTabUrl(getSiteInfo);
-  });
-
-  function getCurrentTabUrl(callback) {
-    let queryInfo = {
-      active: true,
-      currentWindow: true
-    };
-    chrome.tabs.query(queryInfo, (tabs) => {
-      let tab = tabs[0];
-      let url = tab.url;
-      console.assert(typeof url === 'string', 'tab.url should be a string');
-      callback(url);
-    });
-  }
-
-  function getSiteInfo(url) {
-    _currentUrl = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
-    _startTime = new Date().getTime();
-  }
-  // localStorage.setItem('domain', _startTime);
-  // firstAlarm();
-
-  console.log(chrome.extension.getURL)
 });
+
+function getCurrentTabUrl(callback) {
+  let queryInfo = {
+    active: true,
+    currentWindow: true
+  };
+  chrome.tabs.query(queryInfo, (tabs) => {
+    let tab = tabs[0];
+    let url = tab.url;
+    console.assert(typeof url === 'string', 'tab.url should be a string');
+    callback(url);
+  });
+}
+
+function getSiteInfo(url) {
+  _currentUrl = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+  _startTime = new Date().getTime();
+
+  let urlTime = {
+    url: _currentUrl,
+    time: _startTime
+  };
+
+  chrome.storage.sync.set({[_currentUrl]: urlTime}, () => {});
+
+  getTimeObj()
+}
+
+function getTimeObj() {
+  chrome.storage.sync.get(null, (items) => {
+    console.log(items)
+  });
+}
 
 
 

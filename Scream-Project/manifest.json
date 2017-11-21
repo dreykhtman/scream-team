@@ -4,8 +4,7 @@
   "description": "This extension improves your life.",
   "version": "1.0",
   "background": {
-    "scripts": ["scripts/timers.js"],
-    "persistent": true
+    "scripts": ["scripts/timers.js"]
   },
   "browser_action": {
     "default_icon": "icon.png",

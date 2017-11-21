@@ -4,34 +4,38 @@ function toggleSettings(){
   console.log('settings.className= ', settings.className)
   if (settings.className === 'hide') {
     settings.className = 'show';
-    console.log('showing')
   } else if (settings.className === 'show'){
     settings.className = 'hide';
-    console.log('hiding')
   }
 }
 
-function getInput() {
+
+function getInput(){
+  let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
+  let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
+
   chrome.storage.sync.get(null, function(items) {
-    console.log('this is what comes back', items);
+    let redHTML='';
+    let greenHTML='';
+
+    for(let url in items){
+      items[url].type === "red" ? redHTML += "<option value"+url+">"+url+"</option>" :
+      greenHTML += "<option value"+url+">"+url+"</option>";
+    }
+    redListDropDown.innerHTML = redHTML;
+    greenListDropDown.innerHTML = greenHTML;
   })
 }
 
-function populateDropdown() {
-  console.log('hiiiii')
-  let redlist = [];
-  let greenlist = [];
-
-}
 
 // //wait for DOM to load
 document.addEventListener('DOMContentLoaded', () => {
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
-    e.preventDefault()
-    toggleSettings();
-        getInput()
-        populateDropdown()
+        e.preventDefault()
+        toggleSettings();
+         getInput()
+
 
         let redlistForm = document.getElementById('settings-redlist-section-form');
         let greenlistForm = document.getElementById('settings-greenlist-section-form');
@@ -41,13 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
         redlistForm.addEventListener('submit', (e) => {
           e.preventDefault()
             saveInput(e, 'red')
-            getInput()
+            // getInput()
         })
 
         greenlistForm.addEventListener('submit', (e) => {
           e.preventDefault()
             saveInput(e, 'green')
-            getInput()
+            // getInput()
         })
       });
 
@@ -71,8 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
     });
-
-    function makeObject() {}
 
 
 //parse url for domain

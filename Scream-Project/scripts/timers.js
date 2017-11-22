@@ -1,7 +1,8 @@
-let _startTime;
+let _startTime = 0;
 let _endTime;
-let browsingTime;
+let _browsingTime;
 let _currentUrl;
+let _interval;
 
 // document.addEventListener('DOMContentLoaded', () => {
 //   chrome.tabs.onUpdated.addListener(() => {
@@ -31,24 +32,42 @@ function getCurrentTabUrl(callback) {
 
 function getSiteInfo(url) {
   _currentUrl = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
-  _startTime = new Date().getTime();
-
+  // _startTime = new Date().getTime();
+  //_start = 0
+  // _start += end newDate() - start new Date()
   let urlTime = {
     url: _currentUrl,
-    time: _startTime
+    time: _startTime,
+    currentTime: 0
   };
 
-  chrome.storage.sync.set({[_currentUrl]: urlTime}, () => {});
-
-  getTimeObj()
+  // _interval = setInterval(() => { chrome.storage.sync.set({ [_currentUrl]: urlTime }, () => { console.log(urlTime)}); }, 10000);
+  _interval = setInterval(() => { _startTime += 1000; }, 1000);
+  getTimeObj();
 }
 
 function getTimeObj() {
   chrome.storage.sync.get(null, (items) => {
-    console.log(items)
+    if (items.hasOwnProperty(_currentUrl)) {
+      _browsingTime = items[_currentUrl].browsingTime;
+    } else {
+      _browsingTime = 0;
+    }
+    console.log("ITEMS", items);
   });
 }
 
+chrome.tabs.onRemoved.addListener(() => {
+  let newTime = _startTime + _browsingTime;
+  let newObj = {
+    browsingTime: newTime
+  };
+
+  chrome.storage.sync.set( {[_currentUrl]: newObj}, () => {
+
+  } );
+  clearInterval(_interval);
+});
 
 
 // function firstAlarm() {

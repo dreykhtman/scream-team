@@ -1,4 +1,4 @@
-function loadPieChart () {
+function loadPieChart(data) {
 
     const svg = d3.select("svg"),
         width = +svg.attr("width"),
@@ -11,7 +11,8 @@ function loadPieChart () {
     let pie = d3.pie()
         .sort(null)
         .value(function (d) {
-            return d.population;
+            console.log('d is this!!!!!!!!!', d)
+            return Number(d.goalMins);
         });
 
     let path = d3.arc()
@@ -22,31 +23,6 @@ function loadPieChart () {
         .outerRadius(radius - 40)
         .innerRadius(radius - 40);
 
-    let data = [
-        {
-            age: "<5",
-            population: 2704659
-        }, {
-            age: "5-13",
-            population: 4499890
-        }
-    ]
-
-    // let dataInput = {
-    //         'catisnsinks.com': {
-    //             browsingTime: 55,
-    //             goalHrs: "2",
-    //             goalMins: "22",
-    //             type: "green"
-    //         },
-    //         'walmart.com': {
-    //             browsingTime: 88,
-    //             goalHrs: "3",
-    //             goalMins: "33",
-    //             type: "red"
-    //         }
-    //     }
-
     let arc = g.selectAll(".arc")
         .data(pie(data))
         .enter().append("g")
@@ -54,10 +30,13 @@ function loadPieChart () {
 
     arc.append("path")
         .attr("d", path)
-        .attr("fill", function (d) { return color(d.data.age); });
+        .attr("fill", function (d) {
+            console.log('d.data.url is thisssss', d.data.url)
+            return color(d.data.url);
+        });
 
     arc.append("text")
         .attr("transform", function (d) { return "translate(" + label.centroid(d) + ")"; })
         .attr("dy", "0.35em")
-        .text(function (d) { return d.data.age; });
+        .text(function (d) { return d.data.url; });
 }

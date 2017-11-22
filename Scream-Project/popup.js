@@ -9,7 +9,6 @@ function toggleSettings(){
   }
 }
 
-
 function getInput(){
   let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
   let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
@@ -27,15 +26,13 @@ function getInput(){
   })
 }
 
-
 // //wait for DOM to load
 document.addEventListener('DOMContentLoaded', () => {
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
         e.preventDefault()
         toggleSettings();
-         getInput()
-
+        getInput()
 
         let redlistForm = document.getElementById('settings-redlist-section-form');
         let greenlistForm = document.getElementById('settings-greenlist-section-form');
@@ -55,7 +52,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
       function saveInput(event, type) {
           event.preventDefault()
-          console.log(type)
           let url = getDomain(document.getElementById(`settings-${type}list-section-form-url`).value);
           let hrs = document.getElementById(`settings-${type}list-section-form-hrs`).value
           let mins = document.getElementById(`settings-${type}list-section-form-mins`).value
@@ -68,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
           chrome.storage.sync.set({[url]: urlObj}, () => {
           })
         }
-
+        loadPieChart()
     });
 
 

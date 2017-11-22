@@ -16,7 +16,7 @@ function getInput(){
   let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
 
   chrome.storage.sync.get(null, function(items) {
-console.log("WHATS UP BIATCHACHACHA?!?!", items)
+console.log("items: ", items)
 
     let waketime = convertTime(items.waketime)
     let bedtime = convertTime(items.bedtime)

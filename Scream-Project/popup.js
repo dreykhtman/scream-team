@@ -10,37 +10,29 @@ function toggleSettings() {
 }
 
 function getInput() {
-  let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
-  let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
-  let bedtimeArea = document.getElementById('settings-bedtime-section-load-bedtime');
-  let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
-
-  chrome.storage.sync.get(null, function (items) {
-    console.log('items: ', items);
-
-    let waketime = convertTime(items.waketime);
-    let bedtime = convertTime(items.bedtime);
-    let redHTML = '';
-    let greenHTML = '';
-
-    for (let url in items) {
-      if (items[url].type === 'red') redHTML += '<option value' + url + '>' + url + '</option>';
-      if (items[url].type === 'green') greenHTML += '<option value' + url + '>' + url + '</option>';
-    }
-
-    redListDropDown.innerHTML = redHTML;
-    greenListDropDown.innerHTML = greenHTML;
-    bedtimeArea.innerHTML = bedtime;
-    waketimeArea.innerHTML = waketime;
-  });
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(null, function (items) {
+      if (!items) reject(new Error('no data found'))
+      let dataForChart = [];
+      for (let site in items) {
+        let value = items[site]
+        value['url'] = site
+        if (typeof value === 'object') {
+          dataForChart.push(value);
+          resolve({ dataForChart, items })
+        }
+      }
+    })
+  })
 }
 
+//for bed/wake time input box
 function convertTime(time) {
   let hr = time.slice(0, 2);
   let min = time.slice(2);
   if (hr > 12) {
-    hr %= 12;
-    time = hr + min + 'PM';
+    hr %= 12
+    time = hr + min + 'PM'
   } else {
     time = hr + min + 'AM';
   }
@@ -48,18 +40,36 @@ function convertTime(time) {
 }
 
 // //wait for DOM to load
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
     e.preventDefault();
     toggleSettings();
-    getInput();
+    getInput()
+      .then(({ items }) => {
+        let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
+        let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
+        let bedtimeArea = document.getElementById('settings-bedtime-section-load-bedtime');
+        let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
+        let waketime = convertTime(items.waketime)
+        let bedtime = convertTime(items.bedtime)
+        let redHTML = '';
+        let greenHTML = '';
+        for (let url in items) {
+          if (items[url].type === "red") redHTML += "<option value" + url + ">" + url + "</option>";
+          if (items[url].type === "green") greenHTML += "<option value" + url + ">" + url + "</option>";
+        }
+        redListDropDown.innerHTML = redHTML;
+        greenListDropDown.innerHTML = greenHTML;
+        bedtimeArea.innerHTML = bedtime;
+        waketimeArea.innerHTML = waketime;
+      })
   });
 
   let redlistForm = document.getElementById('settings-redlist-section-form');
   let greenlistForm = document.getElementById('settings-greenlist-section-form');
-  let redlistButton = document.getElementById('settings-redlist-section-form-submit');
-  let greenlistButton = document.getElementById('settings-greenlist-section-form-submit');
+  let redlistButton = document.getElementById('settings-redlist-section-form-submit')
+  let greenlistButton = document.getElementById('settings-greenlist-section-form-submit')
 
   redlistForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -78,9 +88,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let waketimeForm = document.getElementById('settings-bedtime-section-waketime-form');
   waketimeForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    saveTime(e, 'waketime');
-  });
+    e.preventDefault()
+    saveTime(e, 'waketime')
+  })
+
+  let { dataForChart } = await getInput();
+  loadPieChart(dataForChart)
 });
 
 function saveInput(e, type) {
@@ -92,23 +105,20 @@ function saveInput(e, type) {
     type: type,
     goalHrs: hrs,
     goalMins: mins,
-    browsingTime: 0,
-    currentTime: 0
-  };
-
+    browsingTime: 0
+  }
   chrome.storage.sync.set({ [url]: urlObj }, () => {
-  });
+  })
 }
 
 function saveTime(e, type) {
-  e.preventDefault();
-  let setTime = e.target.timeInput.value;
+  e.preventDefault()
+  let setTime = e.target.timeInput.value
   chrome.storage.sync.set({ [type]: setTime }, () => {
-  });
+  })
 }
 
 //parse url for domain
 function getDomain(url) {
   return url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
 }
-

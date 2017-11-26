@@ -1,5 +1,5 @@
 function loadPieChart(data) {
-
+console.log('the data for chart is this',data)
     const svg = d3.select("svg"),
         width = +svg.attr("width"),
         height = +svg.attr("height"),
@@ -11,7 +11,7 @@ function loadPieChart(data) {
     let pie = d3.pie()
         .sort(null)
         .value(function (d) {
-            return Number(d.browsingTime);
+            return Number(d.goalHrs);
         });
 
     let path = d3.arc()
@@ -30,7 +30,6 @@ function loadPieChart(data) {
     arc.append("path")
         .attr("d", path)
         .attr("fill", function (d) {
-            console.log('d.data.url is thisssss', d.data.url)
             return color(d.data.url);
         });
 

@@ -11,8 +11,7 @@ function loadPieChart(data) {
     let pie = d3.pie()
         .sort(null)
         .value(function (d) {
-            console.log('d is this!!!!!!!!!', d)
-            return Number(d.goalMins);
+            return Number(d.browsingTime);
         });
 
     let path = d3.arc()

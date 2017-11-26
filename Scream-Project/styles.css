@@ -1,15 +1,10 @@
-body {
-  color: #373F27;
-  font-family: Georgia, Serif;
-  font-weight: bold;
-  background-color: #E9E7DA;
-  margin: 10px;
-  white-space: nowrap;
+#settings.hide {
+  display: none;
 }
 
-h1 {
-  font-size: 25px;
-  text-align: center
+#settings.show {
+  display: block;
+  margin-top: 25px;
 }
 
 .initial-view {
@@ -27,16 +22,98 @@ h1 {
   border-radius: 25px;
   align-items: center;
   background-color: #636B46;
-  border: none;
+  border-width: 2px;
+  border-color: #373F27;
   padding: 10px;
-  margin: 10px;
+  margin:  0 0 10px 0;
   float: right;
 }
 
-#settings.hide {
-  display: none;
+svg {
+  display: block;
+  margin: auto;
 }
 
-#settings.show {
-  display: block;
+body {
+  color: #373F27;
+  font-family: Georgia, Serif;
+  font-weight: bold;
+  background-color: #E9E7DA;
+  margin: 10px;
+  white-space: nowrap;
+}
+
+input[type="submit"]  {
+  font-size: 12px;
+  font-family: Georgia, Serif;
+  font-weight: bold;
+  color: #373F27;
+  border-radius: 25px;
+  align-items: center;
+  background-color: #CDA34F;
+  border-width: 1px;
+  border-color: #373F27;
+  padding: 4px;
+  margin: 4px
+}
+
+.edit-btn {
+  background: url(/edit.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 25px;
+  width: 25px;
+  height: 25px;
+  border-width: 1px;
+  border-color: #373F27;
+  cursor: pointer;
+  padding: 12px;
+  margin: 2px;
+}
+
+.delete-btn {
+  background: url(/delete.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 25px;
+  width: 25px;
+  height: 25px;
+  border-width: 1px;
+  border-color: #373F27;
+  cursor: pointer;
+  padding: 12px;
+  margin: 2px;
+}
+
+label {
+  font-size: 12px
+}
+
+h2 {
+  font-size: 20px;
+  margin: 10px 0 0 0;
+}
+
+h1 {
+  font-size: 25px;
+  text-align: center
+}
+
+h3, p{
+  display: inline;
+  font-size: 14px
+}
+
+/* #settings-bedtime-section {
+  background-color: red;
+  float: right;
+} */
+/*
+.settings-redlist-section-form-dropdown {
+  vertical-align: center;
+} */
+
+#settings-current-bedwake-time {
+  margin-top: 2px;
+  margin-bottom: 10px;
 }

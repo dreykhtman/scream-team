@@ -1,17 +1,36 @@
 body {
+  color: #373F27;
+  font-family: Georgia, Serif;
+  font-weight: bold;
+  background-color: #E9E7DA;
   margin: 10px;
   white-space: nowrap;
 }
 
 h1 {
-  font-size: 15px;
+  font-size: 25px;
+  text-align: center
 }
 
 .initial-view {
   align-items: center;
-  display: flex;
+  display: block;
   justify-content: space-between;
   margin: 2px;
+}
+
+#initial-view-toggle-button {
+  font-size: 15px;
+  font-family: Georgia, Serif;
+  font-weight: bold;
+  color: #E9E7DA;
+  border-radius: 25px;
+  align-items: center;
+  background-color: #636B46;
+  border: none;
+  padding: 10px;
+  margin: 10px;
+  float: right;
 }
 
 #settings.hide {
@@ -21,5 +40,3 @@ h1 {
 #settings.show {
   display: block;
 }
-
-

@@ -1,7 +1,7 @@
 //expand and shrinking app
 function toggleSettings() {
   let settings = document.getElementById('settings');
-  console.log('settings.className= ', settings.className)
+  console.log('settings.className= ', settings.className);
   if (settings.className === 'hide') {
     settings.className = 'show';
   } else if (settings.className === 'show') {
@@ -34,7 +34,7 @@ function convertTime(time) {
     hr %= 12
     time = hr + min + 'PM'
   } else {
-    time = hr + min + 'AM'
+    time = hr + min + 'AM';
   }
   return time;
 }
@@ -43,7 +43,7 @@ function convertTime(time) {
 document.addEventListener('DOMContentLoaded', async () => {
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
-    e.preventDefault()
+    e.preventDefault();
     toggleSettings();
     getInput()
       .then(({ items }) => {
@@ -72,21 +72,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   let greenlistButton = document.getElementById('settings-greenlist-section-form-submit')
 
   redlistForm.addEventListener('submit', (e) => {
-    e.preventDefault()
-    saveInput(e, 'red')
-  })
+    e.preventDefault();
+    saveInput(e, 'red');
+  });
   greenlistForm.addEventListener('submit', (e) => {
-    e.preventDefault()
-    saveInput(e, 'green')
-  })
+    e.preventDefault();
+    saveInput(e, 'green');
+  });
 
-  let bedtimeForm = document.getElementById('settings-bedtime-section-form')
+  let bedtimeForm = document.getElementById('settings-bedtime-section-form');
   bedtimeForm.addEventListener('submit', (e) => {
-    e.preventDefault()
-    saveTime(e, 'bedtime')
-  })
+    e.preventDefault();
+    saveTime(e, 'bedtime');
+  });
 
-  let waketimeForm = document.getElementById('settings-bedtime-section-waketime-form')
+  let waketimeForm = document.getElementById('settings-bedtime-section-waketime-form');
   waketimeForm.addEventListener('submit', (e) => {
     e.preventDefault()
     saveTime(e, 'waketime')
@@ -97,10 +97,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 function saveInput(e, type) {
-  e.preventDefault()
+  e.preventDefault();
   let url = getDomain(document.getElementById(`settings-${type}list-section-form-url`).value);
-  let hrs = document.getElementById(`settings-${type}list-section-form-hrs`).value
-  let mins = document.getElementById(`settings-${type}list-section-form-mins`).value
+  let hrs = document.getElementById(`settings-${type}list-section-form-hrs`).value;
+  let mins = document.getElementById(`settings-${type}list-section-form-mins`).value;
   let urlObj = {
     type: type,
     goalHrs: hrs,

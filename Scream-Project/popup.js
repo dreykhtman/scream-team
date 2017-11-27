@@ -28,6 +28,7 @@ function getInput() {
 
 //for bed/wake time input box
 function convertTime(time) {
+  console.log('TIME???', time)
   let hr = time.slice(0, 2);
   let min = time.slice(2);
   if (hr > 12) {
@@ -39,7 +40,7 @@ function convertTime(time) {
   return time;
 }
 
-// //wait for DOM to load
+//wait for DOM to load
 document.addEventListener('DOMContentLoaded', async () => {
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
@@ -47,12 +48,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     toggleSettings();
     getInput()
       .then(({ items }) => {
+        let waketime, bedtime;
         let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
         let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
         let bedtimeArea = document.getElementById('settings-bedtime-section-load-bedtime');
         let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
-        let waketime = convertTime(items.waketime)
-        let bedtime = convertTime(items.bedtime)
+        items.waketime ? waketime = convertTime(items.waketime) : waketime = 'Not Set';
+        items.bedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not Set';
         let redHTML = '';
         let greenHTML = '';
         for (let url in items) {

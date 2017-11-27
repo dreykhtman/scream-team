@@ -28,16 +28,17 @@
         <h2>Less of these:</h2>
         <div class="settings-redlist-section">
           <form id="settings-redlist-section-form">
-              <label for="settings-redlist-section-form-url">URL</label>
+              <label for="settings-redlist-section-form-url">URL:</label>
               <input id="settings-redlist-section-form-url" type="text" placeholder="www.google.com"/> <!-- url -->
 
-          <label>Hrs</label> <!-- time -->
+          <label>Hrs:</label> <!-- time -->
           <input id="settings-redlist-section-form-hrs" type="number" placeholder="1"/>
-          <label>Mins</label>
+          <label>Mins:</label>
           <input id="settings-redlist-section-form-mins" type="number" placeholder="30"/>
+          <input id="settings-redlist-section-form-submit" type="submit">
         </div>
         <div class="settings-redlist-section-form-dropdown">
-          <span>Redlisted Sites</span>
+          <span>Site list:</span>
           <select id="settings-redlist-section-form-dropdown-options"> <!-- dropdown list of sites -->
               <option selected disabled hidden value=''></option>
               <option value="white">White</option>
@@ -46,9 +47,8 @@
               <option value="yellow">Yellow</option>
               <option value="blue">Blue</option>
             </select>
-            <button>Edit</button>
-            <button>Delete</button>
-            <input id="settings-redlist-section-form-submit" type="submit">
+            <button class="edit-btn"></button>
+            <button class="delete-btn"></button>
           </form>
         </div>
       </div> <!-- end blacklist section -->
@@ -57,15 +57,16 @@
         <h2>More of these: </h2>
         <div class="settings-greenlist-section">
           <form id="settings-greenlist-section-form">
-            <label>URL</label>
+            <label>URL:</label>
             <input id = "settings-greenlist-section-form-url" type="text" placeholder="www.google.com"/> <!-- url -->
-            <label>Hrs</label> <!-- time -->
+            <label>Hrs:</label> <!-- time -->
             <input id= "settings-greenlist-section-form-hrs" type="number" placeholder="1"/>
-            <label>Mins</label>
+            <label>Mins:</label>
             <input id="settings-greenlist-section-form-mins" type="number" placeholder="30"/>
+            <input id="settings-greenlist-section-form-submit" type="submit">
           </div>
           <div class="settings-greenlist-section-form-dropdown">
-            <span>Green Listed Sites</span>
+            <span>Site list:</span>
             <select id="settings-greenlist-section-form-dropdown-options"> <!-- dropdown list of sites -->
                 <option selected disabled hidden value=''></option>
                 <option value="white">White</option>
@@ -74,29 +75,36 @@
                 <option value="yellow">Yellow</option>
                 <option value="blue">Blue</option>
               </select>
-              <button>Edit</button>
-              <button>Delete</button>
-              <input id="settings-greenlist-section-form-submit" type="submit">
+              <button class="edit-btn"></button>
+              <button class="delete-btn"></button>
           </form>
         </div>
       </div> <!-- end whitelist section -->
 
       <div id="settings-bedtime-section"> <!-- bedtime & waketime section -->
-        <h2>Bedtime / Wake time</h2>
+        <h2>My Bedtime:</h2>
         <form id="settings-bedtime-section-form">
           <label>Set Bedtime</label>
           <input id="settings-bedtime-section-form-input" type="time" name="timeInput"/>
           <input id="settings-bedtime-section-form-submit" type="submit">
         </form>
-        <h3>Your Current Bedtime: </h3>
-        <p id="settings-bedtime-section-load-bedtime"></p>
+
+        <div id="settings-current-bedwake-time">
+          <h3>Your Current Bedtime: </h3>
+          <p id="settings-bedtime-section-load-bedtime"></p>
+        </div>
+
         <form id="settings-bedtime-section-waketime-form">
-          <label>Set Wake Up Time</label>
+          <label>Set Wake Time</label>
           <input id="settings-bedtime-section-waketime-form-input" name="timeInput" type="time"/>
           <input id="settings-bedtime-section-waketime-form-submit" type="submit">
         </form>
-        <h3>Your Current Wake Time: </h3>
-        <p id="settings-bedtime-section-load-waketime"></p>
+
+        <div id="settings-current-bedwake-time">
+          <h3>Your Current Wake Time: </h3>
+          <p id="settings-bedtime-section-load-waketime"></p>
+        </div>
+
       </div> <!-- end bedtime & waketime section -->
     </div> <!-- end settings section -->
   </body>

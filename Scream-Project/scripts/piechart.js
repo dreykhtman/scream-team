@@ -1,18 +1,17 @@
 function loadPieChart(data) {
-
+console.log('the data for chart is this',data)
     const svg = d3.select("svg"),
         width = +svg.attr("width"),
         height = +svg.attr("height"),
         radius = Math.min(width, height) / 2,
         g = svg.append("g").attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
 
-    let color = d3.scaleOrdinal(["#98abc5", "#8a89a6", "#7b6888", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
+    let color = d3.scaleOrdinal(["#CDA34F", "#373F27", "#636B46", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
     let pie = d3.pie()
         .sort(null)
         .value(function (d) {
-            console.log('d is this!!!!!!!!!', d)
-            return Number(d.goalMins);
+            return Number(d.goalHrs);
         });
 
     let path = d3.arc()
@@ -31,7 +30,6 @@ function loadPieChart(data) {
     arc.append("path")
         .attr("d", path)
         .attr("fill", function (d) {
-            console.log('d.data.url is thisssss', d.data.url)
             return color(d.data.url);
         });
 

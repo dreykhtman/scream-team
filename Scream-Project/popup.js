@@ -103,8 +103,8 @@ function saveInput(e, type) {
   let mins = document.getElementById(`settings-${type}list-section-form-mins`).value;
   let urlObj = {
     type: type,
-    goalHrs: hrs,
-    goalMins: mins,
+    goalHrs: +hrs,
+    goalMins: +mins,
     browsingTime: 0
   }
   chrome.storage.sync.set({ [url]: urlObj }, () => {

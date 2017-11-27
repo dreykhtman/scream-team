@@ -14,6 +14,7 @@ function getInput() {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(null, function (items) {
       if (!items) reject(new Error('no data found'))
+      console.log('items are this!', items)
       let dataForChart = [];
       for (let site in items) {
         let value = items[site]
@@ -73,6 +74,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   let greenlistForm = document.getElementById('settings-greenlist-section-form');
   let redlistButton = document.getElementById('settings-redlist-section-form-submit')
   let greenlistButton = document.getElementById('settings-greenlist-section-form-submit')
+  let greenlistEdit = document.getElementById('greenlist-edit-btn')
+  let greenlistDelete = document.getElementById('greenlist-delete-btn')
+  let redlistEdit = document.getElementById('redlist-edit-btn')
+  let redlistDelete = document.getElementById('redlist-delete-btn')
 
   redlistForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -81,6 +86,23 @@ document.addEventListener('DOMContentLoaded', async () => {
   greenlistForm.addEventListener('submit', (e) => {
     e.preventDefault();
     saveInput(e, 'green');
+  });
+
+  greenlistEdit.addEventListener('click', (e) => {
+    e.preventDefault();
+    editInput(e, 'green');
+  });
+  redlistEdit.addEventListener('click', (e) => {
+    e.preventDefault();
+    editInput(e, 'red');
+  });
+  greenlistDelete.addEventListener('click', (e) => {
+    e.preventDefault();
+    deleteInput(e, 'green');
+  });
+  redlistDelete.addEventListener('click', (e) => {
+    e.preventDefault();
+    deleteInput(e, 'red');
   });
 
   let bedtimeForm = document.getElementById('settings-bedtime-section-form');
@@ -119,6 +141,29 @@ function saveTime(e, type) {
   let setTime = e.target.timeInput.value
   chrome.storage.sync.set({ [type]: setTime }, () => {
   })
+}
+
+async function editInput (e, type) {
+  e.preventDefault()
+  let selectElem = document.getElementById(`settings-${type}list-section-form-dropdown-options`);
+  let optionValue = selectElem.options[selectElem.selectedIndex].value;
+  let formUrl = document.getElementById(`settings-${type}list-section-form-url`);
+  let formHrs = document.getElementById(`settings-${type}list-section-form-hrs`);
+  let formMins = document.getElementById(`settings-${type}list-section-form-mins`);
+  let { items } = await getInput();
+  formUrl.value = optionValue;
+  formHrs.value = 5
+  formMins.value = 5
+  formHrs.value = items[optionValue].goalHrs;
+  formMins.value = items[optionValue].goalMins;
+  deleteInput(e, type);
+}
+
+function deleteInput (e, type) {
+  e.preventDefault();
+  let selectElem = document.getElementById(`settings-${type}list-section-form-dropdown-options`);
+  let optionValue = selectElem.options[selectElem.selectedIndex].value;
+  chrome.storage.sync.remove(optionValue)
 }
 
 //parse url for domain

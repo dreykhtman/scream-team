@@ -9,6 +9,7 @@ function toggleSettings() {
   }
 }
 
+// getting data object with all user data from chrome storage
 function getInput() {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(null, function (items) {
@@ -26,7 +27,7 @@ function getInput() {
   })
 }
 
-//for bed/wake time input box
+//for bed/wake time section
 function convertTime(time) {
   let hr = time.slice(0, 2);
   let min = time.slice(2);
@@ -39,20 +40,22 @@ function convertTime(time) {
   return time;
 }
 
-// //wait for DOM to load
+//wait for DOM to load
 document.addEventListener('DOMContentLoaded', async () => {
+  //click listener to load & populate all user data fields when expand button is clicked
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
     e.preventDefault();
     toggleSettings();
     getInput()
       .then(({ items }) => {
+        let waketime, bedtime;
         let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
         let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
         let bedtimeArea = document.getElementById('settings-bedtime-section-load-bedtime');
         let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
-        let waketime = convertTime(items.waketime)
-        let bedtime = convertTime(items.bedtime)
+        items.waketime ? waketime = convertTime(items.waketime) : waketime = 'Not Set';
+        items.bedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not Set';
         let redHTML = '';
         let greenHTML = '';
         for (let url in items) {

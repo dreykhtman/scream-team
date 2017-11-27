@@ -9,6 +9,7 @@ function toggleSettings() {
   }
 }
 
+// getting data object with all user data from chrome storage
 function getInput() {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(null, function (items) {
@@ -26,9 +27,8 @@ function getInput() {
   })
 }
 
-//for bed/wake time input box
+//for bed/wake time section
 function convertTime(time) {
-  console.log('TIME???', time)
   let hr = time.slice(0, 2);
   let min = time.slice(2);
   if (hr > 12) {
@@ -42,6 +42,7 @@ function convertTime(time) {
 
 //wait for DOM to load
 document.addEventListener('DOMContentLoaded', async () => {
+  //click listener to load & populate all user data fields when expand button is clicked
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
     e.preventDefault();

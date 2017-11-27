@@ -1,5 +1,5 @@
 function loadPieChart(data) {
-console.log('the data for chart is this',data)
+    // console.log('the data for chart is this', data)
     const svg = d3.select("svg"),
         width = +svg.attr("width"),
         height = +svg.attr("height"),
@@ -8,10 +8,20 @@ console.log('the data for chart is this',data)
 
     let color = d3.scaleOrdinal(["#CDA34F", "#373F27", "#636B46", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
+    // let dataByType = d3.nest()
+    //     .key((d) => { return d.type || 'other'; })
+    //     .entries(data);
+
+    let dataByTime = d3.nest()
+        .key((d) => { return d.type || 'other'; })
+        .rollup((v) => { return d3.mean(v, (d) => { return d.browsingTime; }) || 1; })
+        .entries(data);
+    console.log(dataByTime)
+
     let pie = d3.pie()
         .sort(null)
         .value(function (d) {
-            return Number(d.goalHrs);
+            return Number(d.browsingTime) || 1;
         });
 
     let path = d3.arc()
@@ -30,6 +40,7 @@ console.log('the data for chart is this',data)
     arc.append("path")
         .attr("d", path)
         .attr("fill", function (d) {
+            console.log("d in path piechart.js", d)
             return color(d.data.url);
         });
 

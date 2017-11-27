@@ -1,5 +1,5 @@
 function loadPieChart(data) {
-    // console.log('the data for chart is this', data)
+    
     const svg = d3.select("svg"),
         width = +svg.attr("width"),
         height = +svg.attr("height"),
@@ -8,20 +8,21 @@ function loadPieChart(data) {
 
     let color = d3.scaleOrdinal(["#CDA34F", "#373F27", "#636B46", "#6b486b", "#a05d56", "#d0743c", "#ff8c00"]);
 
-    // let dataByType = d3.nest()
-    //     .key((d) => { return d.type || 'other'; })
-    //     .entries(data);
-
+    // grouping data by redlist/greenlist/other categories
     let dataByTime = d3.nest()
         .key((d) => { return d.type || 'other'; })
-        .rollup((v) => { return d3.mean(v, (d) => { return d.browsingTime; }) || 1; })
+        .rollup((v) => { return d3.mean(v, (d) => { return d.browsingTime; }); })
         .entries(data);
-    console.log(dataByTime)
 
+    // calculating total browsing time for all categories to create percentage time in case any category has 0 value
+    let allTime = dataByTime.reduce((prev,next) => { return prev += next.value},0)
+    let fluffTime = allTime * 0.08
+    
+    // value = browsingTime
     let pie = d3.pie()
         .sort(null)
         .value(function (d) {
-            return Number(d.browsingTime) || 1;
+            return !!d.value ? Number(d.value) : fluffTime;
         });
 
     let path = d3.arc()
@@ -32,20 +33,21 @@ function loadPieChart(data) {
         .outerRadius(radius - 40)
         .innerRadius(radius - 40);
 
+    // using grouped data to create pie chart
     let arc = g.selectAll(".arc")
-        .data(pie(data))
+        .data(pie(dataByTime))
         .enter().append("g")
         .attr("class", "arc");
 
+    // key = list category
     arc.append("path")
         .attr("d", path)
         .attr("fill", function (d) {
-            console.log("d in path piechart.js", d)
-            return color(d.data.url);
+            return color(d.data.key);
         });
 
     arc.append("text")
         .attr("transform", function (d) { return "translate(" + label.centroid(d) + ")"; })
         .attr("dy", "0.35em")
-        .text(function (d) { return d.data.url; });
+        .text(function (d) { return d.data.key; });
 }

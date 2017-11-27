@@ -137,7 +137,7 @@ h3, p{
 
 /* pie chart style */
 .arc text {
-  font: 12px sans-serif;
+  font-size: 15px;
   text-anchor: middle;
 }
 

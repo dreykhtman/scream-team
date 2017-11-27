@@ -143,10 +143,20 @@ function saveTime(e, type) {
   })
 }
 
-function editInput (e, type) {
+async function editInput (e, type) {
   e.preventDefault()
   let selectElem = document.getElementById(`settings-${type}list-section-form-dropdown-options`);
   let optionValue = selectElem.options[selectElem.selectedIndex].value;
+  let formUrl = document.getElementById(`settings-${type}list-section-form-url`);
+  let formHrs = document.getElementById(`settings-${type}list-section-form-hrs`);
+  let formMins = document.getElementById(`settings-${type}list-section-form-mins`);
+  let { items } = await getInput();
+  formUrl.value = optionValue;
+  formHrs.value = 5
+  formMins.value = 5
+  formHrs.value = items[optionValue].goalHrs;
+  formMins.value = items[optionValue].goalMins;
+  deleteInput(e, type);
 }
 
 function deleteInput (e, type) {

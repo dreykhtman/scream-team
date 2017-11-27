@@ -1,5 +1,5 @@
 let _startTime = {};
-let _currentUrl = {};
+let _currentUrl;
 let _isFocused = {};
 let _browsingTime;
 let _interval;
@@ -16,13 +16,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // stops timer and writes time to storage when page is closed
   chrome.tabs.onRemoved.addListener(() => {
-    let newTime = _startTime[_currentUrl[_currentTabId]] + _browsingTime;
+    let newTime = _startTime[_currentUrl] + _browsingTime;
     let newObj = {
       browsingTime: newTime
     };
     _isFocused[_currentTabId] = false;
 
-    chrome.storage.sync.set({ [_currentUrl[_currentTabId]]: newObj }, () => {
+    chrome.storage.sync.set({ [_currentUrl]: newObj }, () => {
       clearInterval(_interval);
     });
   });
@@ -53,9 +53,9 @@ function startTimer(url) {
     return;
   }
 
-  _startTime[_currentUrl[_currentTabId]] = 0;
+  _startTime[_currentUrl] = 0;
   _isFocused[_currentTabId] = true;
-  _currentUrl[_currentTabId] = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+  _currentUrl = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
   // let urlTime = {
   //   url: _currentUrl,
   //   time: _startTime,
@@ -69,17 +69,17 @@ function startTimer(url) {
 // increment timer
 function countUp() {
   if (_isFocused[_currentTabId]) {
-    _startTime[_currentUrl[_currentTabId]]++;
+    _startTime[_currentUrl]++;
   }
 }
 
 // get url's total time form chrome storage
 function getBrowsingTime() {
   chrome.storage.sync.get(null, (items) => {
-    if (items.hasOwnProperty(_currentUrl[_currentTabId])) {
-      _browsingTime = items[_currentUrl[_currentTabId]].browsingTime;
+    if (items.hasOwnProperty(_currentUrl)) {
+      _browsingTime = items[_currentUrl].browsingTime;
     } else {
-      chrome.storage.sync.set({ [_currentUrl[_currentTabId]]: { browsingTime: 0 } }, () => {
+      chrome.storage.sync.set({ [_currentUrl]: { browsingTime: 0 } }, () => {
         _browsingTime = 0;
       });
     }

@@ -17,10 +17,18 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+  console.log(_blacklistGoals)
 });
 
+function getBlacklistGoal() {
+  return Math.floor(_blacklistGoals[_currentUrl] / 60);
+}
+
 function firstAlarm() {
-  chrome.alarms.create('firstWarning', { delayInMinutes: 0.1 });
+  if (_blacklistGoals.hasOwnProperty(_currentUrl)) {
+    chrome.alarms.create('firstWarning', { delayInMinutes: getBlacklistGoal() * 0.5 });
+    // console.log('alarm creatd.time:', getBlacklistGoal() * 0.5)
+  }
 }
 
 function secondAlarm() {
@@ -32,12 +40,14 @@ function thirdAlarm() {
 }
 
 function assignNotification() {
-  let notification = new Notification('Hey, you!', {
-    body: `URL: ${_currentUrl[_currentTabId]}`,
+  // console.log(_blacklistGoals[_currentUrl] / 60)
+  let notification = new Notification('Hello', {
+    body: `You are halfway through your total time of ${_blacklistGoals[_currentUrl] / 60} minutes on ${_currentUrl}`,
     title: 'Hello',
     requireInteraction: true
   });
 }
+
 function notifyMe() {
   if (!('Notification' in window)) {
     alert("This browser doesn't support notifications.");

@@ -134,3 +134,13 @@ h3, p{
   margin-top: 2px;
   margin-bottom: 10px;
 }
+
+/* pie chart style */
+.arc text {
+  font-size: 15px;
+  text-anchor: middle;
+}
+
+.arc path {
+  stroke: #fff;
+}

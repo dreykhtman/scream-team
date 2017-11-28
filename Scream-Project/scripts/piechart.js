@@ -1,5 +1,5 @@
 function loadPieChart(data) {
-    
+
     const svg = d3.select("svg"),
         width = +svg.attr("width"),
         height = +svg.attr("height"),
@@ -16,9 +16,9 @@ function loadPieChart(data) {
         .entries(data);
 
     // calculating total browsing time for all categories to create percentage time in case any category has 0 value
-    let allTime = dataByTime.reduce((prev,next) => { return prev += next.value},0)
+    let allTime = dataByTime.reduce((prev, next) => { return prev += next.value }, 0)
     let fluffTime = allTime * 0.1
-    
+
     // value = browsingTime
     let pie = d3.pie()
         .sort(null)
@@ -46,7 +46,7 @@ function loadPieChart(data) {
         .attr("fill", function (d) {
             return color(d.data.key);
         })
-        .attr("data", function(d) {
+        .attr("data", function (d) {
             d.data.value = (d.endAngle - d.startAngle) / (2 * Math.PI) * 100;
             return JSON.stringify(d.data);
         });
@@ -55,20 +55,21 @@ function loadPieChart(data) {
         .attr("transform", function (d) { return "translate(" + label.centroid(d) + ")"; })
         .attr("dy", "0.35em")
         .text(function (d) { return d.data.key; });
-    
-    pathSection.on("mouseover", function(d) {
+
+    // hover over event setup here:
+    pathSection.on("mouseover", function (d) {
         let currElement = d3.select(this);
-        currElement.attr("style", "fill-opacity:1;");
+        currElement.attr("style", "fill-opacity:0.7;");
 
         let fadeInSpeed = 100;
         d3.select("#tooltip_" + targetDiv)
             .transition()
             .duration(fadeInSpeed)
-            .style("opacity", function() {
+            .style("opacity", function () {
                 return 1;
             });
         d3.select("#tooltip_" + targetDiv)
-            .attr("transform", function(d) {
+            .attr("transform", function (d) {
                 let mouseCoords = d3.mouse(this.parentNode);
                 let xCo = mouseCoords[0] + 10;;
                 let yCo = mouseCoords[0] + 10;
@@ -82,34 +83,34 @@ function loadPieChart(data) {
         d3.selectAll("#tooltipText_" + targetDiv).text("");
         let yPos = 0;
         d3.selectAll("#tooltipText_" + targetDiv).append("tspan").attr("x", 0).attr("y", yPos * 10).attr("dy", "1.9em").text(tooltipData.key + ":  " + d3.format("0.2f")(tooltipData.value) + "%");
-        // let dims = helpers.getDimensions("tooltipText_" + targetDiv);
+        let dims = helpers.getDimensions("tooltipText_" + targetDiv);
         d3.selectAll("#tooltipText_" + targetDiv + " tspan")
-            // .attr("x", dims.w + 2);
+            .attr("x", dims.w + 2);
 
         d3.selectAll("#tooltipRect_" + targetDiv)
-            // .attr("width", dims.w + 10)
-            // .attr("height", dims.h + 20);
+            .attr("width", dims.w + 10)
+            .attr("height", dims.h + 20);
     });
 
-    pathSection.on("mousemove", function(d) {
+    pathSection.on("mousemove", function (d) {
         let currElement = d3.select(this);
         d3.selectAll("#tooltip_" + targetDiv)
-            .attr("transform", function(d) {
+            .attr("transform", function (d) {
                 let mouseCoords = d3.mouse(this.parentNode);
                 let xCo = mouseCoords[0] + 10;
                 let yCo = mouseCoords[1] + 10;
                 return "translate(" + xCo + "," + yCo + ")";
             });
     });
-    pathSection.on("mouseout", function(d) {
+    pathSection.on("mouseout", function (d) {
         let currElement = d3.select(this);
         currElement.attr("style", "fill-opacity:0.85;");
 
         d3.select("#tooltip_" + targetDiv)
-            .style("opacity", function() {
+            .style("opacity", function () {
                 return 0;
             });
-        d3.select("#tooltip_" + targetDiv).attr("transform", function(d, i) {
+        d3.select("#tooltip_" + targetDiv).attr("transform", function (d, i) {
             let x = -500;
             let y = -500;
             return "translate(" + x + "," + y + ")";
@@ -118,12 +119,12 @@ function loadPieChart(data) {
 
     // hover over div starts
     let tooltipg = g.append("g")
-    .attr("font-family", "sans-serif")
-    .attr("font-size", 10)
-    .attr("text-anchor", "end")
-    .attr("id", "tooltip_" + targetDiv)
-    .attr("style", "opacity:0")
-    .attr("transform", "translate(-500,-500)");
+        .attr("font-family", "sans-serif")
+        .attr("font-size", 10)
+        .attr("text-anchor", "end")
+        .attr("id", "tooltip_" + targetDiv)
+        .attr("style", "opacity:0")
+        .attr("transform", "translate(-500,-500)");
 
     tooltipg.append("rect")
         .attr("id", "tooltipRect_" + targetDiv)
@@ -140,32 +141,26 @@ function loadPieChart(data) {
         .attr("fill", "#fff")
         .style("font-size", 10)
         .style("font-family", "arial")
-        .text(function(d, i) {
+        .text(function (d, i) {
             return "";
         });
-
     // hover over div ends
-    // arc.append("text")
-    //     .attr("transform", function(d) {
-    //         return "translate(" + label.centroid(d) + ")";
-    //     })
-    //     .attr("dy", "0.35em")
-    //     .text(function(d) {
-    //         console.log('piechart line 149 d.data[value]?', d)
-    //         return d.data.value;
-    //     });
 
-    arc.append("text")
-        .attr("dx", 30)
-        .attr("dy", -5)
-        .append("textPath")
-        .attr("xlink:href", function(d, i) {
-            return "#arc-" + i;
-        })
-        .text(function(d) {
-            return d.data.key.toString();
-        })
-
+    let helpers = {
+        getDimensions: function (id) {
+            let el = document.getElementById(id);
+            let w = 0,
+                h = 0;
+            if (el) {
+                let dimensions = el.getBBox();
+                w = dimensions.width;
+                h = dimensions.height;
+            } else {
+                console.log("error: getDimensions() " + id + " not found.");
+            }
+            return { w, h };
+        }
+    }
 }
 
 

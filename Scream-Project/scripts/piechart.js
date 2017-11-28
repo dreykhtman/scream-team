@@ -21,13 +21,12 @@ function loadPieChart(data) {
 
     // calculating total browsing time for all categories to create percentage time in case any category has 0 value
     let allTime = dataByTime.reduce((prev,next) => { return prev += next.value},0)
-    let fluffTime = allTime * 0.08
 
     // value = browsingTime
     let pie = d3.pie()
         .sort(null)
         .value(function (d) {
-            return !!d.value ? Number(d.value) : fluffTime;
+            return Number(d.value);
         });
 
     let path = d3.arc()

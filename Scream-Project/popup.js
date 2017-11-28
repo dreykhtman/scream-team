@@ -1,11 +1,13 @@
 //expand and shrinking app
 function toggleSettings() {
   let settings = document.getElementById('settings');
-  console.log('settings.className= ', settings.className);
+  let initialView = document.getElementById('initial-view');
   if (settings.className === 'hide') {
     settings.className = 'show';
+    initialView.className = 'hide';
   } else if (settings.className === 'show') {
     settings.className = 'hide';
+    initialView.className = 'show';
   }
 }
 
@@ -14,7 +16,6 @@ function getInput() {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(null, function (items) {
       if (!items) reject(new Error('no data found'))
-      console.log('items are this!', items)
       let dataForChart = [];
       for (let site in items) {
         let value = items[site]
@@ -152,8 +153,6 @@ async function editInput (e, type) {
   let formMins = document.getElementById(`settings-${type}list-section-form-mins`);
   let { items } = await getInput();
   formUrl.value = optionValue;
-  formHrs.value = 5
-  formMins.value = 5
   formHrs.value = items[optionValue].goalHrs;
   formMins.value = items[optionValue].goalMins;
   deleteInput(e, type);

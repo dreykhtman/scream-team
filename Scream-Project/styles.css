@@ -5,6 +5,7 @@
 #settings.show {
   display: block;
   margin-top: 25px;
+  /* width: 600px */
 }
 
 body {
@@ -21,11 +22,15 @@ h1 {
   text-align: center
 }
 
-.initial-view {
+.initial-view.show {
   align-items: center;
   display: block;
   justify-content: space-between;
   margin: 2px;
+}
+
+#initial-view.hide {
+    display: none;
 }
 
 #initial-view-toggle-button {
@@ -38,26 +43,12 @@ h1 {
   background-color: #636B46;
   border: none;
   padding: 10px;
-  margin: 10px;
-  float: right;
-}
-
-#settings.hide {
-  display: none;
-}
-
-svg {
+  margin: 0 auto;
   display: block;
-  margin: auto;
 }
 
-body {
-  color: #373F27;
-  font-family: Georgia, Serif;
-  font-weight: bold;
-  background-color: #E9E7DA;
-  margin: 10px;
-  white-space: nowrap;
+.hrs, .mins {
+  width: 50px;
 }
 
 input[type="submit"]  {
@@ -121,21 +112,26 @@ h3, p{
   font-size: 14px
 }
 
-/* #settings-bedtime-section {
-  background-color: red;
-  float: right;
-} */
-/*
-.settings-redlist-section-form-dropdown {
-  vertical-align: center;
-} */
-
 #settings-current-bedwake-time {
   margin-top: 2px;
   margin-bottom: 10px;
 }
 
+#gnome {
+  position: absolute;
+  display: flex;
+  bottom: 0px;
+  right: 30px;
+  height: 200px;
+  z-index: 1;
+}
+
 /* pie chart style */
+svg {
+  display: block;
+  margin: auto;
+}
+
 .arc text {
   font-size: 15px;
   text-anchor: middle;

@@ -12,15 +12,15 @@ function loadPieChart(data) {
     // grouping data by redlist/greenlist/other categories
     let dataByTime = d3.nest()
         .key((d) => {
-            if (d.type === 'red') {return 'less'}
-            else if (d.type === 'green') {return 'more'}
-            else {return 'other'}
+            if (d.type === 'red') { return 'less' }
+            else if (d.type === 'green') { return 'more' }
+            else { return 'other' }
         })
         .rollup((v) => { return d3.mean(v, (d) => { return d.browsingTime; }); })
         .entries(data);
 
     // calculating total browsing time for all categories to create percentage time in case any category has 0 value
-    let allTime = dataByTime.reduce((prev,next) => { return prev += next.value},0)
+    let allTime = dataByTime.reduce((prev, next) => { return prev += next.value }, 0)
 
     // value = browsingTime
     let pie = d3.pie()
@@ -57,7 +57,7 @@ function loadPieChart(data) {
     arc.append("text")
         .attr("transform", function (d) { return "translate(" + label.centroid(d) + ")"; })
         .attr("dy", "0.35em")
-        .text(function (d) { return d.data.key; });
+        .text(function (d) { return !!d.data.value ? d.data.key : ''; });
 
     // hover over event setup here:
     pathSection.on("mouseover", function (d) {

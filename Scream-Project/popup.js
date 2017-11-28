@@ -1,11 +1,13 @@
 //expand and shrinking app
 function toggleSettings() {
   let settings = document.getElementById('settings');
-  console.log('settings.className= ', settings.className);
+  let initialView = document.getElementById('initial-view');
   if (settings.className === 'hide') {
     settings.className = 'show';
+    initialView.className = 'hide';
   } else if (settings.className === 'show') {
     settings.className = 'hide';
+    initialView.className = 'show';
   }
 }
 

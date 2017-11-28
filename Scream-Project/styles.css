@@ -5,7 +5,7 @@
 #settings.show {
   display: block;
   margin-top: 25px;
-  /* overflow: hidden; */
+  /* width: 600px */
 }
 
 body {
@@ -22,11 +22,15 @@ h1 {
   text-align: center
 }
 
-.initial-view {
+.initial-view.show {
   align-items: center;
   display: block;
   justify-content: space-between;
   margin: 2px;
+}
+
+#initial-view.hide {
+    display: none;
 }
 
 #initial-view-toggle-button {
@@ -39,8 +43,12 @@ h1 {
   background-color: #636B46;
   border: none;
   padding: 10px;
-  margin: 10px;
-  float: right;
+  margin: 0 auto;
+  display: block;
+}
+
+.hrs, .mins {
+  width: 50px;
 }
 
 input[type="submit"]  {
@@ -112,9 +120,9 @@ h3, p{
 #gnome {
   position: absolute;
   display: flex;
-  bottom: -140px;
-  right: 25px;
-  height: 250px;
+  bottom: 0px;
+  right: 30px;
+  height: 200px;
   z-index: 1;
 }
 

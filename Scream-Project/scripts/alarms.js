@@ -1,4 +1,5 @@
 let _blacklistGoals = {};
+let _whiteList = [];
 
 function timeConverter(obj) {
   let hrToSec = obj.goalHrs * 3600;
@@ -13,13 +14,19 @@ document.addEventListener('DOMContentLoaded', () => {
       if (items.hasOwnProperty(domain)) {
         if (items[domain].type === 'red') {
           _blacklistGoals[domain] = timeConverter(items[domain]);
+        } else if (items[domain].type === 'green') {
+          _whiteList.push(domain);
         }
       }
     }
     console.log('Storage: ', items)
+    console.log('BL: ', _blacklistGoals)
+    console.log('WL: ', _whiteList)
+
   });
 });
 
+// get time in minuts for alarms
 function getBlacklistGoal() {
   return Math.floor(_blacklistGoals[_currentUrl] / 60);
 }
@@ -35,7 +42,7 @@ function secondAlarm() {
 }
 
 function thirdAlarm() {
-  chrome.alarms.create('thirdWarning', { delayInMinutes: getBlacklistGoal() * 0.1 });
+  chrome.alarms.create('thirdWarning', { delayInMinutes: getBlacklistGoal() * 0.01 });
 }
 
 function assignNotification() {
@@ -62,7 +69,9 @@ function notifyMe() {
   }
 }
 
+// every alarm triggers the next one
 chrome.alarms.onAlarm.addListener(alarm => {
+  let randomUrl = 'http://' + _whiteList[Math.floor(Math.random() * _whiteList.length)];
   if (alarm.name === 'firstWarning') {
     secondAlarm();
     notifyMe();
@@ -70,6 +79,18 @@ chrome.alarms.onAlarm.addListener(alarm => {
     thirdAlarm();
     alert(`Your time on ${_currentUrl} is almost up!`);
   } else if (alarm.name === 'thirdWarning') {
-    alert('third');
+    chrome.tabs.update({ url: randomUrl });
   }
 });
+
+// chrome.webRequest.onBeforeRequest.addListener(
+//   function (details) {
+//     if (details.url.startsWith('http://facebook.com/')) {
+//       return { redirectUrl: 'http://time.com' };
+//     }
+//   },
+//   {
+//     urls: ['<all_urls>'] /* List of URL's */
+//   }
+//   ,
+//   ['blocking']); // Block intercepted requests until this handler has finished

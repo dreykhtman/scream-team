@@ -25,13 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
       browsingTime: newTime,
     };
 
-    let newObj = Object.assign({}, _currentUrlObject, addBrowsingTime)
+    let newObj = Object.assign({}, _currentUrlObject, addBrowsingTime);
     _isFocused[_currentTabId] = false;
 
     chrome.storage.sync.set({ [_currentUrl]: newObj }, () => {
       clearInterval(_interval);
     });
-    console.log(_currentUrl, newObj)
   });
 
   // checks if tab is active/highlighted
@@ -82,8 +81,6 @@ function countUp() {
   if (_isFocused[_currentTabId]) {
     _startTime[_currentUrl]++;
   }
-
-  console.log(_startTime)
 }
 
 // get url's total time form chrome storage
@@ -92,7 +89,6 @@ function getBrowsingTime() {
 
     if (items.hasOwnProperty(_currentUrl)) {
       _currentUrlObject = items[_currentUrl];
-      console.log('cur url obj', _currentUrlObject)
       _browsingTime = items[_currentUrl].browsingTime;
     } else {
       // _browsingTime = 0;
@@ -100,6 +96,6 @@ function getBrowsingTime() {
         _browsingTime = 0;
       });
     }
-    console.log(items)
+    console.log(items);
   });
 }

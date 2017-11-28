@@ -6,7 +6,8 @@
   "background": {
     "scripts": [
       "scripts/timers.js",
-      "scripts/alarms.js"
+      "scripts/alarms.js",
+      "scripts/timecheck.js"
     ]
   },
   "browser_action": {

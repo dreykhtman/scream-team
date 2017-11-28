@@ -5,7 +5,6 @@
 #settings.show {
   display: block;
   margin-top: 25px;
-  /* width: 600px */
 }
 
 body {
@@ -126,7 +125,7 @@ h3, p{
   z-index: 1;
 }
 
-/* pie chart style */
+/* pie chart styles */
 svg {
   display: block;
   margin: auto;

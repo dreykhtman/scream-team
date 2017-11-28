@@ -19,9 +19,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
-    console.log('Storage: ', items)
-    console.log('BL: ', _blacklistGoals)
-    console.log('WL: ', _whiteList)
 
   });
 });

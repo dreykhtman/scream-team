@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
+    console.log('Storage: ', items)
   });
-  console.log(_blacklistGoals)
 });
 
 function getBlacklistGoal() {
@@ -27,23 +27,22 @@ function getBlacklistGoal() {
 function firstAlarm() {
   if (_blacklistGoals.hasOwnProperty(_currentUrl)) {
     chrome.alarms.create('firstWarning', { delayInMinutes: getBlacklistGoal() * 0.5 });
-    // console.log('alarm creatd.time:', getBlacklistGoal() * 0.5)
   }
 }
 
 function secondAlarm() {
-  chrome.alarms.create('secondWarning', { delayInMinutes: 0.1 });
+  chrome.alarms.create('secondWarning', { delayInMinutes: getBlacklistGoal() * 0.2 });
 }
 
 function thirdAlarm() {
-  chrome.alarms.create('thirdWarning', { delayInMinutes: 0.1 });
+  chrome.alarms.create('thirdWarning', { delayInMinutes: getBlacklistGoal() * 0.1 });
 }
 
 function assignNotification() {
-  // console.log(_blacklistGoals[_currentUrl] / 60)
-  let notification = new Notification('Hello', {
-    body: `You are halfway through your total time of ${_blacklistGoals[_currentUrl] / 60} minutes on ${_currentUrl}`,
+  let notification = new Notification('', {
+    body: `\nYou are halfway through your total time of ${_blacklistGoals[_currentUrl] / 60} minutes on ${_currentUrl}`,
     title: 'Hello',
+    icon: 'littlegnome.png',
     requireInteraction: true
   });
 }
@@ -65,14 +64,12 @@ function notifyMe() {
 
 chrome.alarms.onAlarm.addListener(alarm => {
   if (alarm.name === 'firstWarning') {
-    //secondAlarm();
+    secondAlarm();
     notifyMe();
+  } else if (alarm.name === 'secondWarning') {
+    thirdAlarm();
+    alert(`Your time on ${_currentUrl} is almost up!`);
+  } else if (alarm.name === 'thirdWarning') {
+    alert('third');
   }
-  // } else if (alarm.name === 'secondWarning') {
-  //   thirdAlarm();
-  //   alert(localStorage.getItem('domain'));
-  // } else if (alarm.name === 'thirdWarning') {
-  //   alert('third');
-  // }
-  //make more modular.
 });

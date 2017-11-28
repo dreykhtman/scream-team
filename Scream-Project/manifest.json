@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Scream Project",
+  "name": "Chrome Gnome",
   "description": "This extension improves your life.",
   "version": "1.0",
   "background": {
@@ -11,7 +11,7 @@
   },
   "browser_action": {
     "default_popup": "popup.html",
-    "default_title": "Scream"
+    "default_title": "Chrome Gnome"
   },
   "icons": {
     "16": "icon.png",

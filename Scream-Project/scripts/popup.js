@@ -1,5 +1,5 @@
 //expand and shrinking app
-function toggleSettings() {
+function toggleSettings(option) {
   let settings = document.getElementById('settings');
   let initialView = document.getElementById('initial-view');
   if (settings.className === 'hide') {
@@ -85,6 +85,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     saveInput(e, 'red');
     window.location.reload();
   });
+
   greenlistForm.addEventListener('submit', (e) => {
     e.preventDefault();
     saveInput(e, 'green');

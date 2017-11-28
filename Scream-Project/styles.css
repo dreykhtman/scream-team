@@ -66,7 +66,7 @@ input[type="submit"]  {
 }
 
 #greenlist-edit-btn, #redlist-edit-btn {
-  background: url(/edit.png);
+  background: url(/images/edit.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 25px;
@@ -80,7 +80,7 @@ input[type="submit"]  {
 }
 
 #greenlist-delete-btn, #redlist-delete-btn {
-  background: url(/delete.png);
+  background: url(images/delete.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: 25px;

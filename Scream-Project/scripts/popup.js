@@ -1,5 +1,5 @@
 //expand and shrinking app
-function toggleSettings() {
+function toggleSettings(option) {
   let settings = document.getElementById('settings');
   let initialView = document.getElementById('initial-view');
   if (settings.className === 'hide') {
@@ -83,10 +83,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   redlistForm.addEventListener('submit', (e) => {
     e.preventDefault();
     saveInput(e, 'red');
+    window.location.reload();
   });
+
   greenlistForm.addEventListener('submit', (e) => {
     e.preventDefault();
     saveInput(e, 'green');
+    window.location.reload();
   });
 
   greenlistEdit.addEventListener('click', (e) => {
@@ -100,22 +103,26 @@ document.addEventListener('DOMContentLoaded', async () => {
   greenlistDelete.addEventListener('click', (e) => {
     e.preventDefault();
     deleteInput(e, 'green');
+    window.location.reload();
   });
   redlistDelete.addEventListener('click', (e) => {
     e.preventDefault();
     deleteInput(e, 'red');
+    window.location.reload();
   });
 
   let bedtimeForm = document.getElementById('settings-bedtime-section-form');
   bedtimeForm.addEventListener('submit', (e) => {
     e.preventDefault();
     saveTime(e, 'bedtime');
+    window.location.reload();
   });
 
   let waketimeForm = document.getElementById('settings-bedtime-section-waketime-form');
   waketimeForm.addEventListener('submit', (e) => {
     e.preventDefault()
-    saveTime(e, 'waketime')
+    saveTime(e, 'waketime');
+    window.location.reload();
   })
 
   let { dataForChart } = await getInput();

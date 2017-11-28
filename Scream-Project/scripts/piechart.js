@@ -11,13 +11,17 @@ function loadPieChart(data) {
 
     // grouping data by redlist/greenlist/other categories
     let dataByTime = d3.nest()
-        .key((d) => { return d.type || 'other'; })
+        .key((d) => {
+            if (d.type === 'red') {return 'less'}
+            else if (d.type === 'green') {return 'more'}
+            else {return 'other'}
+        })
         .rollup((v) => { return d3.mean(v, (d) => { return d.browsingTime; }); })
         .entries(data);
 
     // calculating total browsing time for all categories to create percentage time in case any category has 0 value
-    let allTime = dataByTime.reduce((prev, next) => { return prev += next.value }, 0)
-    let fluffTime = allTime * 0.1
+    let allTime = dataByTime.reduce((prev,next) => { return prev += next.value},0)
+    let fluffTime = allTime * 0.08
 
     // value = browsingTime
     let pie = d3.pie()

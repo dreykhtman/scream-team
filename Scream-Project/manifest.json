@@ -15,9 +15,9 @@
     "default_title": "Chrome Gnome"
   },
   "icons": {
-    "16": "icon.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "images/icon.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
   },
   "permissions": [
     "activeTab",

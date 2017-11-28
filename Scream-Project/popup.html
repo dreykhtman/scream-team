@@ -6,22 +6,22 @@
  -->
 <html>
   <head>
-    <title>Getting Started Extension's Popup</title>
+    <title>Chrome Gnome</title>
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <script src="scripts/d3.v4.js"></script>
-    <script data-main="popup.js" src="popup.js"></script>
+    <script data-main="popup.js" src="scripts/popup.js"></script>
     <script defer src="scripts/piechart.js"></script>
   </head>
 
   <body>
-    <h1>Life Hack</h1>
-    <div class="initial-view">
-      <div id="piechart">
+    <h1>Chrome Gnome</h1>
+    <div id="initial-view" class="show">
+      <div id="pieChart">
         <!-- pie chart will go here -->
         <svg height="300" width="300"></svg>
       </div>
-      <button id="initial-view-toggle-button">Expand / Collapse</button>
     </div>
+    <button id="initial-view-toggle-button">Expand / Collapse</button>
 
     <div id="settings" class="hide"> <!-- settings section, what you see after clicking settings, dropdown extended section -->
       <div class="settings-redlist"> <!-- blacklist section -->
@@ -32,9 +32,9 @@
               <input id="settings-redlist-section-form-url" type="text" placeholder="www.google.com"/> <!-- url -->
 
           <label>Hrs:</label> <!-- time -->
-          <input id="settings-redlist-section-form-hrs" type="number" placeholder="1"/>
+          <input id="settings-redlist-section-form-hrs" class="hrs" type="number" placeholder="1"/>
           <label>Mins:</label>
-          <input id="settings-redlist-section-form-mins" type="number" placeholder="30"/>
+          <input id="settings-redlist-section-form-mins" class="mins" type="number" placeholder="30"/>
           <input id="settings-redlist-section-form-submit" type="submit">
         </div>
         <div class="settings-redlist-section-form-dropdown">
@@ -55,9 +55,9 @@
             <label>URL:</label>
             <input id = "settings-greenlist-section-form-url" type="text" placeholder="www.google.com"/> <!-- url -->
             <label>Hrs:</label> <!-- time -->
-            <input id= "settings-greenlist-section-form-hrs" type="number" placeholder="1"/>
+            <input id= "settings-greenlist-section-form-hrs" class="hrs" type="number" placeholder="1"/>
             <label>Mins:</label>
-            <input id="settings-greenlist-section-form-mins" type="number" placeholder="30"/>
+            <input id="settings-greenlist-section-form-mins" class="mins" type="number" placeholder="30"/>
             <input id="settings-greenlist-section-form-submit" type="submit">
           </div>
           <div class="settings-greenlist-section-form-dropdown">
@@ -96,6 +96,7 @@
         </div>
 
       </div> <!-- end bedtime & waketime section -->
+      <img id="gnome" src="images/gnome.png" />
     </div> <!-- end settings section -->
   </body>
 </html>

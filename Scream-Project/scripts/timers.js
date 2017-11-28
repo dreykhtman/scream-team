@@ -4,6 +4,8 @@ let _isFocused = {};
 let _browsingTime;
 let _interval;
 let _currentTabId;
+let _stopTime;
+let _currentUrlObject;
 
 // clear storage
 // chrome.storage.sync.clear(() => console.log('all gone!'));
@@ -11,15 +13,19 @@ let _currentTabId;
 document.addEventListener('DOMContentLoaded', () => {
   // starts timer when page loads for the first time
   chrome.tabs.onUpdated.addListener(() => {
+    _stopTime = false;
     getCurrentTabUrl(startTimer);
   });
 
   // stops timer and writes time to storage when page is closed
   chrome.tabs.onRemoved.addListener(() => {
+    _stopTime = true;
     let newTime = _startTime[_currentUrl] + _browsingTime;
-    let newObj = {
-      browsingTime: newTime
+    let addBrowsingTime = {
+      browsingTime: newTime,
     };
+
+    let newObj = Object.assign({}, _currentUrlObject, addBrowsingTime);
     _isFocused[_currentTabId] = false;
 
     chrome.storage.sync.set({ [_currentUrl]: newObj }, () => {
@@ -68,6 +74,10 @@ function startTimer(url) {
 
 // increment timer
 function countUp() {
+  if (_stopTime === true) {
+    // clearInterval(_interval)
+    return;
+  }
   if (_isFocused[_currentTabId]) {
     _startTime[_currentUrl]++;
   }
@@ -76,12 +86,16 @@ function countUp() {
 // get url's total time form chrome storage
 function getBrowsingTime() {
   chrome.storage.sync.get(null, (items) => {
+
     if (items.hasOwnProperty(_currentUrl)) {
+      _currentUrlObject = items[_currentUrl];
       _browsingTime = items[_currentUrl].browsingTime;
     } else {
+      // _browsingTime = 0;
       chrome.storage.sync.set({ [_currentUrl]: { browsingTime: 0 } }, () => {
         _browsingTime = 0;
       });
     }
+    console.log(items);
   });
 }

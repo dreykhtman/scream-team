@@ -20,7 +20,7 @@ function getInput() {
       for (let site in items) {
         let value = items[site]
         value['url'] = site
-        if (typeof value === 'Object') {
+        if (typeof value === 'object') {
           dataForChart.push(value);
         }
       }
@@ -51,6 +51,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     toggleSettings();
     getInput()
       .then(({ items }) => {
+        console.log("popup line 54 items: ", items)
         let waketime, bedtime;
         let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
         let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');

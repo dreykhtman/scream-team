@@ -56,8 +56,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
         let bedtimeArea = document.getElementById('settings-bedtime-section-load-bedtime');
         let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
-        items.waketime ? waketime = convertTime(items.waketime) : waketime = 'Not Set';
-        items.bedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not Set';
+        let militaryWaketime = items.waketime;
+        let militaryBedtime = items.bedtime;
+        militaryWaketime ? waketime = convertTime(items.waketime) : waketime = 'Not Set';
+        militaryBedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not Set';
         let redHTML = '';
         let greenHTML = '';
         if(!!items) {

@@ -110,12 +110,14 @@ document.addEventListener('DOMContentLoaded', async () => {
   greenlistDelete.addEventListener('click', (e) => {
     e.preventDefault();
     deleteInput(e, 'green');
-    clearInput(e, 'green');
+    clearListonDelete(e, 'green')
 
   });
   redlistDelete.addEventListener('click', (e) => {
     e.preventDefault();
     deleteInput(e, 'red');
+    clearListonDelete(e, 'red')
+
 
   });
 
@@ -229,3 +231,10 @@ function appendWakeTime(e) {
   let timeInput = document.getElementById(`settings-bedtime-section-waketime-form-input`);
   document.getElementById(`settings-bedtime-section-load-waketime`).innerHTML = convertTime(timeInput.value)
 }
+
+function clearListonDelete(e, type) {
+  e.preventDefault()
+  let selectElem = document.getElementById(`settings-${type}list-section-form-dropdown-options`);
+  selectElem.removeChild(selectElem.childNodes[0])
+}
+

@@ -7,8 +7,8 @@ function timeConverter(obj) {
   return hrToSec + minToSec;
 }
 
-// get goal time from storage
-document.addEventListener('DOMContentLoaded', () => {
+// get goal times from storage
+function goalGetter() {
   chrome.storage.sync.get(null, (items) => {
     for (let domain in items) {
       if (items.hasOwnProperty(domain)) {
@@ -19,6 +19,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       }
     }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  goalGetter();
+
+  chrome.storage.onChanged.addListener(() => {
+    goalGetter();
   });
 });
 
@@ -45,7 +53,7 @@ function assignNotification() {
   let notification = new Notification('', {
     body: `\nYou are halfway through your total time of ${_blacklistGoals[_currentUrl] / 60} minutes on ${_currentUrl}`,
     title: 'Hello',
-    icon: 'littlegnome.png',
+    icon: 'images/littlegnome.png',
     requireInteraction: true
   });
 }
@@ -75,18 +83,6 @@ chrome.alarms.onAlarm.addListener(alarm => {
     thirdAlarm();
     alert(`Your time on ${_currentUrl} is almost up!`);
   } else if (alarm.name === 'thirdWarning') {
-    chrome.tabs.update({ url: randomUrl });
+    chrome.tabs.update(_currentTabId, { url: randomUrl });
   }
 });
-
-// chrome.webRequest.onBeforeRequest.addListener(
-//   function (details) {
-//     if (details.url.startsWith('http://facebook.com/')) {
-//       return { redirectUrl: 'http://time.com' };
-//     }
-//   },
-//   {
-//     urls: ['<all_urls>'] /* List of URL's */
-//   }
-//   ,
-//   ['blocking']); // Block intercepted requests until this handler has finished

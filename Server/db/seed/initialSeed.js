@@ -33,7 +33,6 @@ async function seeder(){
     })
 
     for(let i = 0; i < socialSites.length; i++){
-        console.log(socialSites[i].id); 
         await socialPackage.addSite(socialSites[i])
     }
 

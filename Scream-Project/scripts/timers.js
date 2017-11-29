@@ -6,6 +6,7 @@ let _interval;
 let _currentTabId;
 let _stopTime = false;
 let _currentUrlObject;
+let _trackUrlTimer = new Set();
 
 // clear storage
 // chrome.storage.sync.clear(() => console.log('all gone!'));
@@ -24,6 +25,8 @@ document.addEventListener('DOMContentLoaded', () => {
     let addBrowsingTime = {
       browsingTime: newTime,
     };
+
+    _trackUrlTimer.delete(_currentUrl)
 
     let newObj = Object.assign({}, _currentUrlObject, addBrowsingTime);
     _isFocused[_currentTabId] = false;
@@ -48,6 +51,10 @@ function getCurrentTabUrl(callback) {
   chrome.tabs.query(queryInfo, (tabs) => {
     let tab = tabs[0];
     let url = tab.url;
+
+    if (_trackUrlTimer.has(url)) return;
+    _trackUrlTimer.add(url)
+
     _currentTabId = tab.id;
     console.assert(typeof url === 'string', 'tab.url should be a string');
     callback(url);
@@ -66,6 +73,9 @@ function startTimer(url) {
     return;
   }
 
+  // if (_trackUrlTimer.has(url)) return;
+  // _trackUrlTimer.add(url)
+
   _startTime[_currentUrl] = 0;
   _isFocused[_currentTabId] = true;
   _currentUrl = getDomainNoPrefix(url);
@@ -80,7 +90,8 @@ function countUp() {
     return;
   }
   if (_isFocused[_currentTabId]) {
-    _startTime[_currentUrl]++;
+    _startTime[_currentUrl] >= 0 ? _startTime[_currentUrl]++ : _startTime[_currentUrl] = 0;
+    console.log('_startTime', _startTime)
   }
 }
 

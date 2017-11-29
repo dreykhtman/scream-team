@@ -218,7 +218,13 @@ function clearInput(e, type) {
   let hrs = document.getElementById(`settings-${type}list-section-form-hrs`);
   let mins = document.getElementById(`settings-${type}list-section-form-mins`);
   url.value = "";
-  document.getElementById(`settings-${type}list-section-form-url`).placeholder = "google.com";
+  if(type === 'green') {
+    document.getElementById(`settings-${type}list-section-form-url`).placeholder = "www.nytimes.com";
+  }
+  if(type === "red") {
+    document.getElementById(`settings-${type}list-section-form-url`).placeholder = "www.facebook.com";
+  }
+
   hrs.value = null;
   mins.value = null;
 }

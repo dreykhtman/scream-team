@@ -14,17 +14,18 @@ function toggleSettings(option) {
 // getting data object with all user data from chrome storage
 function getInput() {
   return new Promise((resolve, reject) => {
+    console.log("in getInput")
     chrome.storage.sync.get(null, function (items) {
       if (!items) reject(new Error('no data found'))
       let dataForChart = [];
       for (let site in items) {
         let value = items[site]
         value['url'] = site
-        if (typeof value === 'object') {
+        if (typeof value === 'Object') {
           dataForChart.push(value);
-          resolve({ dataForChart, items })
         }
       }
+      resolve({ dataForChart, items })
     })
   })
 }
@@ -51,19 +52,26 @@ document.addEventListener('DOMContentLoaded', async () => {
     toggleSettings();
     getInput()
       .then(({ items }) => {
+        console.log('here it is items', items)
         let waketime, bedtime;
         let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
         let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
         let bedtimeArea = document.getElementById('settings-bedtime-section-load-bedtime');
         let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
+        console.log('after 60')
         items.waketime ? waketime = convertTime(items.waketime) : waketime = 'Not Set';
         items.bedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not Set';
         let redHTML = '';
         let greenHTML = '';
-        for (let url in items) {
+        if(!!items) {
+          for (let url in items) {
           if (items[url].type === "red") redHTML += "<option value" + url + ">" + url + "</option>";
           if (items[url].type === "green") greenHTML += "<option value" + url + ">" + url + "</option>";
+          }
         }
+        // } else {
+        //   console.log('there are no items')
+        // }
         redListDropDown.innerHTML = redHTML;
         greenListDropDown.innerHTML = greenHTML;
         bedtimeArea.innerHTML = bedtime;
@@ -95,6 +103,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   greenlistEdit.addEventListener('click', (e) => {
     e.preventDefault();
     editInput(e, 'green');
+    window.location.reload();
   });
   redlistEdit.addEventListener('click', (e) => {
     e.preventDefault();

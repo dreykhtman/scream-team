@@ -95,5 +95,6 @@ function getBrowsingTime() {
         _browsingTime = 0;
       });
     }
+    console.log('Storage', items)
   });
 }

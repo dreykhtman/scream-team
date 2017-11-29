@@ -1,38 +1,53 @@
 let _blacklistGoals = {};
 let _whiteList = [];
 
+
 function timeConverter(obj) {
   let hrToSec = obj.goalHrs * 3600;
   let minToSec = obj.goalMins * 60;
   return hrToSec + minToSec;
 }
 
+
 // get goal times from storage
 function goalGetter() {
-  chrome.storage.sync.get(null, (items) => {
-    for (let domain in items) {
-      if (items.hasOwnProperty(domain)) {
-        if (items[domain].type === 'red') {
-          _blacklistGoals[domain] = timeConverter(items[domain]);
-        } else if (items[domain].type === 'green') {
-          _whiteList.push(domain);
+  getData()
+    .then((data) => {
+      _blacklistGoals = data._blacklistGoals;
+      _whiteList = data._whiteList;
+    });
+}
+
+function getData() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(null, (items) => {
+      _blacklistGoals = {};
+      _whiteList = [];
+      for (let domain in items) {
+        if (items.hasOwnProperty(domain)) {
+          if (items[domain].type === 'red') {
+            _blacklistGoals[domain] = timeConverter(items[domain]);
+          } else if (items[domain].type === 'green') {
+            _whiteList.push(domain);
+          }
         }
       }
-    }
+      resolve({ _blacklistGoals, _whiteList });
+    });
   });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   goalGetter();
-
   chrome.storage.onChanged.addListener(() => {
     goalGetter();
   });
 });
 
+
 // get time in minuts for alarms
 function getBlacklistGoal() {
-  return Math.floor(_blacklistGoals[_currentUrl] / 60);
+  return _blacklistGoals[_currentUrl] / 60;
 }
 
 function firstAlarm() {

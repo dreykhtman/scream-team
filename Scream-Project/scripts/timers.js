@@ -1,12 +1,11 @@
 let _startTime = {};
 let _currentUrl;
-let _isFocused = {};
+let _isFocused = {}; // {tabId: boolean}
 let _browsingTime;
 let _interval;
 let _currentTabId;
-let _stopTime;
+let _stopTime = false;
 let _currentUrlObject;
-
 // clear storage
 // chrome.storage.sync.clear(() => console.log('all gone!'));
 
@@ -62,11 +61,6 @@ function startTimer(url) {
   _startTime[_currentUrl] = 0;
   _isFocused[_currentTabId] = true;
   _currentUrl = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
-  // let urlTime = {
-  //   url: _currentUrl,
-  //   time: _startTime,
-  //   currentTime: 0
-  // };
   firstAlarm(); // initialize alarms from alarms.js
   getBrowsingTime();
   _interval = setInterval(countUp, 1000);
@@ -75,7 +69,6 @@ function startTimer(url) {
 // increment timer
 function countUp() {
   if (_stopTime === true) {
-    // clearInterval(_interval)
     return;
   }
   if (_isFocused[_currentTabId]) {
@@ -86,16 +79,13 @@ function countUp() {
 // get url's total time form chrome storage
 function getBrowsingTime() {
   chrome.storage.sync.get(null, (items) => {
-
     if (items.hasOwnProperty(_currentUrl)) {
       _currentUrlObject = items[_currentUrl];
       _browsingTime = items[_currentUrl].browsingTime;
     } else {
-      // _browsingTime = 0;
       chrome.storage.sync.set({ [_currentUrl]: { browsingTime: 0 } }, () => {
         _browsingTime = 0;
       });
     }
-    console.log(items);
   });
 }

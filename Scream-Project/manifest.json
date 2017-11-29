@@ -24,6 +24,9 @@
     "alarms",
     "notifications",
     "storage",
-    "tabs"
+    "tabs",
+    "webRequest",
+    "webRequestBlocking",
+    "<all_urls>"
   ]
 }

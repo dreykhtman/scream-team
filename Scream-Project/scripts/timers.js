@@ -66,11 +66,11 @@ function startTimer(url) {
     return;
   }
 
-  // _startTime[_currentUrl] = 0;
-  // _isFocused[_currentTabId] = true;
-  // _currentUrl = getDomainNoPrefix(url);
-  // firstAlarm(); // initialize alarms from alarms.js
-  // getBrowsingTime();
+  _startTime[_currentUrl] = 0;
+  _isFocused[_currentTabId] = true;
+  _currentUrl = getDomainNoPrefix(url);
+  firstAlarm(); // initialize alarms from alarms.js
+  getBrowsingTime();
 
   _interval = setInterval(countUp, 1000);
 }

@@ -21,7 +21,7 @@ function getInput() {
       for (let site in items) {
         let value = items[site]
         value['url'] = site
-        if (typeof value === 'Object') {
+        if (typeof value === 'object') {
           dataForChart.push(value);
         }
       }

@@ -91,19 +91,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   redlistForm.addEventListener('submit', (e) => {
     e.preventDefault();
     saveInput(e, 'red');
-    window.location.reload();
+    appendToOptions(e, 'red');
+    clearInput(e, 'red');
   });
 
   greenlistForm.addEventListener('submit', (e) => {
     e.preventDefault();
     saveInput(e, 'green');
-    window.location.reload();
+    appendToOptions(e, 'green');
+    clearInput(e, 'green');
   });
 
   greenlistEdit.addEventListener('click', (e) => {
     e.preventDefault();
     editInput(e, 'green');
-    window.location.reload();
+
   });
   redlistEdit.addEventListener('click', (e) => {
     e.preventDefault();
@@ -184,4 +186,26 @@ function deleteInput (e, type) {
 //parse url for domain
 function getDomain(url) {
   return url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+}
+
+function appendToOptions(e, type) {
+  e.preventDefault();
+  let url = getDomain(document.getElementById(`settings-${type}list-section-form-url`).value);
+  let option = document.createElement("option");
+  let text = document.createTextNode(url);
+  option.appendChild(text)
+  document.getElementById(`settings-${type}list-section-form-dropdown-options`).appendChild(option)
+  console.log('text', text)
+}
+
+function clearInput(e, type) {
+  e.preventDefault();
+  let url = document.getElementById(`settings-${type}list-section-form-url`);
+  let hrs = document.getElementById(`settings-${type}list-section-form-hrs`);
+  let mins = document.getElementById(`settings-${type}list-section-form-mins`);
+  console.log('in clearInput')
+  url.value = "";
+  document.getElementById(`settings-${type}list-section-form-url`).placeholder = "google.com";
+  hrs.value = undefined;
+  mins.value= undefined;
 }

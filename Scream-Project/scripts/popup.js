@@ -108,26 +108,30 @@ document.addEventListener('DOMContentLoaded', async () => {
   greenlistDelete.addEventListener('click', (e) => {
     e.preventDefault();
     deleteInput(e, 'green');
-    window.location.reload();
+    clearInput(e, 'green');
+
   });
   redlistDelete.addEventListener('click', (e) => {
     e.preventDefault();
     deleteInput(e, 'red');
-    window.location.reload();
+
   });
 
   let bedtimeForm = document.getElementById('settings-bedtime-section-form');
   bedtimeForm.addEventListener('submit', (e) => {
     e.preventDefault();
     saveTime(e, 'bedtime');
-    window.location.reload();
+    appendBedTime(e);
+    clearBedTime(e);
+
   });
 
   let waketimeForm = document.getElementById('settings-bedtime-section-waketime-form');
   waketimeForm.addEventListener('submit', (e) => {
     e.preventDefault()
     saveTime(e, 'waketime');
-    window.location.reload();
+    appendWakeTime(e);
+    clearWakeTime(e);
   })
 
   let { dataForChart } = await getInput();
@@ -176,6 +180,7 @@ function deleteInput (e, type) {
   let optionValue = selectElem.options[selectElem.selectedIndex].value;
   chrome.storage.sync.remove(optionValue)
 }
+// moved this function to timers.js
 
 //parse url for domain
 function getDomain(url) {
@@ -200,4 +205,26 @@ function clearInput(e, type) {
   document.getElementById(`settings-${type}list-section-form-url`).placeholder = "google.com";
   hrs.value = undefined;
   mins.value= undefined;
+}
+
+function clearBedTime(e) {
+  e.preventDefault();
+  let timeInput = document.getElementById(`settings-bedtime-section-form-input`)
+  timeInput.value = "";
+}
+
+function clearWakeTime(e) {
+  e.preventDefault();
+  let timeInput = document.getElementById(`settings-bedtime-section-waketime-form-input`)
+  timeInput.value = "";
+}
+
+function appendBedTime(e) {
+  let timeInput = document.getElementById(`settings-bedtime-section-form-input`);
+  document.getElementById(`settings-bedtime-section-load-bedtime`).innerHTML = convertTime(timeInput.value)
+}
+
+function appendWakeTime(e) {
+  let timeInput = document.getElementById(`settings-bedtime-section-waketime-form-input`);
+  document.getElementById(`settings-bedtime-section-load-waketime`).innerHTML = convertTime(timeInput.value)
 }

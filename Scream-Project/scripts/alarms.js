@@ -2,8 +2,8 @@ let _blacklistGoals = {};
 let _whiteList = [];
 
 function goalTimeChecker() {
-  console.log(_blacklistGoals)
-  console.log(_browsingTime)
+  console.log(_blacklistGoals);
+  console.log(_browsingTime);
 }
 
 function timeConverter(obj) {
@@ -12,22 +12,32 @@ function timeConverter(obj) {
   return hrToSec + minToSec;
 }
 
+
 // get goal times from storage
 function goalGetter() {
-  _blacklistGoals = {};
-  _whiteList = [];
-  chrome.storage.sync.get(null, (items) => {
-    for (let domain in items) {
-      if (items.hasOwnProperty(domain)) {
-        if (items[domain].type === 'red') {
-          _blacklistGoals[domain] = timeConverter(items[domain]);
-        } else if (items[domain].type === 'green') {
-          _whiteList.push(domain);
+  getData()
+    .then((data) => {
+      _blacklistGoals = data._blacklistGoals;
+      _whiteList = data._whiteList;
+    });
+}
+
+function getData() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(null, (items) => {
+      _blacklistGoals = {};
+      _whiteList = [];
+      for (let domain in items) {
+        if (items.hasOwnProperty(domain)) {
+          if (items[domain].type === 'red') {
+            _blacklistGoals[domain] = timeConverter(items[domain]);
+          } else if (items[domain].type === 'green') {
+            _whiteList.push(domain);
+          }
         }
       }
-    }
-    console.log(_blacklistGoals)
-    console.log(_whiteList)
+      resolve({ _blacklistGoals, _whiteList });
+    });
   });
 }
 

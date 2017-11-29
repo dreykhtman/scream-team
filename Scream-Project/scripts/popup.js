@@ -20,11 +20,11 @@ function getInput() {
       for (let site in items) {
         let value = items[site]
         value['url'] = site
-        if (typeof value === 'object') {
+        if (typeof value === 'Object') {
           dataForChart.push(value);
-          resolve({ dataForChart, items })
         }
       }
+      resolve({ dataForChart, items })
     })
   })
 }
@@ -60,9 +60,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         items.bedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not Set';
         let redHTML = '';
         let greenHTML = '';
-        for (let url in items) {
+        if(!!items) {
+          for (let url in items) {
           if (items[url].type === "red") redHTML += "<option value" + url + ">" + url + "</option>";
           if (items[url].type === "green") greenHTML += "<option value" + url + ">" + url + "</option>";
+          }
         }
         redListDropDown.innerHTML = redHTML;
         greenListDropDown.innerHTML = greenHTML;
@@ -95,6 +97,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   greenlistEdit.addEventListener('click', (e) => {
     e.preventDefault();
     editInput(e, 'green');
+    window.location.reload();
   });
   redlistEdit.addEventListener('click', (e) => {
     e.preventDefault();

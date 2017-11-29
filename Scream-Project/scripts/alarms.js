@@ -1,6 +1,11 @@
 let _blacklistGoals = {};
 let _whiteList = [];
 
+function goalTimeChecker() {
+  console.log(_blacklistGoals)
+  console.log(_browsingTime)
+}
+
 function timeConverter(obj) {
   let hrToSec = obj.goalHrs * 3600;
   let minToSec = obj.goalMins * 60;
@@ -9,6 +14,8 @@ function timeConverter(obj) {
 
 // get goal times from storage
 function goalGetter() {
+  _blacklistGoals = {};
+  _whiteList = [];
   chrome.storage.sync.get(null, (items) => {
     for (let domain in items) {
       if (items.hasOwnProperty(domain)) {
@@ -19,20 +26,22 @@ function goalGetter() {
         }
       }
     }
+    console.log(_blacklistGoals)
+    console.log(_whiteList)
   });
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   goalGetter();
-
   chrome.storage.onChanged.addListener(() => {
     goalGetter();
   });
 });
 
+
 // get time in minuts for alarms
 function getBlacklistGoal() {
-  return Math.floor(_blacklistGoals[_currentUrl] / 60);
+  return _blacklistGoals[_currentUrl] / 60;
 }
 
 function firstAlarm() {

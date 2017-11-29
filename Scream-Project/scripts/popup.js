@@ -59,8 +59,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
         let militaryWaketime = items.waketime;
         let militaryBedtime = items.bedtime;
-        militaryWaketime ? waketime = convertTime(items.waketime) : waketime = 'Not Set';
-        militaryBedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not Set';
+        militaryWaketime ? waketime = convertTime(items.waketime) : waketime = 'Not set';
+        militaryBedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not set';
         let redHTML = '';
         let greenHTML = '';
         if(!!items) {

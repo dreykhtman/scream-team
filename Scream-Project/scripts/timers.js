@@ -1,9 +1,11 @@
 let _startTime = {};
 let _currentUrl;
-let _isFocused = {};
+let _isFocused = {}; // {tabId: boolean}
 let _browsingTime;
 let _interval;
 let _currentTabId;
+let _stopTime = false;
+let _currentUrlObject;
 
 // clear storage
 // chrome.storage.sync.clear(() => console.log('all gone!'));
@@ -11,15 +13,19 @@ let _currentTabId;
 document.addEventListener('DOMContentLoaded', () => {
   // starts timer when page loads for the first time
   chrome.tabs.onUpdated.addListener(() => {
+    _stopTime = false;
     getCurrentTabUrl(startTimer);
   });
 
   // stops timer and writes time to storage when page is closed
   chrome.tabs.onRemoved.addListener(() => {
+    _stopTime = true;
     let newTime = _startTime[_currentUrl] + _browsingTime;
-    let newObj = {
-      browsingTime: newTime
+    let addBrowsingTime = {
+      browsingTime: newTime,
     };
+
+    let newObj = Object.assign({}, _currentUrlObject, addBrowsingTime);
     _isFocused[_currentTabId] = false;
 
     chrome.storage.sync.set({ [_currentUrl]: newObj }, () => {
@@ -48,6 +54,13 @@ function getCurrentTabUrl(callback) {
   });
 }
 
+function getDomain(url) {
+  let link = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+  let output = (link.split('.').length > 2) ? link.split('.').slice(-2).join('.') : link;
+
+  return output;
+}
+
 function startTimer(url) {
   if (url.startsWith('chrome://')) {
     return;
@@ -55,12 +68,7 @@ function startTimer(url) {
 
   _startTime[_currentUrl] = 0;
   _isFocused[_currentTabId] = true;
-  _currentUrl = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
-  // let urlTime = {
-  //   url: _currentUrl,
-  //   time: _startTime,
-  //   currentTime: 0
-  // };
+  _currentUrl = getDomain(url);
   firstAlarm(); // initialize alarms from alarms.js
   getBrowsingTime();
   _interval = setInterval(countUp, 1000);
@@ -68,15 +76,20 @@ function startTimer(url) {
 
 // increment timer
 function countUp() {
+  if (_stopTime === true) {
+    return;
+  }
   if (_isFocused[_currentTabId]) {
     _startTime[_currentUrl]++;
   }
+  console.log(_currentUrl, _startTime)
 }
 
 // get url's total time form chrome storage
 function getBrowsingTime() {
   chrome.storage.sync.get(null, (items) => {
     if (items.hasOwnProperty(_currentUrl)) {
+      _currentUrlObject = items[_currentUrl];
       _browsingTime = items[_currentUrl].browsingTime;
     } else {
       chrome.storage.sync.set({ [_currentUrl]: { browsingTime: 0 } }, () => {

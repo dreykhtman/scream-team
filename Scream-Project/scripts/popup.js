@@ -20,7 +20,7 @@ function getInput() {
       for (let site in items) {
         let value = items[site]
         value['url'] = site
-        if (typeof value === 'object') {
+        if (typeof value === 'Object') {
           dataForChart.push(value);
         }
       }
@@ -60,9 +60,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         items.bedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not Set';
         let redHTML = '';
         let greenHTML = '';
-        for (let url in items) {
+        if(!!items) {
+          for (let url in items) {
           if (items[url].type === "red") redHTML += "<option value" + url + ">" + url + "</option>";
           if (items[url].type === "green") greenHTML += "<option value" + url + ">" + url + "</option>";
+          }
         }
         redListDropDown.innerHTML = redHTML;
         greenListDropDown.innerHTML = greenHTML;
@@ -95,6 +97,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   greenlistEdit.addEventListener('click', (e) => {
     e.preventDefault();
     editInput(e, 'green');
+    window.location.reload();
   });
   redlistEdit.addEventListener('click', (e) => {
     e.preventDefault();
@@ -172,7 +175,9 @@ function deleteInput (e, type) {
   chrome.storage.sync.remove(optionValue)
 }
 
+// moved this function to timers.js
+
 //parse url for domain
-function getDomain(url) {
-  return url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
-}
+// function getDomain(url) {
+//   return url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+// }

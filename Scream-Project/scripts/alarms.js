@@ -1,10 +1,6 @@
 let _blacklistGoals = {};
 let _whiteList = [];
 
-function goalTimeChecker() {
-  console.log(_blacklistGoals);
-  console.log(_browsingTime);
-}
 
 function timeConverter(obj) {
   let hrToSec = obj.goalHrs * 3600;

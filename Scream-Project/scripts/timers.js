@@ -82,6 +82,7 @@ function countUp() {
   if (_isFocused[_currentTabId]) {
     _startTime[_currentUrl]++;
   }
+  console.log(_startTime)
 }
 
 // get url's total time form chrome storage

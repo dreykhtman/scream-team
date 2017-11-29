@@ -1,4 +1,5 @@
 function loadPieChart(data) {
+    console.log("piechart data coming in: ", data)
     // on first use before data is aggregated, populate a fake chart
     !data[0] ? data.push({ 'key': "Start Browsing!", 'browsingTime': 100 }) : null;
 

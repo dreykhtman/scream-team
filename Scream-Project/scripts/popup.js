@@ -11,6 +11,22 @@ function toggleSettings(option) {
   }
 }
 
+// // getting to detailed 
+// function toggleDetailedChartView(pageName) {
+//   let pageToToggle = document.getElementById(`${pageName}`);
+//   let initialView = document.getElementById('initial-view');
+//   let settings = document.getElementById('settings');
+//   if (pageToToggle.className === 'hide') {
+//     pageToToggle.className === 'show';
+//     settings.className = 'hide';
+//     initialView.className = 'hide';
+//   } else if (pageToToggle.className === 'show') {
+//     pageToToggle.className = 'hide';
+//     settings.className = 'hide';
+//     initialView.className = 'show';
+//   }
+// }
+
 // getting data object with all user data from chrome storage
 function getInput() {
   return new Promise((resolve, reject) => {
@@ -51,7 +67,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     toggleSettings();
     getInput()
       .then(({ items }) => {
-        console.log("popup line 54 items: ", items)
         let waketime, bedtime;
         let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
         let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
@@ -141,6 +156,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   let { dataForChart } = await getInput();
   loadPieChart(dataForChart)
+
+  // event listener for detailed chart:
+  let detailsButton = document.getElementById('initial-view-details-button');
+  detailsButton.addEventListener('click', (e) => {
+    loadDetailedChart(dataForChart)
+    // toggleDetailedChartView('detailedChart')
+  })
 });
 
 function saveInput(e, type) {

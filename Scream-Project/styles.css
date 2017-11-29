@@ -1,8 +1,8 @@
-#settings.hide {
+#settings.hide, #detailedChart.hide {
   display: none;
 }
 
-#settings.show {
+#settings.show, #detailedChart.show {
   display: block;
   margin-top: 25px;
   /* width: 600px */

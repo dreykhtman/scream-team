@@ -12,6 +12,7 @@
     <script src="scripts/bedtime.js"></script>
     <script data-main="popup.js" src="scripts/popup.js"></script>
     <script defer src="scripts/piechart.js"></script>
+    <script defer src="scripts/detailedchart.js"></script>
   </head>
 
   <body>
@@ -21,8 +22,10 @@
         <!-- pie chart will go here -->
         <svg height="300" width="300"></svg>
       </div>
+      <button id="initial-view-details-button">Details</button>
+      <button id="initial-view-toggle-button">Expand / Collapse</button>
     </div>
-    <button id="initial-view-toggle-button">Expand / Collapse</button>
+    
 
     <div id="settings" class="hide"> <!-- settings section, what you see after clicking settings, dropdown extended section -->
       <div class="settings-redlist"> <!-- blacklist section -->
@@ -99,5 +102,11 @@
       </div> <!-- end bedtime & waketime section -->
       <img id="gnome" src="images/gnome.png" />
     </div> <!-- end settings section -->
+
+    <div id="detailedChart" class="hide">
+      <svg>
+        <!-- detailed chart here -->
+      </svg>
+    </div>
   </body>
 </html>

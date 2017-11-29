@@ -54,7 +54,7 @@ function getCurrentTabUrl(callback) {
   });
 }
 
-function getDomain(url) {
+function getDomainNoPrefix(url) {
   let link = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
   let output = (link.split('.').length > 2) ? link.split('.').slice(-2).join('.') : link;
 
@@ -68,7 +68,7 @@ function startTimer(url) {
 
   _startTime[_currentUrl] = 0;
   _isFocused[_currentTabId] = true;
-  _currentUrl = getDomain(url);
+  _currentUrl = getDomainNoPrefix(url);
   firstAlarm(); // initialize alarms from alarms.js
   getBrowsingTime();
   _interval = setInterval(countUp, 1000);
@@ -82,7 +82,6 @@ function countUp() {
   if (_isFocused[_currentTabId]) {
     _startTime[_currentUrl]++;
   }
-  console.log(_currentUrl, _startTime)
 }
 
 // get url's total time form chrome storage

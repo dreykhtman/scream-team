@@ -180,7 +180,6 @@ function deleteInput (e, type) {
   let optionValue = selectElem.options[selectElem.selectedIndex].value;
   chrome.storage.sync.remove(optionValue)
 }
-// moved this function to timers.js
 
 //parse url for domain
 function getDomain(url) {
@@ -203,8 +202,8 @@ function clearInput(e, type) {
   let mins = document.getElementById(`settings-${type}list-section-form-mins`);
   url.value = "";
   document.getElementById(`settings-${type}list-section-form-url`).placeholder = "google.com";
-  hrs.value = undefined;
-  mins.value= undefined;
+  hrs.value = null;
+  mins.value = null;
 }
 
 function clearBedTime(e) {

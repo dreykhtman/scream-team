@@ -51,13 +51,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     toggleSettings();
     getInput()
       .then(({ items }) => {
-        console.log('here it is items', items)
         let waketime, bedtime;
         let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
         let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
         let bedtimeArea = document.getElementById('settings-bedtime-section-load-bedtime');
         let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
-        console.log('after 60')
         items.waketime ? waketime = convertTime(items.waketime) : waketime = 'Not Set';
         items.bedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not Set';
         let redHTML = '';
@@ -68,9 +66,6 @@ document.addEventListener('DOMContentLoaded', async () => {
           if (items[url].type === "green") greenHTML += "<option value" + url + ">" + url + "</option>";
           }
         }
-        // } else {
-        //   console.log('there are no items')
-        // }
         redListDropDown.innerHTML = redHTML;
         greenListDropDown.innerHTML = greenHTML;
         bedtimeArea.innerHTML = bedtime;

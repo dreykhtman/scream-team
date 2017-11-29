@@ -15,6 +15,7 @@ function toggleSettings(option) {
 function getInput() {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(null, function (items) {
+      console.log(items)
       if (!items) reject(new Error('no data found'))
       let dataForChart = [];
       for (let site in items) {

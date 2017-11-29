@@ -12,7 +12,7 @@ let _currentUrlObject;
 
 document.addEventListener('DOMContentLoaded', () => {
   // starts timer when page loads for the first time
-  chrome.tabs.onUpdated.addListener(() => {
+  chrome.tabs.onActivated.addListener(() => {
     _stopTime = false;
     getCurrentTabUrl(startTimer);
   });

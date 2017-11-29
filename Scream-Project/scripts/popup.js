@@ -152,7 +152,6 @@ function saveInput(e, type) {
     type: type,
     goalHrs: +hrs,
     goalMins: +mins,
-    browsingTime: 0
   }
   chrome.storage.sync.set({ [url]: urlObj }, () => {
   })

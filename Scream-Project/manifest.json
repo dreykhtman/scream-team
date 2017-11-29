@@ -8,7 +8,8 @@
       "scripts/timers.js",
       "scripts/alarms.js",
       "scripts/timecheck.js",
-      "scripts/bedtime.js"
+      "scripts/bedtime.js",
+      "scripts/browsingTimeTracker.js"
     ]
   },
   "browser_action": {

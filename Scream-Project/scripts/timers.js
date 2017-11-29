@@ -66,11 +66,12 @@ function startTimer(url) {
     return;
   }
 
-  _startTime[_currentUrl] = 0;
-  _isFocused[_currentTabId] = true;
-  _currentUrl = getDomainNoPrefix(url);
-  firstAlarm(); // initialize alarms from alarms.js
-  getBrowsingTime();
+  // _startTime[_currentUrl] = 0;
+  // _isFocused[_currentTabId] = true;
+  // _currentUrl = getDomainNoPrefix(url);
+  // firstAlarm(); // initialize alarms from alarms.js
+  // getBrowsingTime();
+
   _interval = setInterval(countUp, 1000);
 }
 
@@ -82,7 +83,11 @@ function countUp() {
   if (_isFocused[_currentTabId]) {
     _startTime[_currentUrl]++;
   }
+  // if (_isFocused[_currentTabId]) {
+  //   _browsingTime++
+  // }
 }
+console.log('browsing time', _browsingTime);
 
 // get url's total time form chrome storage
 function getBrowsingTime() {
@@ -92,7 +97,8 @@ function getBrowsingTime() {
       _browsingTime = items[_currentUrl].browsingTime;
     } else {
       chrome.storage.sync.set({ [_currentUrl]: { browsingTime: 0 } }, () => {
-        _browsingTime = 0;
+        // _browsingTime = 0;
+        console.log("line100", _browsingTime)
       });
     }
   });

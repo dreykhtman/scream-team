@@ -1,4 +1,6 @@
 function loadPieChart(data) {
+    // on first use before data is aggregated, populate a fake chart
+    !data[0] ? data.push({ 'key': "Start Browsing!", 'browsingTime': 100 }) : null;
 
     const svg = d3.select("svg"),
         width = +svg.attr("width"),
@@ -14,12 +16,13 @@ function loadPieChart(data) {
         .key((d) => {
             if (d.type === 'red') { return 'less' }
             else if (d.type === 'green') { return 'more' }
+            else if (d.key === 'Start Browsing!') { return 'Start Browsing' }
             else { return 'other' }
         })
-        .rollup((v) => { return d3.mean(v, (d) => { return d.browsingTime; }); })
+        .rollup((v) => { return d3.sum(v, (d) => { return d.browsingTime; }); })
         .entries(data);
 
-    // calculating total browsing time for all categories to create percentage time in case any category has 0 value
+    // calculating total browsing time for all categories
     let allTime = dataByTime.reduce((prev, next) => { return prev += next.value }, 0)
 
     // value = browsingTime
@@ -54,6 +57,7 @@ function loadPieChart(data) {
             return JSON.stringify(d.data);
         });
 
+    // redlist/greenlist/other labels, if browsingtime is zero then no label
     arc.append("text")
         .attr("transform", function (d) { return "translate(" + label.centroid(d) + ")"; })
         .attr("dy", "0.35em")
@@ -81,7 +85,6 @@ function loadPieChart(data) {
 
         // hover over div inner text
         let tooltipData = JSON.parse(currElement.attr("data"));
-        console.log('piechart line 76', tooltipData)
         let tooltipsText = "";
         d3.selectAll("#tooltipText_" + targetDiv).text("");
         let yPos = 0;

@@ -22,9 +22,9 @@ function getInput() {
         value['url'] = site
         if (typeof value === 'object') {
           dataForChart.push(value);
-          resolve({ dataForChart, items })
         }
       }
+      resolve({ dataForChart, items })
     })
   })
 }

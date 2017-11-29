@@ -24,7 +24,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let addBrowsingTime = {
       browsingTime: newTime,
     };
-
     let newObj = Object.assign({}, _currentUrlObject, addBrowsingTime);
     _isFocused[_currentTabId] = false;
 

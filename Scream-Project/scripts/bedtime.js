@@ -34,8 +34,8 @@ chrome.tabs.onCreated.addListener(() => {
         let timeDiff = calculateTimeDiff(bedtime, currentTime)
         if (timeDiff > 0 && timeDiff < 20) {
           new Notification('', {
-            body: `\nYou are almost at your bedtime!`,
-            icon: 'images/littlegnome.png',
+            body: `\nYou're almost at your bedtime!`,
+            icon: 'littlegnome.png',
             requireInteraction: true
           })
         }

@@ -44,6 +44,18 @@ function convertTime(time) {
 
 //wait for DOM to load
 document.addEventListener('DOMContentLoaded', async () => {
+
+  //placeholder for how we will fetch data in the future from our deployed server.
+  // window.fetch('http://localhost:5000/api/packages').then(function(response) {
+  //   var contentType = response.headers.get("content-type");
+  //   if(contentType && contentType.includes("application/json")) {
+  //     return response.json();
+  //   }
+  //   throw new TypeError("Oops, we haven't got JSON!");
+  // })
+  // .then(function(json) { console.log('heres our packages in our extension', json) })
+  // .catch(function(error) { console.log(error); });
+
   //click listener to load & populate all user data fields when expand button is clicked
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {

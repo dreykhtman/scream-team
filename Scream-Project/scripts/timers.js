@@ -1,11 +1,11 @@
 let _startTime = {};
 let _currentUrl;
 let _isFocused = {}; // {tabId: boolean}
-let _browsingTime;
+let _browsingTime = 0;
 let _interval;
 let _currentTabId;
 let _stopTime = false;
-let _currentUrlObject;
+let _currentUrlObject = {};
 
 // clear storage
 // chrome.storage.sync.clear(() => console.log('all gone!'));
@@ -27,10 +27,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let newObj = Object.assign({}, _currentUrlObject, addBrowsingTime);
     _isFocused[_currentTabId] = false;
-
     chrome.storage.sync.set({ [_currentUrl]: newObj }, () => {
       clearInterval(_interval);
     });
+
+    _browsingTime = 0;
+    _currentUrlObject = {};
   });
 
   // checks if tab is active/highlighted
@@ -66,11 +68,12 @@ function startTimer(url) {
     return;
   }
 
+  browsingTimeGetter();
+
   _startTime[_currentUrl] = 0;
   _isFocused[_currentTabId] = true;
   _currentUrl = getDomainNoPrefix(url);
   firstAlarm(); // initialize alarms from alarms.js
-  getBrowsingTime();
   _interval = setInterval(countUp, 1000);
 }
 
@@ -82,19 +85,27 @@ function countUp() {
   if (_isFocused[_currentTabId]) {
     _startTime[_currentUrl]++;
   }
-  console.log(_startTime)
 }
 
 // get url's total time form chrome storage
+function browsingTimeGetter() {
+  getBrowsingTime()
+    .then(time => {
+    });
+}
+
 function getBrowsingTime() {
-  chrome.storage.sync.get(null, (items) => {
-    if (items.hasOwnProperty(_currentUrl)) {
-      _currentUrlObject = items[_currentUrl];
-      _browsingTime = items[_currentUrl].browsingTime;
-    } else {
-      chrome.storage.sync.set({ [_currentUrl]: { browsingTime: 0 } }, () => {
-        _browsingTime = 0;
-      });
-    }
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(null, (items) => {
+      if (items.hasOwnProperty(_currentUrl)) {
+        _currentUrlObject = items[_currentUrl];
+        _browsingTime = _currentUrlObject.browsingTime;
+      } else {
+        chrome.storage.sync.set({ [_currentUrl]: { browsingTime: 0 } }, () => {
+          _browsingTime = 0;
+        });
+      }
+      resolve({ _currentUrlObject, _browsingTime });
+    });
   });
 }

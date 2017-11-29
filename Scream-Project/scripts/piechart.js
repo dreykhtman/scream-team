@@ -14,8 +14,8 @@ function loadPieChart(data) {
     // grouping data by redlist/greenlist/other categories
     let dataByTime = d3.nest()
         .key((d) => {
-            if (d.type === 'red') { return 'less' }
-            else if (d.type === 'green') { return 'more' }
+            if (d.type === 'red') { return 'blacklist' }
+            else if (d.type === 'green') { return 'whitelist' }
             else if (d.key === 'Start Browsing!') { return 'Start Browsing' }
             else { return 'other' }
         })

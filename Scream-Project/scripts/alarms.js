@@ -7,7 +7,7 @@ function timeConverter(obj) {
   return hrToSec + minToSec;
 }
 
-// get goal time from storage
+// get goal times from storage
 function goalGetter() {
   chrome.storage.sync.get(null, (items) => {
     for (let domain in items) {
@@ -19,7 +19,6 @@ function goalGetter() {
         }
       }
     }
-  console.log(items);
   });
 }
 
@@ -87,17 +86,3 @@ chrome.alarms.onAlarm.addListener(alarm => {
     chrome.tabs.update(_currentTabId, { url: randomUrl });
   }
 });
-
-
-// chrome.webRequest.onBeforeRequest.addListener(
-//   function (details) {
-//     if (details.url.startsWith("https://facebook.com/")) {
-//       console.log("hey")
-//       return { redirectUrl: "http://google.com" };
-//     }
-//   },
-//   {
-//     urls: ['<all_urls>'] /* List of URL's */
-//   }
-//   ,
-//   ['blocking']); // Block intercepted requests until this handler has finished

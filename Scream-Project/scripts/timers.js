@@ -6,6 +6,7 @@ let _interval;
 let _currentTabId;
 let _stopTime = false;
 let _currentUrlObject;
+
 // clear storage
 // chrome.storage.sync.clear(() => console.log('all gone!'));
 
@@ -53,6 +54,13 @@ function getCurrentTabUrl(callback) {
   });
 }
 
+function getDomain(url) {
+  let link = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+  let output = (link.split('.').length > 2) ? link.split('.').slice(-2).join('.') : link;
+
+  return output;
+}
+
 function startTimer(url) {
   if (url.startsWith('chrome://')) {
     return;
@@ -60,7 +68,7 @@ function startTimer(url) {
 
   _startTime[_currentUrl] = 0;
   _isFocused[_currentTabId] = true;
-  _currentUrl = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+  _currentUrl = getDomain(url);
   firstAlarm(); // initialize alarms from alarms.js
   getBrowsingTime();
   _interval = setInterval(countUp, 1000);
@@ -74,6 +82,7 @@ function countUp() {
   if (_isFocused[_currentTabId]) {
     _startTime[_currentUrl]++;
   }
+  console.log(_currentUrl, _startTime)
 }
 
 // get url's total time form chrome storage

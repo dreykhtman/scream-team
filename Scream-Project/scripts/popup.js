@@ -172,7 +172,9 @@ function deleteInput (e, type) {
   chrome.storage.sync.remove(optionValue)
 }
 
+// moved this function to timers.js
+
 //parse url for domain
-function getDomain(url) {
-  return url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
-}
+// function getDomain(url) {
+//   return url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+// }

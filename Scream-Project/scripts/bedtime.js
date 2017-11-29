@@ -13,22 +13,23 @@ function getInput() {
 
 chrome.tabs.onCreated.addListener(() => {
   getInput()
-    .then(({ bedtime, waketime }) => {
-      let bedtimeUrl = 'https://i.ytimg.com/vi/0R8SmeKDvjg/maxresdefault.jpg'
-      let currentTime = new Date().toTimeString().split(' ')[0].slice(0, -3);
-      if (bedtime) {
-        if ((currentTime >= bedtime) && !flag) {
-          chrome.tabs.update({ url: bedtimeUrl })
-        }
+  .then(({ bedtime, waketime }) => {
+    let bedtimeUrl = 'https://i.ytimg.com/vi/0R8SmeKDvjg/maxresdefault.jpg'
+    let currentTime = new Date().toTimeString().split(' ')[0].slice(0, -3);
+    if (bedtime) {
+      console.log(bedtime)
+      console.log(currentTime)
+      if ((currentTime >= bedtime) && !flag) {
+        chrome.tabs.update({ url: bedtimeUrl })
       }
-    })
+      else if ("YOU'RE 10 MINS FROM YOUR BEDTIME") {
+        new Notification ('', {
+          body: `\nYou are almost at your bedtime!`,
+          title: 'Hello,',
+          icon: 'images/littlegnome.png',
+          requireInteraction: true
+        })
+      }
+    }
+  })
 })
-
-// function assignNotification() {
-//   let notification = new Notification('', {
-//     body: `\nYou are halfway through your total time of ${_blacklistGoals[_currentUrl] / 60} minutes on ${_currentUrl}`,
-//     title: 'Hello',
-//     icon: 'littlegnome.png',
-//     requireInteraction: true
-//   });
-// }

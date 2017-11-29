@@ -14,7 +14,6 @@ function toggleSettings(option) {
 // getting data object with all user data from chrome storage
 function getInput() {
   return new Promise((resolve, reject) => {
-    console.log("in getInput")
     chrome.storage.sync.get(null, function (items) {
       if (!items) reject(new Error('no data found'))
       let dataForChart = [];

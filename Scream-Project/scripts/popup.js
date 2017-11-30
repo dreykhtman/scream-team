@@ -51,12 +51,13 @@ document.addEventListener('DOMContentLoaded', async () => {
   //   if(contentType && contentType.includes("application/json")) {
   //     return response.json();
   //   }
-  //   throw new TypeError("Oops, we haven't got JSON!");
+  //   throw new TypeError("no JSON");
   // })
   // .then(function(json) { console.log('heres our packages in our extension', json) })
   // .catch(function(error) { console.log(error); });
 
   //click listener to load & populate all user data fields when expand button is clicked
+
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
     e.preventDefault();

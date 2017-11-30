@@ -296,11 +296,21 @@ function saveSiteOneClick(e, type) {
     let url = getDomainNoPrefix(tabs[0].url);
       let urlObj = {
         type: type,
+        goalHrs: 1,
+        goalMins: 0,
         browsingTime: 0
       }
     chrome.storage.sync.set({ [url]: urlObj }, () => {
-      chrome.notifications.create(notificationId,options, function() {
-
+      let colorList;
+      if(type === 'red'){
+        colorList = 'black';
+      } else{
+        colorList = 'white';
+      }
+      const notification = new Notification('', {
+        body: `\n${url} is now on ${colorList}list`,
+        icon: 'images/littlegnome.png',
+        requireInteraction: false
       })
    })
   })

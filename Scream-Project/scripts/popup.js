@@ -131,7 +131,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   redlistDelete.addEventListener('click', (e) => {
     e.preventDefault();
-    saveSiteOneClick(e, 'red')
+    deleteInput(e, 'red');
+    clearListonDelete(e, 'red')
   });
 
   oneClickGreen.addEventListener('click', (e) => {

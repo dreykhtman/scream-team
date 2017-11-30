@@ -4,3 +4,4 @@ Server/npm-debug.log
 Scream-Project
 /*.env
 package-lock.json
+node_modules

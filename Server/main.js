@@ -2,6 +2,9 @@ const app = require("./server");
 const db = require('./db').db;
 
 db.sync()
-.then(() => {
-    app.listen(5000)
-})
+    .then(() => {
+        let server = app.listen(process.env.PORT || 5000, function () {
+            let port = server.address().port;
+            console.log("App now running on port", port);
+        })
+    })

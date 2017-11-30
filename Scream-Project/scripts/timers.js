@@ -12,19 +12,23 @@ let _trackUrlTimer = new Set();
 // chrome.storage.sync.clear(() => console.log('all gone!'));
 
 document.addEventListener('DOMContentLoaded', () => {
+
   // starts timer when page loads for the first time
   chrome.tabs.onUpdated.addListener(() => {
+    getBrowsingTime(); // get browsing time for every site from storage
     _stopTime = false;
     getCurrentTabUrl(startTimer);
   });
 
   // stops timer and writes time to storage when page is closed
   chrome.tabs.onRemoved.addListener(() => {
+    chrome.alarms.clearAll(() => {});
     _stopTime = true;
     let newTime = _startTime[_currentUrl] + _browsingTime;
     let addBrowsingTime = {
       browsingTime: newTime,
     };
+
     console.log('currentUrl', _currentUrl)
     _trackUrlTimer.delete(_currentUrl)
 
@@ -39,6 +43,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // checks if tab is active/highlighted
   chrome.tabs.onHighlighted.addListener((highlightInfo) => {
     _isFocused[_currentTabId] = highlightInfo.tabIds[0] === _currentTabId;
+  });
+
+  chrome.tabs.onActivated.addListener(tab => {
+    let { tabId } = tab;
+    _currentTabId = tabId;
   });
 });
 
@@ -75,6 +84,7 @@ function startTimer(url) {
   _currentUrl = getDomainNoPrefix(url);
 
   if (_trackUrlTimer.has(_currentUrl)) return;
+
   _trackUrlTimer.add(_currentUrl)
    console.log('currentURL', _currentUrl)
 
@@ -89,7 +99,6 @@ function startTimer(url) {
   .then(() => {
     _interval = setInterval(countUp, 1000);
   })
-
 }
 
 // increment timer

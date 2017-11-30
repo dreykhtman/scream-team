@@ -131,18 +131,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   redlistDelete.addEventListener('click', (e) => {
     e.preventDefault();
-    deleteInput(e, 'red');
-    clearListonDelete(e, 'red')
+    saveSiteOneClick(e, 'red')
   });
 
-  oneClickGreen.addEventListener('submit', (e) => { //not correct saveInput function
+  oneClickGreen.addEventListener('submit', (e) => {
     e.preventDefault();
-    saveInput(e, 'red');
+    saveSiteOneClick(e, 'green')
+
   });
 
-  oneClickGreen.addEventListener('submit', (e) => { //not correct saveInput function
+  oneClickRed.addEventListener('submit', (e) => { //not correct saveInput function
     e.preventDefault();
-    saveInput(e, 'red');
+
   });
 
 
@@ -280,5 +280,28 @@ function saveInput(e, type) {
     browsingTime: 0
   }
   chrome.storage.sync.set({ [url]: urlObj }, () => {
+  })
+}
+
+function getDomainNoPrefix(url) {
+  let link = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+  let output = (link.split('.').length > 2) ? link.split('.').slice(-2).join('.') : link;
+
+  return output;
+}
+
+function saveSiteOneClick(e, type) {
+  e.preventDefault()
+  chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+    let url = getDomainNoPrefix(tabs[0].url);
+      let urlObj = {
+        type: type,
+        goalHrs: +hrs,
+        goalMins: +mins,
+        browsingTime: 0
+      }
+    chrome.storage.sync.set({ [url]: urlObj }, () => {
+      console.log('saved into storage', urlObj)
+   })
   })
 }

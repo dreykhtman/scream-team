@@ -134,15 +134,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     saveSiteOneClick(e, 'red')
   });
 
-  oneClickGreen.addEventListener('submit', (e) => {
+  oneClickGreen.addEventListener('click', (e) => {
     e.preventDefault();
     saveSiteOneClick(e, 'green')
 
   });
 
-  oneClickRed.addEventListener('submit', (e) => { //not correct saveInput function
+  oneClickRed.addEventListener('click', (e) => {
     e.preventDefault();
-
+    saveSiteOneClick(e, 'red')
   });
 
 
@@ -296,12 +296,12 @@ function saveSiteOneClick(e, type) {
     let url = getDomainNoPrefix(tabs[0].url);
       let urlObj = {
         type: type,
-        goalHrs: +hrs,
-        goalMins: +mins,
         browsingTime: 0
       }
     chrome.storage.sync.set({ [url]: urlObj }, () => {
-      console.log('saved into storage', urlObj)
+      chrome.notifications.create(notificationId,options, function() {
+
+      })
    })
   })
 }

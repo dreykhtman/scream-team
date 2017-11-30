@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let addBrowsingTime = {
       browsingTime: newTime,
     };
-
+    console.log('currentUrl', _currentUrl)
     _trackUrlTimer.delete(_currentUrl)
 
     let newObj = Object.assign({}, _currentUrlObject, addBrowsingTime);
@@ -52,9 +52,6 @@ function getCurrentTabUrl(callback) {
     let tab = tabs[0];
     let url = tab.url;
 
-    if (_trackUrlTimer.has(url)) return;
-    _trackUrlTimer.add(url)
-
     _currentTabId = tab.id;
     console.assert(typeof url === 'string', 'tab.url should be a string');
     callback(url);
@@ -73,15 +70,26 @@ function startTimer(url) {
     return;
   }
 
-  // if (_trackUrlTimer.has(url)) return;
-  // _trackUrlTimer.add(url)
-
   _startTime[_currentUrl] = 0;
   _isFocused[_currentTabId] = true;
   _currentUrl = getDomainNoPrefix(url);
+
+  if (_trackUrlTimer.has(_currentUrl)) return;
+  _trackUrlTimer.add(_currentUrl)
+   console.log('currentURL', _currentUrl)
+
   firstAlarm(); // initialize alarms from alarms.js
   getBrowsingTime();
-  _interval = setInterval(countUp, 1000);
+
+  const clearIntervalPromise = new Promise((resolve, reject) => {
+    resolve(clearInterval(_interval))
+  })
+
+  clearIntervalPromise
+  .then(() => {
+    _interval = setInterval(countUp, 1000);
+  })
+
 }
 
 // increment timer
@@ -106,6 +114,7 @@ function getBrowsingTime() {
         _browsingTime = 0;
       });
     }
+
     console.log('Storage', items)
   });
 }

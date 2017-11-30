@@ -51,10 +51,10 @@ function thirdAlarm() {
 
 function assignNotification() {
   let notification = new Notification('', {
-    body: `\nYou are halfway through your total time of ${_blacklistGoals[_currentUrl] / 60} minutes on ${_currentUrl}`,
+    body: `\nHalfway through ${_blacklistGoals[_currentUrl] / 60} minutes on ${_currentUrl}`,
     title: 'Hello',
     icon: 'images/littlegnome.png',
-    requireInteraction: true
+    requireInteraction: false
   });
 }
 

@@ -64,7 +64,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     toggleSettings();
     getInput()
       .then(({ items }) => {
-        console.log("popup line 54 items: ", items)
         let waketime, bedtime;
         let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
         let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
@@ -89,14 +88,16 @@ document.addEventListener('DOMContentLoaded', async () => {
       })
   });
 
-  let redlistForm = document.getElementById('settings-redlist-section-form');
-  let greenlistForm = document.getElementById('settings-greenlist-section-form');
+  let redlistForm = document.getElementById('settings-redlist-section-form')
+  let greenlistForm = document.getElementById('settings-greenlist-section-form')
   let redlistButton = document.getElementById('settings-redlist-section-form-submit')
   let greenlistButton = document.getElementById('settings-greenlist-section-form-submit')
   let greenlistEdit = document.getElementById('greenlist-edit-btn')
   let greenlistDelete = document.getElementById('greenlist-delete-btn')
   let redlistEdit = document.getElementById('redlist-edit-btn')
   let redlistDelete = document.getElementById('redlist-delete-btn')
+  let oneClickGreen = document.getElementById('initial-view-oneclickadd-greenlist')
+  let oneClickRed = document.getElementById('initial-view-oneclickadd-redlist')
 
   redlistForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -121,19 +122,29 @@ document.addEventListener('DOMContentLoaded', async () => {
     e.preventDefault();
     editInput(e, 'red');
   });
+
   greenlistDelete.addEventListener('click', (e) => {
     e.preventDefault();
     deleteInput(e, 'green');
     clearListonDelete(e, 'green')
-
   });
+
   redlistDelete.addEventListener('click', (e) => {
     e.preventDefault();
-    deleteInput(e, 'red');
-    clearListonDelete(e, 'red')
+    saveSiteOneClick(e, 'red')
+  });
 
+  oneClickGreen.addEventListener('submit', (e) => {
+    e.preventDefault();
+    saveSiteOneClick(e, 'green')
 
   });
+
+  oneClickRed.addEventListener('submit', (e) => { //not correct saveInput function
+    e.preventDefault();
+
+  });
+
 
   let bedtimeForm = document.getElementById('settings-bedtime-section-form');
   bedtimeForm.addEventListener('submit', (e) => {
@@ -141,7 +152,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     saveTime(e, 'bedtime');
     appendBedTime(e);
     clearBedTime(e);
-
   });
 
   let waketimeForm = document.getElementById('settings-bedtime-section-waketime-form');
@@ -258,3 +268,40 @@ function clearListonDelete(e, type) {
   selectElem.removeChild(selectElem.childNodes[0])
 }
 
+function saveInput(e, type) {
+  e.preventDefault();
+  let url = getDomain(document.getElementById(`settings-${type}list-section-form-url`).value);
+  let hrs = document.getElementById(`settings-${type}list-section-form-hrs`).value;
+  let mins = document.getElementById(`settings-${type}list-section-form-mins`).value;
+  let urlObj = {
+    type: type,
+    goalHrs: +hrs,
+    goalMins: +mins,
+    browsingTime: 0
+  }
+  chrome.storage.sync.set({ [url]: urlObj }, () => {
+  })
+}
+
+function getDomainNoPrefix(url) {
+  let link = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+  let output = (link.split('.').length > 2) ? link.split('.').slice(-2).join('.') : link;
+
+  return output;
+}
+
+function saveSiteOneClick(e, type) {
+  e.preventDefault()
+  chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+    let url = getDomainNoPrefix(tabs[0].url);
+      let urlObj = {
+        type: type,
+        goalHrs: +hrs,
+        goalMins: +mins,
+        browsingTime: 0
+      }
+    chrome.storage.sync.set({ [url]: urlObj }, () => {
+      console.log('saved into storage', urlObj)
+   })
+  })
+}

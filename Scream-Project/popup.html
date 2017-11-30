@@ -45,13 +45,17 @@
           <input id="settings-redlist-section-form-submit" type="submit">
         </div>
         <div class="settings-redlist-section-form-dropdown">
-          <span>Site list:</span>
+          <span>My site list:</span>
           <select id="settings-redlist-section-form-dropdown-options"> <!-- dropdown list of sites -->
               <option selected disabled hidden value=''></option>
             </select>
-            <button id="redlist-edit-btn"></button>
-            <button id="redlist-delete-btn"></button>
+            <button id="redlist-edit-btn" title="Edit"></button>
+            <button id="redlist-delete-btn" title="Delete"></button>
           </form>
+          <span class="packages" id="settings-redlist-section-form-packages">Pre-made lists: </span>
+          <select id="settings-redlist-section-form-dropdown-options"> <!-- dropdown list of red packages -->
+              <option selected disabled hidden value=''></option>
+          </select>
         </div>
       </div> <!-- end blacklist section -->
 
@@ -68,13 +72,17 @@
             <input id="settings-greenlist-section-form-submit" type="submit">
           </div>
           <div class="settings-greenlist-section-form-dropdown">
-            <span>Site list:</span>
+            <span>My site list:</span>
             <select id="settings-greenlist-section-form-dropdown-options"> <!-- dropdown list of sites -->
                 <option selected disabled hidden value=''></option>
               </select>
-              <button id="greenlist-edit-btn"></button>
-              <button id="greenlist-delete-btn"></button>
+              <button id="greenlist-edit-btn" title="Edit"></button>
+              <button id="greenlist-delete-btn" title="Delete"></button>
           </form>
+          <span class="packages" id="settings-greenlist-section-form-packages">Pre-made lists: </span>
+          <select id="settings-redlist-section-form-dropdown-options"> <!-- dropdown list of green packages -->
+              <option selected disabled hidden value=''></option>
+          </select>
         </div>
       </div> <!-- end whitelist section -->
 
@@ -82,7 +90,7 @@
         <h2>Bedtime: </h2>
         <form id="settings-bedtime-section-form">
           <label>Set bedtime: </label>
-          <input id="settings-bedtime-section-form-input" type="time" name="timeInput"/>
+          <input id="settings-bedtime-section-form-input" class="time" type="time" name="timeInput"/>
           <input id="settings-bedtime-section-form-submit" type="submit">
         </form>
 
@@ -93,7 +101,7 @@
 
         <form id="settings-bedtime-section-waketime-form"><!-- waketime form starts -->
           <label>Set wake time: </label>
-          <input id="settings-bedtime-section-waketime-form-input" name="timeInput" type="time"/>
+          <input id="settings-bedtime-section-waketime-form-input" class="time" name="timeInput" type="time"/>
           <input id="settings-bedtime-section-waketime-form-submit" type="submit">
         </form>
 

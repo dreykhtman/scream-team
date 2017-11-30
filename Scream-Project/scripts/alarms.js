@@ -94,16 +94,10 @@ function notifyMe() {
   }
 }
 
-function uglifier() {
-  document.body.style.backgroundColor = "yellow";
-  document.body.style.fontFamily = "Comic Sans MS, cursive, sans-serif";
-}
-
 // every alarm triggers the next one
 chrome.alarms.onAlarm.addListener(alarm => {
   let randomUrl = 'http://' + _whiteList[Math.floor(Math.random() * _whiteList.length)];
   if (alarm.name === 'firstWarning') {
-    uglifier();
     secondAlarm();
     notifyMe();
   } else if (alarm.name === 'secondWarning') {

@@ -1,4 +1,6 @@
-scream-team
 Server/node_modules
 Server/config
-
+Server/npm-debug.log
+/*.env
+package-lock.json
+node_modules

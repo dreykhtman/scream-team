@@ -45,23 +45,34 @@ function convertTime(time) {
 //wait for DOM to load
 document.addEventListener('DOMContentLoaded', async () => {
 
-  //placeholder for how we will fetch data in the future from our deployed server.
-  // window.fetch('http://localhost:5000/api/packages').then(function(response) {
-  //   var contentType = response.headers.get("content-type");
-  //   if(contentType && contentType.includes("application/json")) {
-  //     return response.json();
-  //   }
-  //   throw new TypeError("no JSON");
-  // })
-  // .then(function(json) { console.log('heres our packages in our extension', json) })
-  // .catch(function(error) { console.log(error); });
 
-  //click listener to load & populate all user data fields when expand button is clicked
+  // click listener to load & populate all user data fields when expand button is clicked
 
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
     e.preventDefault();
     toggleSettings();
+    //fetch to get data from deployed database
+  window.fetch('https://frozen-castle-90148.herokuapp.com/api/packages').then(function(response) {
+    var contentType = response.headers.get("content-type");
+    if(contentType && contentType.includes("application/json")) {
+      return response.json();
+    }
+    throw new TypeError("no JSON");
+  })
+  .then(function(dbArray) {
+    console.log('heres our packages in our extension', dbArray)
+    let packageDropdown = document.getElementById('settings-packagelist-section-form-url');
+    let packageHTML="";
+    if(!!dbArray) {
+      dbArray.forEach((item) => {
+        packageHTML += "<option value=" + item.name + ">" + item.name + "</option>";
+        packageDropdown.innerHTML = packageHTML
+      })
+    }
+  })
+  .catch(function(error) { console.log(error); });
+
     getInput()
       .then(({ items }) => {
         let waketime, bedtime;
@@ -316,3 +327,5 @@ function saveSiteOneClick(e, type) {
    })
   })
 }
+
+

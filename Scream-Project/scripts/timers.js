@@ -31,8 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
       clearInterval(_interval);
     });
 
-    _browsingTime = 0;
-    _currentUrlObject = {};
+    // _browsingTime = 0;
+    // _currentUrlObject = {};
   });
 
   // checks if tab is active/highlighted

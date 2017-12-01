@@ -109,6 +109,29 @@ document.addEventListener('DOMContentLoaded', async () => {
   let redlistDelete = document.getElementById('redlist-delete-btn')
   let oneClickGreen = document.getElementById('initial-view-oneclickadd-greenlist')
   let oneClickRed = document.getElementById('initial-view-oneclickadd-redlist')
+  let packageSubmit = document.getElementById('settings-packagelist-section-form-url-submit')
+
+  packageSubmit.addEventListener('click', (e) => {
+    window.fetch('https://frozen-castle-90148.herokuapp.com/api/packages').then(function(response) {
+      var contentType = response.headers.get("content-type");
+      if(contentType && contentType.includes("application/json")) {
+        return response.json();
+      }
+      throw new TypeError("no JSON");
+    })
+    .then(packages => {
+      packages.forEach((package) => {
+        let dropdown = document.getElementById('settings-packagelist-section-form-url').value
+        if(package.name.includes(dropdown)){
+         package.sites.forEach(site => {
+           console.log(site)
+           savePackageToChromeDB(site.url, site.type, site.goalHrs, site.goalMins)
+          appendToOptionsFromPackageSubmit(e, site.url, site.type)
+         })
+        }
+      })
+    })
+  })
 
   redlistForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -193,6 +216,22 @@ function saveInput(e, type) {
   })
 }
 
+function savePackageToChromeDB(url, type, hrs, mins) {
+  type = type.toLowerCase()
+  url = getDomainNoPrefix(url)
+  let urlObj = {
+    url: url,
+    type: type,
+    goalHrs: hrs,
+    goalMins: mins,
+    browsingTime: 0
+  }
+  chrome.storage.sync.set({ [url]: urlObj }, () => {
+    console.log('saved', urlObj)
+  })
+}
+
+
 function saveTime(e, type) {
   e.preventDefault()
   let setTime = e.target.timeInput.value
@@ -228,7 +267,18 @@ function getDomain(url) {
 
 function appendToOptions(e, type) {
   e.preventDefault();
+  type = type.toLowerCase()
   let url = getDomain(document.getElementById(`settings-${type}list-section-form-url`).value);
+  let option = document.createElement("option");
+  let text = document.createTextNode(url);
+  option.appendChild(text)
+  document.getElementById(`settings-${type}list-section-form-dropdown-options`).appendChild(option)
+}
+
+function appendToOptionsFromPackageSubmit(e, url, type) {
+  e.preventDefault();
+  type = type.toLowerCase()
+  url = getDomain(url)
   let option = document.createElement("option");
   let text = document.createTextNode(url);
   option.appendChild(text)
@@ -280,20 +330,6 @@ function clearListonDelete(e, type) {
   selectElem.removeChild(selectElem.childNodes[0])
 }
 
-function saveInput(e, type) {
-  e.preventDefault();
-  let url = getDomain(document.getElementById(`settings-${type}list-section-form-url`).value);
-  let hrs = document.getElementById(`settings-${type}list-section-form-hrs`).value;
-  let mins = document.getElementById(`settings-${type}list-section-form-mins`).value;
-  let urlObj = {
-    type: type,
-    goalHrs: +hrs,
-    goalMins: +mins,
-    browsingTime: 0
-  }
-  chrome.storage.sync.set({ [url]: urlObj }, () => {
-  })
-}
 
 function getDomainNoPrefix(url) {
   let link = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];

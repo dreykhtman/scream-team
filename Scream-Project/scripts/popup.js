@@ -45,9 +45,7 @@ function convertTime(time) {
 //wait for DOM to load
 document.addEventListener('DOMContentLoaded', async () => {
 
-
   // click listener to load & populate all user data fields when expand button is clicked
-
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
     e.preventDefault();
@@ -343,12 +341,13 @@ function saveSiteOneClick(e, type) {
   chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     let url = getDomainNoPrefix(tabs[0].url);
       let urlObj = {
+        url: url,
         type: type,
         goalHrs: 1,
         goalMins: 0,
         browsingTime: 0
       }
-    chrome.storage.sync.set({ [url]: urlObj }, () => {
+    chrome.storage.sync.set({[url]: urlObj}, () => {
       let colorList;
       if(type === 'red'){
         colorList = 'black';

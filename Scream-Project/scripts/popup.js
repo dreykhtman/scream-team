@@ -45,23 +45,32 @@ function convertTime(time) {
 //wait for DOM to load
 document.addEventListener('DOMContentLoaded', async () => {
 
-  //placeholder for how we will fetch data in the future from our deployed server.
-  // window.fetch('http://localhost:5000/api/packages').then(function(response) {
-  //   var contentType = response.headers.get("content-type");
-  //   if(contentType && contentType.includes("application/json")) {
-  //     return response.json();
-  //   }
-  //   throw new TypeError("no JSON");
-  // })
-  // .then(function(json) { console.log('heres our packages in our extension', json) })
-  // .catch(function(error) { console.log(error); });
-
-  //click listener to load & populate all user data fields when expand button is clicked
-
+  // click listener to load & populate all user data fields when expand button is clicked
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
     e.preventDefault();
     toggleSettings();
+    //fetch to get data from deployed database
+  window.fetch('https://frozen-castle-90148.herokuapp.com/api/packages').then(function(response) {
+    var contentType = response.headers.get("content-type");
+    if(contentType && contentType.includes("application/json")) {
+      return response.json();
+    }
+    throw new TypeError("no JSON");
+  })
+  .then(function(dbArray) {
+    console.log('heres our packages in our extension', dbArray)
+    let packageDropdown = document.getElementById('settings-packagelist-section-form-url');
+    let packageHTML="";
+    if(!!dbArray) {
+      dbArray.forEach((item) => {
+        packageHTML += "<option value=" + item.name + ">" + item.name + "</option>";
+        packageDropdown.innerHTML = packageHTML
+      })
+    }
+  })
+  .catch(function(error) { console.log(error); });
+
     getInput()
       .then(({ items }) => {
         let waketime, bedtime;
@@ -98,6 +107,29 @@ document.addEventListener('DOMContentLoaded', async () => {
   let redlistDelete = document.getElementById('redlist-delete-btn')
   let oneClickGreen = document.getElementById('initial-view-oneclickadd-greenlist')
   let oneClickRed = document.getElementById('initial-view-oneclickadd-redlist')
+  let packageSubmit = document.getElementById('settings-packagelist-section-form-url-submit')
+
+  packageSubmit.addEventListener('click', (e) => {
+    window.fetch('https://frozen-castle-90148.herokuapp.com/api/packages').then(function(response) {
+      var contentType = response.headers.get("content-type");
+      if(contentType && contentType.includes("application/json")) {
+        return response.json();
+      }
+      throw new TypeError("no JSON");
+    })
+    .then(packages => {
+      packages.forEach((package) => {
+        let dropdown = document.getElementById('settings-packagelist-section-form-url').value
+        if(package.name.includes(dropdown)){
+         package.sites.forEach(site => {
+           console.log(site)
+           savePackageToChromeDB(site.url, site.type, site.goalHrs, site.goalMins)
+          appendToOptionsFromPackageSubmit(e, site.url, site.type)
+         })
+        }
+      })
+    })
+  })
 
   redlistForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -182,6 +214,22 @@ function saveInput(e, type) {
   })
 }
 
+function savePackageToChromeDB(url, type, hrs, mins) {
+  type = type.toLowerCase()
+  url = getDomainNoPrefix(url)
+  let urlObj = {
+    url: url,
+    type: type,
+    goalHrs: hrs,
+    goalMins: mins,
+    browsingTime: 0
+  }
+  chrome.storage.sync.set({ [url]: urlObj }, () => {
+    console.log('saved', urlObj)
+  })
+}
+
+
 function saveTime(e, type) {
   e.preventDefault()
   let setTime = e.target.timeInput.value
@@ -217,7 +265,18 @@ function getDomain(url) {
 
 function appendToOptions(e, type) {
   e.preventDefault();
+  type = type.toLowerCase()
   let url = getDomain(document.getElementById(`settings-${type}list-section-form-url`).value);
+  let option = document.createElement("option");
+  let text = document.createTextNode(url);
+  option.appendChild(text)
+  document.getElementById(`settings-${type}list-section-form-dropdown-options`).appendChild(option)
+}
+
+function appendToOptionsFromPackageSubmit(e, url, type) {
+  e.preventDefault();
+  type = type.toLowerCase()
+  url = getDomain(url)
   let option = document.createElement("option");
   let text = document.createTextNode(url);
   option.appendChild(text)
@@ -269,20 +328,6 @@ function clearListonDelete(e, type) {
   selectElem.removeChild(selectElem.childNodes[0])
 }
 
-function saveInput(e, type) {
-  e.preventDefault();
-  let url = getDomain(document.getElementById(`settings-${type}list-section-form-url`).value);
-  let hrs = document.getElementById(`settings-${type}list-section-form-hrs`).value;
-  let mins = document.getElementById(`settings-${type}list-section-form-mins`).value;
-  let urlObj = {
-    type: type,
-    goalHrs: +hrs,
-    goalMins: +mins,
-    browsingTime: 0
-  }
-  chrome.storage.sync.set({ [url]: urlObj }, () => {
-  })
-}
 
 function getDomainNoPrefix(url) {
   let link = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
@@ -296,12 +341,13 @@ function saveSiteOneClick(e, type) {
   chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     let url = getDomainNoPrefix(tabs[0].url);
       let urlObj = {
+        url: url,
         type: type,
         goalHrs: 1,
         goalMins: 0,
         browsingTime: 0
       }
-    chrome.storage.sync.set({ [url]: urlObj }, () => {
+    chrome.storage.sync.set({[url]: urlObj}, () => {
       let colorList;
       if(type === 'red'){
         colorList = 'black';
@@ -316,3 +362,5 @@ function saveSiteOneClick(e, type) {
    })
   })
 }
+
+

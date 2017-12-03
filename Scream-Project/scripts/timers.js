@@ -2,21 +2,20 @@ let _interval;
 let _counter = 0;
 let _currentUrl;
 let _previousUrl;
+let _windowId;
 const _tabIdStorage = {};
 const _timeStorage = {};
-// const _ready = status === 'complete' && !url.startsWith('chrome://');
 
 document.addEventListener('DOMContentLoaded', () => {
 
   chrome.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
     // tabInfo contains tabId, url, active bool, status and other properties
     // https://developer.chrome.com/extensions/tabs#event-onUpdated
-    const { active, id, status, url } = tabInfo; // status: "complete"/"loading"
+    const { active, id, status, url, windowId } = tabInfo; // status: "complete"/"loading"
+    _windowId = windowId;
     if (status === 'complete' && !url.startsWith('chrome://')) {
       _currentUrl = getDomainNoPrefix(url);
       _tabIdStorage.hasOwnProperty(_currentUrl) ? _tabIdStorage[_currentUrl].add(id) : _tabIdStorage[_currentUrl] = new Set([id]);
-      console.log('urlStorage', _tabIdStorage)
-      // interval(); // start counting when page is loaded
     }
 
     if (status === 'complete' && !url.startsWith('chrome://') && active) {
@@ -29,9 +28,12 @@ document.addEventListener('DOMContentLoaded', () => {
     for (let domain in _tabIdStorage) {
       if (_tabIdStorage.hasOwnProperty(domain)) {
         if (_tabIdStorage[domain].has(id)) {
+          // start/resume counter when tab is active
           _currentUrl = domain;
-          interval()
-          console.log(_tabIdStorage)
+          interval();
+        } else {
+          // clear counter when url is invalid
+          clearInterval(_interval);
         }
       }
     }
@@ -40,6 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
   chrome.tabs.onRemoved.addListener(tabId => {
     // console.log('Removed!')
     // console.log('tabId', tabId);
+  });
+
+  chrome.windows.onFocusChanged.addListener(windowId => {
+    windowId !== _windowId ? clearInterval(_interval) : interval();
   });
 });
 
@@ -61,23 +67,6 @@ function getBrowsingTime() {
       });
     }
   });
-}
-
-
-// clears old interval and starts new interval
-function interval() {
-  _counter = 0;
-  const clearIntervalPromise = new Promise((resolve, reject) => {
-    resolve(clearInterval(_interval));
-  });
-
-  clearIntervalPromise
-    .then(() => {
-      _interval = setInterval(() => {
-        _timeStorage.hasOwnProperty(_currentUrl) ? _timeStorage[_currentUrl].browsingTime++ : _timeStorage[_currentUrl] = { browsingTime: 0 };
-        console.log(_timeStorage)
-      }, 1000);
-    });
 }
 
 

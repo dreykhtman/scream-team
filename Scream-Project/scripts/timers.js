@@ -2,9 +2,9 @@ let _interval;
 let _counter = 0;
 let _currentUrl;
 let _previousUrl;
-const _urlStorage = {};
+const _tabIdStorage = {};
+const _timeStorage = {};
 // const _ready = status === 'complete' && !url.startsWith('chrome://');
-
 
 document.addEventListener('DOMContentLoaded', () => {
 
@@ -14,14 +14,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const { active, id, status, url } = tabInfo; // status: "complete"/"loading"
     if (status === 'complete' && !url.startsWith('chrome://')) {
       _currentUrl = getDomainNoPrefix(url);
-      _urlStorage.hasOwnProperty(_currentUrl) ? _urlStorage[_currentUrl].add(id) : _urlStorage[_currentUrl] = new Set([id]);
-      console.log('urlStorage', _urlStorage)
+      _tabIdStorage.hasOwnProperty(_currentUrl) ? _tabIdStorage[_currentUrl].add(id) : _tabIdStorage[_currentUrl] = new Set([id]);
+      console.log('urlStorage', _tabIdStorage)
       // interval(); // start counting when page is loaded
+    }
+
+    if (status === 'complete' && !url.startsWith('chrome://') && active) {
+      interval();
     }
   });
 
-  chrome.tabs.onActivated.addListener(activeInfo => {
-    // console.log(activeInfo);
+  chrome.tabs.onActivated.addListener(selectInfo => {
+    const id = selectInfo.tabId;
+    for (let domain in _tabIdStorage) {
+      if (_tabIdStorage.hasOwnProperty(domain)) {
+        if (_tabIdStorage[domain].has(id)) {
+          _currentUrl = domain;
+          interval()
+          console.log(_tabIdStorage)
+        }
+      }
+    }
   });
 
   chrome.tabs.onRemoved.addListener(tabId => {
@@ -31,10 +44,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-function countUp() {
-  _counter++;
-  console.log(_counter);
-}
+// function countUp() {
+//   // _counter++;
+//   _timeStorage.hasOwnProperty(_currentUrl) ? _timeStorage[_currentUrl].browsingTime++ : _timeStorage[_currentUrl] = { browsingTime: 0 };
+//   // console.log(_timeStorage)
+// }
 
 // get url's total time form chrome storage
 function getBrowsingTime() {
@@ -47,6 +61,23 @@ function getBrowsingTime() {
       });
     }
   });
+}
+
+
+// clears old interval and starts new interval
+function interval() {
+  _counter = 0;
+  const clearIntervalPromise = new Promise((resolve, reject) => {
+    resolve(clearInterval(_interval));
+  });
+
+  clearIntervalPromise
+    .then(() => {
+      _interval = setInterval(() => {
+        _timeStorage.hasOwnProperty(_currentUrl) ? _timeStorage[_currentUrl].browsingTime++ : _timeStorage[_currentUrl] = { browsingTime: 0 };
+        console.log(_timeStorage)
+      }, 1000);
+    });
 }
 
 

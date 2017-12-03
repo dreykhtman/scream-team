@@ -5,15 +5,3 @@ function getDomainNoPrefix(url) {
   return output;
 }
 
-// clears old interval and starts new interval
-function interval() {
-  _counter = 0;
-  const clearIntervalPromise = new Promise((resolve, reject) => {
-    resolve(clearInterval(_interval));
-  });
-
-  clearIntervalPromise
-    .then(() => {
-      _interval = setInterval(countUp, 1000);
-    });
-}

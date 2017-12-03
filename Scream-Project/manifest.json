@@ -5,7 +5,7 @@
   "version": "1.0",
   "background": {
     "scripts": [
-      "scripts/timers.js",
+      "scripts/listeners.js",
       "scripts/alarms.js",
       "scripts/bedtime.js",
       "scripts/helpers.js"

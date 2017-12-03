@@ -5,11 +5,13 @@ function getDomainNoPrefix(url) {
   return output;
 }
 
-// clears old interval and starts new interval
+// clears old interval and starts new interval, used in listeners.js
 function interval() {
   const clearIntervalPromise = new Promise((resolve, reject) => {
     resolve(clearInterval(_interval));
   });
+
+  firstAlarm(); // from alarms.js
 
   clearIntervalPromise
     .then(() => {
@@ -20,8 +22,7 @@ function interval() {
         } else {
           return;
         }
-        console.log(_timeStorage)
-        console.log(_currentUrl, _timeStorage[_currentUrl])
+      console.log(_timeStorage[_currentUrl])
       }, 1000);
     });
 }
@@ -29,10 +30,11 @@ function interval() {
 function getBrowsingTime() {
   chrome.storage.sync.get(null, (items) => {
     _timeStorage = items;
-    console.log(_timeStorage)
   });
 }
 
-// function setBrowsingTime() {
-//   if (_chromeStorage.hasOwnProperty())
-// }
+function timeConverter(obj) {
+  let hrToSec = obj.goalHrs * 3600;
+  let minToSec = obj.goalMins * 60;
+  return hrToSec + minToSec;
+}

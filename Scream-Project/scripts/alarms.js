@@ -38,12 +38,12 @@ function getData() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  goalGetter();
-  chrome.storage.onChanged.addListener(() => {
-    goalGetter();
-  });
-});
+// document.addEventListener('DOMContentLoaded', () => {
+//   goalGetter();
+//   chrome.storage.onChanged.addListener(() => {
+//     goalGetter();
+//   });
+// });
 
 // get time in minuts for alarms
 function getBlacklistGoal() {

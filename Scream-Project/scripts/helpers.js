@@ -20,7 +20,19 @@ function interval() {
         } else {
           return;
         }
+        console.log(_timeStorage)
         console.log(_currentUrl, _timeStorage[_currentUrl])
       }, 1000);
     });
 }
+
+function getBrowsingTime() {
+  chrome.storage.sync.get(null, (items) => {
+    _timeStorage = items;
+    console.log(_timeStorage)
+  });
+}
+
+// function setBrowsingTime() {
+//   if (_chromeStorage.hasOwnProperty())
+// }

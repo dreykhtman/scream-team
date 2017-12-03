@@ -3,7 +3,7 @@ let _currentUrl;
 let _windowId;
 let _chromeStorage;
 const _tabIdStorage = {};
-const _timeStorage = {}; // used in helpers.js
+let _timeStorage = {}; // used in helpers.js
 
 // clear storage
 // chrome.storage.sync.clear(() => console.log('all gone!'));
@@ -44,24 +44,24 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
-    console.log('removed tabId: ', tabId);
-    console.log('remoed removeInfo', removeInfo);
+    chrome.storage.sync.set(_timeStorage, () => {
+      console.log('Saved to storage!')
+    });
     //removeInfo.isWindowClosing = true/false
+    console.log(_chromeStorage)
   });
 
   chrome.windows.onFocusChanged.addListener(windowId => {
     windowId !== _windowId ? clearInterval(_interval) : interval();
   });
+
+    chrome.storage.onChanged.addListener(() => {
+      getBrowsingTime();
+  });
 });
 
 
 // get url's total time form chrome storage
-function getBrowsingTime() {
-  chrome.storage.sync.get(null, (items) => {
-    _chromeStorage = items;
-    console.log(_chromeStorage)
-  });
-}
 
 
 // let _startTime = {};

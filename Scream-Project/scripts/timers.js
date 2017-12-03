@@ -1,12 +1,16 @@
 let _interval;
-let _counter = 0;
 let _currentUrl;
-let _previousUrl;
 let _windowId;
+let _chromeStorage;
 const _tabIdStorage = {};
-const _timeStorage = {};
+const _timeStorage = {}; // used in helpers.js
+
+// clear storage
+// chrome.storage.sync.clear(() => console.log('all gone!'));
 
 document.addEventListener('DOMContentLoaded', () => {
+
+  getBrowsingTime();
 
   chrome.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
     // tabInfo contains tabId, url, active bool, status and other properties
@@ -39,9 +43,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  chrome.tabs.onRemoved.addListener(tabId => {
-    // console.log('Removed!')
-    // console.log('tabId', tabId);
+  chrome.tabs.onRemoved.addListener((tabId, removeInfo) => {
+    console.log('removed tabId: ', tabId);
+    console.log('remoed removeInfo', removeInfo);
+    //removeInfo.isWindowClosing = true/false
   });
 
   chrome.windows.onFocusChanged.addListener(windowId => {
@@ -50,22 +55,11 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-// function countUp() {
-//   // _counter++;
-//   _timeStorage.hasOwnProperty(_currentUrl) ? _timeStorage[_currentUrl].browsingTime++ : _timeStorage[_currentUrl] = { browsingTime: 0 };
-//   // console.log(_timeStorage)
-// }
-
 // get url's total time form chrome storage
 function getBrowsingTime() {
   chrome.storage.sync.get(null, (items) => {
-    if (items.hasOwnProperty(_currentUrl)) {
-      console.log(items[_currentUrl]);
-    } else {
-      chrome.storage.sync.set({ [_currentUrl]: { browsingTime: 0 } }, () => {
-        console.log(items)
-      });
-    }
+    _chromeStorage = items;
+    console.log(_chromeStorage)
   });
 }
 

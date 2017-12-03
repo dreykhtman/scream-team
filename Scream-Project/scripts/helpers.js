@@ -7,7 +7,6 @@ function getDomainNoPrefix(url) {
 
 // clears old interval and starts new interval
 function interval() {
-  _counter = 0;
   const clearIntervalPromise = new Promise((resolve, reject) => {
     resolve(clearInterval(_interval));
   });
@@ -16,7 +15,11 @@ function interval() {
     .then(() => {
       _interval = setInterval(() => {
         // increment or start browsing time in timer storage
-        _timeStorage.hasOwnProperty(_currentUrl) ? _timeStorage[_currentUrl].browsingTime++ : _timeStorage[_currentUrl] = { browsingTime: 0 };
+        if (_currentUrl) {
+          _timeStorage.hasOwnProperty(_currentUrl) ? _timeStorage[_currentUrl].browsingTime++ : _timeStorage[_currentUrl] = { browsingTime: 0 };
+        } else {
+          return;
+        }
         console.log(_currentUrl, _timeStorage[_currentUrl])
       }, 1000);
     });

@@ -22,7 +22,6 @@ function interval() {
         } else {
           return;
         }
-      console.log(_timeStorage[_currentUrl])
       }, 1000);
     });
 }
@@ -37,4 +36,12 @@ function timeConverter(obj) {
   let hrToSec = obj.goalHrs * 3600;
   let minToSec = obj.goalMins * 60;
   return hrToSec + minToSec;
+}
+
+function resetBrowsingTimes() {
+  for (let domain in _timeStorage) {
+    if (_timeStorage.hasOwnProperty(domain)) {
+      _timeStorage[domain].browsingTime = 0;
+    }
+  }
 }

@@ -37,3 +37,11 @@ function timeConverter(obj) {
   let minToSec = obj.goalMins * 60;
   return hrToSec + minToSec;
 }
+
+function resetBrowsingTimes() {
+  for (let domain in _timeStorage) {
+    if (_timeStorage.hasOwnProperty(domain)) {
+      _timeStorage[domain].browsingTime = 0;
+    }
+  }
+}

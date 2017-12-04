@@ -3,12 +3,12 @@ let flag = false;
 function getBedtimeInput() {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(null, function (items) {
-      if (!items) reject(new Error('no data found'))
+      if (!items) reject(new Error('no data found'));
       let bedtime = items.bedtime;
       let waketime = items.waketime;
-      resolve({ bedtime, waketime, items })
-    })
-  })
+      resolve({ bedtime, waketime, items });
+    });
+  });
 }
 
 function timeToSecs(time) {
@@ -28,20 +28,20 @@ function calculateTimeDiff(t1, t2) {
 chrome.tabs.onCreated.addListener(() => {
   getBedtimeInput()
     .then(({ bedtime, waketime }) => {
-      let bedtimeUrl = 'https://i.ytimg.com/vi/0R8SmeKDvjg/maxresdefault.jpg'
+      let bedtimeUrl = 'https://i.ytimg.com/vi/0R8SmeKDvjg/maxresdefault.jpg';
       let currentTime = new Date().toTimeString().split(' ')[0].slice(0, -3);
       if (bedtime) {
-        let timeDiff = calculateTimeDiff(bedtime, currentTime)
+        let timeDiff = calculateTimeDiff(bedtime, currentTime);
         if (timeDiff > 0 && timeDiff < 20) {
-          new Notification('', {
+          let notification = new Notification('', {
             body: `\nYou're almost at your bedtime!`,
             icon: 'images/littlegnome.png',
             requireInteraction: true
-          })
+          });
         }
         else if ((currentTime >= bedtime) && !flag) {
-          chrome.tabs.update({ url: bedtimeUrl })
+          chrome.tabs.update({ url: bedtimeUrl });
         }
       }
-    })
-})
+    });
+});

@@ -2,14 +2,9 @@ let _blacklistGoals = {};
 let _whiteList = [];
 let _totalBrowsingTime = {};
 
-function timeConverter(obj) {
-  let hrToSec = obj.goalHrs * 3600;
-  let minToSec = obj.goalMins * 60;
-  return hrToSec + minToSec;
-}
 
 // get goal times from storage
-function goalGetter() {
+function getGoals() {
   getData()
     .then((data) => {
       _blacklistGoals = data._blacklistGoals;
@@ -23,6 +18,7 @@ function getData() {
       _blacklistGoals = {};
       _whiteList = [];
       _totalBrowsingTime = {};
+
       for (let domain in items) {
         if (items.hasOwnProperty(domain)) {
           if (items[domain].type === 'red') {
@@ -38,12 +34,6 @@ function getData() {
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  goalGetter();
-  chrome.storage.onChanged.addListener(() => {
-    goalGetter();
-  });
-});
 
 // get time in minuts for alarms
 function getBlacklistGoal() {
@@ -54,9 +44,9 @@ function getBlacklistGoal() {
 function firstAlarm() {
   // navigate away if browsing time is greater than goal time
   if (_totalBrowsingTime[_currentUrl] >= _blacklistGoals[_currentUrl]) {
-    chrome.alarms.clearAll(() => {});
+    chrome.alarms.clearAll(() => { });
     let randomUrl = 'http://' + _whiteList[Math.floor(Math.random() * _whiteList.length)];
-    chrome.tabs.update(_currentTabId, { url: randomUrl });
+    chrome.tabs.update({ url: randomUrl });
   } else if (_blacklistGoals.hasOwnProperty(_currentUrl)) {
     chrome.alarms.create('firstWarning', { delayInMinutes: getBlacklistGoal() * 0.5 });
   }
@@ -67,7 +57,7 @@ function secondAlarm() {
 }
 
 function thirdAlarm() {
-  chrome.alarms.create('thirdWarning', { delayInMinutes: getBlacklistGoal() * 0.01 });
+  chrome.alarms.create('thirdWarning', { delayInMinutes: 0 });
 }
 
 function assignNotification() {
@@ -93,17 +83,3 @@ function notifyMe() {
     });
   }
 }
-
-// every alarm triggers the next one
-chrome.alarms.onAlarm.addListener(alarm => {
-  let randomUrl = 'http://' + _whiteList[Math.floor(Math.random() * _whiteList.length)];
-  if (alarm.name === 'firstWarning') {
-    secondAlarm();
-    notifyMe();
-  } else if (alarm.name === 'secondWarning') {
-    thirdAlarm();
-    alert(`Your time on ${_currentUrl} is almost up!`);
-  } else if (alarm.name === 'thirdWarning') {
-    chrome.tabs.update(_currentTabId, { url: randomUrl });
-  }
-});

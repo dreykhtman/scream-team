@@ -1,6 +1,7 @@
 let _interval;
 let _currentUrl;
 let _windowId;
+let _yesterdayDate;
 let _timeStorage = {}; // used in helpers.js
 const _tabIdStorage = {};
 
@@ -11,6 +12,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
   getBrowsingTime();
   getGoals();
+
+  chrome.storage.sync.get(null, (items) => {
+    const newDate = new Date();
+    const todayDate = newDate.toLocaleDateString();
+
+    if (!items.yesterday) {
+      chrome.storage.sync.set({ yesterday: {date: todayDate} }, () => {
+        _yesterdayDate = todayDate;
+      });
+    } else {
+      _yesterdayDate = items.yesterday.date;
+    }
+
+    if (_yesterdayDate !== todayDate) {
+      resetBrowsingTimes();
+    }
+  });
 
   chrome.tabs.onUpdated.addListener((tabId, changeInfo, tabInfo) => {
     // tabInfo contains tabId, url, active bool, status and other properties

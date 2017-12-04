@@ -22,7 +22,6 @@ function interval() {
         } else {
           return;
         }
-      console.log(_timeStorage[_currentUrl])
       }, 1000);
     });
 }

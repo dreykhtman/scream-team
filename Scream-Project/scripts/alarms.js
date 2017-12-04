@@ -13,12 +13,14 @@ function getGoals() {
 }
 
 function getData() {
+  const newDate = new Date();
+  const todayDate = newDate.toLocaleDateString();
+
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(null, (items) => {
       _blacklistGoals = {};
       _whiteList = [];
       _totalBrowsingTime = {};
-
       for (let domain in items) {
         if (items.hasOwnProperty(domain)) {
           if (items[domain].type === 'red') {
@@ -29,7 +31,20 @@ function getData() {
           }
         }
       }
-      resolve({ _blacklistGoals, _whiteList });
+
+      if (!items.yesterday.date) {
+        chrome.storage.sync.set({ yesterday: {date: todayDate} }, () => {
+          _yesterdayDate = todayDate;
+        });
+      } else {
+        _yesterdayDate = items.yesterday.date;
+      }
+
+      if (_yesterdayDate !== todayDate) {
+        resetBrowsingTimes();
+      }
+
+      resolve({ _blacklistGoals, _whiteList, _yesterdayDate });
     });
   });
 }

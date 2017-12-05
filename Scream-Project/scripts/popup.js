@@ -155,7 +155,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   })
 
   let { dataForChart } = await getInput();
-  loadPieChart(dataForChart)
+  // loadPieChart(dataForChart)
 
   // event listener for detailed chart:
   let detailsButton = document.getElementById('initial-view-details-button');

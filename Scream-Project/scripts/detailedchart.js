@@ -1,4 +1,5 @@
 function loadDetailedChart(data) {
+    console.log("detailedChart line 2: ", data)
     let svg = d3.select("svg"),
         margin = { top: 20, right: 20, bottom: 30, left: 40 },
         width = +svg.attr("width") - margin.left - margin.right,
@@ -10,10 +11,10 @@ function loadDetailedChart(data) {
     let g = svg.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    d3.tsv(data, function (d) {
+    // d3.(data, function (d) {
         d.frequency = +d.frequency;
         return d;
-    }, function (error, data) {
+    // }, function (error, data) {
         if (error) throw error;
 
         x.domain(data.map(function (d) { return d.letter; }));

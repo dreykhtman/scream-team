@@ -8,7 +8,7 @@ const Site = db.define('site', {
         validate: {
             notEmpty: true
         }
-    }, 
+    },
     goalHrs: {
         type: Sequelize.INTEGER,
         defaultValue: 0
@@ -20,6 +20,6 @@ const Site = db.define('site', {
     type: {
         type: Sequelize.STRING
     }
-})
+});
 
 module.exports = Site;

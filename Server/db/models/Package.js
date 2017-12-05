@@ -5,6 +5,6 @@ const Package = db.define('package', {
     name: {
         type: Sequelize.STRING
     }
-})
+});
 
 module.exports = Package;

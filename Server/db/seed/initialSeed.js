@@ -1,7 +1,7 @@
-const {db, Package, Site} = require('../');
+const { db, Package, Site } = require('../');
 
-async function seeder(){
-    await db.sync({force: true});
+async function seeder() {
+    await db.sync({ force: true });
     let socialSites = await Site.bulkCreate([
         {
             url: 'http://www.instagram.com',
@@ -27,20 +27,19 @@ async function seeder(){
             goalMins: 15,
             type: 'RED'
         }
-    ], {returning: true})
+    ], { returning: true })
     let socialPackage = await Package.create({
         name: 'Social Media Addiction'
     })
 
-    for(let i = 0; i < socialSites.length; i++){
+    for (let i = 0; i < socialSites.length; i++) {
         await socialPackage.addSite(socialSites[i])
     }
 
-    await db.close(); 
+    await db.close();
 }
 
 seeder()
-.then(() => {
-    console.log('seeding complete!');
-})
-
+    .then(() => {
+        console.log('seeding complete!');
+    })

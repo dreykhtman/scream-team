@@ -158,11 +158,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   // loadPieChart(dataForChart)
 
   // event listener for detailed chart:
-  let detailsButton = document.getElementById('initial-view-details-button');
-  detailsButton.addEventListener('click', (e) => {
+  // let detailsButton = document.getElementById('initial-view-details-button');
+  // detailsButton.addEventListener('click', (e) => {
     loadDetailedChart(dataForChart)
     // toggleDetailedChartView('detailedChart')
-  })
+  // })
 });
 
 function saveInput(e, type) {

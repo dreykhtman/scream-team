@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     toggleSettings();
     //fetch to get data from deployed database
   window.fetch('https://frozen-castle-90148.herokuapp.com/api/packages').then(function(response) {
-    var contentType = response.headers.get("content-type");
+    let contentType = response.headers.get("content-type");
     if(contentType && contentType.includes("application/json")) {
       return response.json();
     }
@@ -111,7 +111,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   packageSubmit.addEventListener('click', (e) => {
     window.fetch('https://frozen-castle-90148.herokuapp.com/api/packages').then(function(response) {
-      var contentType = response.headers.get("content-type");
+      let contentType = response.headers.get("content-type");
       if(contentType && contentType.includes("application/json")) {
         return response.json();
       }

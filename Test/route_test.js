@@ -39,7 +39,7 @@ describe('Packages Route:', () => {
 
       await searchAddictPackage.addSite(sites);
 
-      () => { 
+      () => {
         return agent
           .get('/packages')
           .expect(200)
@@ -52,6 +52,6 @@ describe('Packages Route:', () => {
             expect(res.body[0].type).to.equal('red');
           });
       };
-    });
-  });
+    }); // end it('returns a package if there is one in the database')
+  }); // end describe('GET /packages')
 });

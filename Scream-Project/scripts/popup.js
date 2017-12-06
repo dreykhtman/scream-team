@@ -42,60 +42,65 @@ function convertTime(time) {
   return time;
 }
 
+//fetch to get package data from deployed database
+async function getPackages() {
+  let packages = await window.fetch('https://frozen-castle-90148.herokuapp.com/api/packages').then(function (response) {
+    let contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      return response.json();
+    }
+    throw new TypeError("no JSON");
+  })
+  return packages;
+}
+
+
 //wait for DOM to load
 document.addEventListener('DOMContentLoaded', async () => {
+
+  // getting package data from deployed database
+  let packages = await getPackages();
 
   // click listener to load & populate all user data fields when expand button is clicked
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
     e.preventDefault();
     toggleSettings();
-    //fetch to get data from deployed database
-  window.fetch('https://frozen-castle-90148.herokuapp.com/api/packages').then(function(response) {
-    var contentType = response.headers.get("content-type");
-    if(contentType && contentType.includes("application/json")) {
-      return response.json();
-    }
-    throw new TypeError("no JSON");
-  })
-  .then(function(dbArray) {
-    console.log('heres our packages in our extension', dbArray)
+
+    // populating package dropdown
     let packageDropdown = document.getElementById('settings-packagelist-section-form-url');
-    let packageHTML="";
-    if(!!dbArray) {
-      dbArray.forEach((item) => {
+    let packageHTML = "";
+    if (!!packages) {
+      packages.forEach((item) => {
         packageHTML += "<option value=" + item.name + ">" + item.name + "</option>";
         packageDropdown.innerHTML = packageHTML
       })
     }
   })
-  .catch(function(error) { console.log(error); });
 
-    getInput()
-      .then(({ items }) => {
-        let waketime, bedtime;
-        let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
-        let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
-        let bedtimeArea = document.getElementById('settings-bedtime-section-load-bedtime');
-        let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
-        let militaryWaketime = items.waketime;
-        let militaryBedtime = items.bedtime;
-        militaryWaketime ? waketime = convertTime(items.waketime) : waketime = 'Not set';
-        militaryBedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not set';
-        let redHTML = '';
-        let greenHTML = '';
-        if(!!items) {
-          for (let url in items) {
-          if (items[url].type === "red") redHTML += "<option value" + url + ">" + url + "</option>";
-          if (items[url].type === "green") greenHTML += "<option value" + url + ">" + url + "</option>";
-          }
-        }
-        redListDropDown.innerHTML = redHTML;
-        greenListDropDown.innerHTML = greenHTML;
-        bedtimeArea.innerHTML = bedtime;
-        waketimeArea.innerHTML = waketime;
-      })
-  });
+  // populating user data from chrome storage into expanded section
+  let { items } = await getInput()
+    let waketime, bedtime;
+    let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
+    let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
+    let bedtimeArea = document.getElementById('settings-bedtime-section-load-bedtime');
+    let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
+    let militaryWaketime = items.waketime;
+    let militaryBedtime = items.bedtime;
+    militaryWaketime ? waketime = convertTime(items.waketime) : waketime = 'Not set';
+    militaryBedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not set';
+    let redHTML = '';
+    let greenHTML = '';
+    if (!!items) {
+      for (let url in items) {
+        if (items[url].type === "red") redHTML += "<option value" + url + ">" + url + "</option>";
+        if (items[url].type === "green") greenHTML += "<option value" + url + ">" + url + "</option>";
+      }
+    }
+    redListDropDown.innerHTML = redHTML;
+    greenListDropDown.innerHTML = greenHTML;
+    bedtimeArea.innerHTML = bedtime;
+    waketimeArea.innerHTML = waketime;
 
   let redlistForm = document.getElementById('settings-redlist-section-form')
   let greenlistForm = document.getElementById('settings-greenlist-section-form')
@@ -109,25 +114,16 @@ document.addEventListener('DOMContentLoaded', async () => {
   let oneClickRed = document.getElementById('initial-view-oneclickadd-redlist')
   let packageSubmit = document.getElementById('settings-packagelist-section-form-url-submit')
 
+  // adding a selected package to current user on submit!
   packageSubmit.addEventListener('click', (e) => {
-    window.fetch('https://frozen-castle-90148.herokuapp.com/api/packages').then(function(response) {
-      var contentType = response.headers.get("content-type");
-      if(contentType && contentType.includes("application/json")) {
-        return response.json();
-      }
-      throw new TypeError("no JSON");
-    })
-    .then(packages => {
-      packages.forEach((package) => {
-        let dropdown = document.getElementById('settings-packagelist-section-form-url').value
-        if(package.name.includes(dropdown)){
-         package.sites.forEach(site => {
-           console.log(site)
-           savePackageToChromeDB(site.url, site.type, site.goalHrs, site.goalMins)
+    packages.forEach((package) => {
+      let dropdown = document.getElementById('settings-packagelist-section-form-url').value
+      if (package.name.includes(dropdown)) {
+        package.sites.forEach(site => {
+          savePackageToChromeDB(site.url, site.type, site.goalHrs, site.goalMins)
           appendToOptionsFromPackageSubmit(e, site.url, site.type)
-         })
-        }
-      })
+        })
+      }
     })
   })
 
@@ -237,7 +233,7 @@ function saveTime(e, type) {
   })
 }
 
-async function editInput (e, type) {
+async function editInput(e, type) {
   e.preventDefault()
   let selectElem = document.getElementById(`settings-${type}list-section-form-dropdown-options`);
   let optionValue = selectElem.options[selectElem.selectedIndex].value;
@@ -251,7 +247,7 @@ async function editInput (e, type) {
   deleteInput(e, type);
 }
 
-function deleteInput (e, type) {
+function deleteInput(e, type) {
   e.preventDefault();
   let selectElem = document.getElementById(`settings-${type}list-section-form-dropdown-options`);
   let optionValue = selectElem.options[selectElem.selectedIndex].value;
@@ -289,10 +285,10 @@ function clearInput(e, type) {
   let hrs = document.getElementById(`settings-${type}list-section-form-hrs`);
   let mins = document.getElementById(`settings-${type}list-section-form-mins`);
   url.value = "";
-  if(type === 'green') {
+  if (type === 'green') {
     document.getElementById(`settings-${type}list-section-form-url`).placeholder = "www.nytimes.com";
   }
-  if(type === "red") {
+  if (type === "red") {
     document.getElementById(`settings-${type}list-section-form-url`).placeholder = "www.facebook.com";
   }
 
@@ -340,18 +336,18 @@ function saveSiteOneClick(e, type) {
   e.preventDefault()
   chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     let url = getDomainNoPrefix(tabs[0].url);
-      let urlObj = {
-        url: url,
-        type: type,
-        goalHrs: 1,
-        goalMins: 0,
-        browsingTime: 0
-      }
-    chrome.storage.sync.set({[url]: urlObj}, () => {
+    let urlObj = {
+      url: url,
+      type: type,
+      goalHrs: 1,
+      goalMins: 0,
+      browsingTime: 0
+    }
+    chrome.storage.sync.set({ [url]: urlObj }, () => {
       let colorList;
-      if(type === 'red'){
+      if (type === 'red') {
         colorList = 'black';
-      } else{
+      } else {
         colorList = 'white';
       }
       const notification = new Notification('', {
@@ -359,7 +355,7 @@ function saveSiteOneClick(e, type) {
         icon: 'images/littlegnome.png',
         requireInteraction: false
       })
-   })
+    })
   })
 }
 

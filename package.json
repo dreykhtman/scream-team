@@ -4,7 +4,7 @@
   "description": "",
   "main": "Server/main.js",
   "scripts": {
-    "test": "mocha --watch Test/*.js",
+    "test": "mocha --watch Test/*.js, testem",
     "grade": "mocha --reporter spec --timeout 300 Test/*.js",
     "start": "node Server/main.js"
   },

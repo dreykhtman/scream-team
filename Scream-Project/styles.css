@@ -48,7 +48,11 @@ h1 {
 }
 
 .hrs, .mins {
-  width: 50px;
+  width: 30px;
+}
+
+.time {
+  width: 100px;
 }
 
 input[type="submit"]  {
@@ -120,8 +124,8 @@ h3, p{
 #gnome {
   position: absolute;
   display: flex;
-  bottom: 0px;
-  right: 30px;
+  bottom: -10px;
+  right: 25px;
   height: 180px;
   z-index: 1;
 }
@@ -140,3 +144,24 @@ svg {
 .arc path {
   stroke: #fff;
 }
+
+.submit-button {
+  font-size: 12px;
+  font-family: Georgia, Serif;
+  font-weight: bold;
+  color: #373F27;
+  border-radius: 25px;
+  align-items: center;
+  background-color: #CDA34F;
+  border-width: 1px;
+  border-color: #373F27;
+  padding: 4px;
+  margin: 4px;
+}
+
+#initial-view-oneclickadd {
+  margin: auto;
+  width: 95%;
+}
+
+

@@ -58,47 +58,90 @@ function convertTime(time) {
   return time;
 }
 
+//fetch to get package data from deployed database
+async function getPackages() {
+  let packages = await window.fetch('https://frozen-castle-90148.herokuapp.com/api/packages').then(function (response) {
+    let contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+      return response.json();
+    }
+    throw new TypeError("no JSON");
+  })
+  return packages;
+}
+
+
 //wait for DOM to load
 document.addEventListener('DOMContentLoaded', async () => {
-  //click listener to load & populate all user data fields when expand button is clicked
+
+  // getting package data from deployed database
+  let packages = await getPackages();
+
+  // click listener to load & populate all user data fields when expand button is clicked
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
     e.preventDefault();
     toggleSettings();
-    getInput()
-      .then(({ items }) => {
-        let waketime, bedtime;
-        let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
-        let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
-        let bedtimeArea = document.getElementById('settings-bedtime-section-load-bedtime');
-        let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
-        let militaryWaketime = items.waketime;
-        let militaryBedtime = items.bedtime;
-        militaryWaketime ? waketime = convertTime(items.waketime) : waketime = 'Not Set';
-        militaryBedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not Set';
-        let redHTML = '';
-        let greenHTML = '';
-        if(!!items) {
-          for (let url in items) {
-          if (items[url].type === "red") redHTML += "<option value" + url + ">" + url + "</option>";
-          if (items[url].type === "green") greenHTML += "<option value" + url + ">" + url + "</option>";
-          }
-        }
-        redListDropDown.innerHTML = redHTML;
-        greenListDropDown.innerHTML = greenHTML;
-        bedtimeArea.innerHTML = bedtime;
-        waketimeArea.innerHTML = waketime;
-      })
-  });
 
-  let redlistForm = document.getElementById('settings-redlist-section-form');
-  let greenlistForm = document.getElementById('settings-greenlist-section-form');
+    // populating package dropdown
+    let packageDropdown = document.getElementById('settings-packagelist-section-form-url');
+    let packageHTML = "";
+    if (!!packages) {
+      packages.forEach((item) => {
+        packageHTML += "<option value=" + item.name + ">" + item.name + "</option>";
+        packageDropdown.innerHTML = packageHTML
+      })
+    }
+  })
+
+  // populating user data from chrome storage into expanded section
+  let { items } = await getInput()
+    let waketime, bedtime;
+    let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
+    let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
+    let bedtimeArea = document.getElementById('settings-bedtime-section-load-bedtime');
+    let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
+    let militaryWaketime = items.waketime;
+    let militaryBedtime = items.bedtime;
+    militaryWaketime ? waketime = convertTime(items.waketime) : waketime = 'Not set';
+    militaryBedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not set';
+    let redHTML = '';
+    let greenHTML = '';
+    if (!!items) {
+      for (let url in items) {
+        if (items[url].type === "red") redHTML += "<option value" + url + ">" + url + "</option>";
+        if (items[url].type === "green") greenHTML += "<option value" + url + ">" + url + "</option>";
+      }
+    }
+    redListDropDown.innerHTML = redHTML;
+    greenListDropDown.innerHTML = greenHTML;
+    bedtimeArea.innerHTML = bedtime;
+    waketimeArea.innerHTML = waketime;
+
+  let redlistForm = document.getElementById('settings-redlist-section-form')
+  let greenlistForm = document.getElementById('settings-greenlist-section-form')
   let redlistButton = document.getElementById('settings-redlist-section-form-submit')
   let greenlistButton = document.getElementById('settings-greenlist-section-form-submit')
   let greenlistEdit = document.getElementById('greenlist-edit-btn')
   let greenlistDelete = document.getElementById('greenlist-delete-btn')
   let redlistEdit = document.getElementById('redlist-edit-btn')
   let redlistDelete = document.getElementById('redlist-delete-btn')
+  let oneClickGreen = document.getElementById('initial-view-oneclickadd-greenlist')
+  let oneClickRed = document.getElementById('initial-view-oneclickadd-redlist')
+  let packageSubmit = document.getElementById('settings-packagelist-section-form-url-submit')
+
+  // adding a selected package to current user on submit!
+  packageSubmit.addEventListener('click', (e) => {
+    packages.forEach((package) => {
+      let dropdown = document.getElementById('settings-packagelist-section-form-url').value
+      if (package.name.includes(dropdown)) {
+        package.sites.forEach(site => {
+          savePackageToChromeDB(site.url, site.type, site.goalHrs, site.goalMins)
+          appendToOptionsFromPackageSubmit(e, site.url, site.type)
+        })
+      }
+    })
+  })
 
   redlistForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -123,19 +166,30 @@ document.addEventListener('DOMContentLoaded', async () => {
     e.preventDefault();
     editInput(e, 'red');
   });
+
   greenlistDelete.addEventListener('click', (e) => {
     e.preventDefault();
     deleteInput(e, 'green');
     clearListonDelete(e, 'green')
-
   });
+
   redlistDelete.addEventListener('click', (e) => {
     e.preventDefault();
     deleteInput(e, 'red');
     clearListonDelete(e, 'red')
+  });
 
+  oneClickGreen.addEventListener('click', (e) => {
+    e.preventDefault();
+    saveSiteOneClick(e, 'green')
 
   });
+
+  oneClickRed.addEventListener('click', (e) => {
+    e.preventDefault();
+    saveSiteOneClick(e, 'red')
+  });
+
 
   let bedtimeForm = document.getElementById('settings-bedtime-section-form');
   bedtimeForm.addEventListener('submit', (e) => {
@@ -143,7 +197,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     saveTime(e, 'bedtime');
     appendBedTime(e);
     clearBedTime(e);
-
   });
 
   let waketimeForm = document.getElementById('settings-bedtime-section-waketime-form');
@@ -180,6 +233,22 @@ function saveInput(e, type) {
   })
 }
 
+function savePackageToChromeDB(url, type, hrs, mins) {
+  type = type.toLowerCase()
+  url = getDomainNoPrefix(url)
+  let urlObj = {
+    url: url,
+    type: type,
+    goalHrs: hrs,
+    goalMins: mins,
+    browsingTime: 0
+  }
+  chrome.storage.sync.set({ [url]: urlObj }, () => {
+    console.log('saved', urlObj)
+  })
+}
+
+
 function saveTime(e, type) {
   e.preventDefault()
   let setTime = e.target.timeInput.value
@@ -187,7 +256,7 @@ function saveTime(e, type) {
   })
 }
 
-async function editInput (e, type) {
+async function editInput(e, type) {
   e.preventDefault()
   let selectElem = document.getElementById(`settings-${type}list-section-form-dropdown-options`);
   let optionValue = selectElem.options[selectElem.selectedIndex].value;
@@ -201,7 +270,7 @@ async function editInput (e, type) {
   deleteInput(e, type);
 }
 
-function deleteInput (e, type) {
+function deleteInput(e, type) {
   e.preventDefault();
   let selectElem = document.getElementById(`settings-${type}list-section-form-dropdown-options`);
   let optionValue = selectElem.options[selectElem.selectedIndex].value;
@@ -215,7 +284,18 @@ function getDomain(url) {
 
 function appendToOptions(e, type) {
   e.preventDefault();
+  type = type.toLowerCase()
   let url = getDomain(document.getElementById(`settings-${type}list-section-form-url`).value);
+  let option = document.createElement("option");
+  let text = document.createTextNode(url);
+  option.appendChild(text)
+  document.getElementById(`settings-${type}list-section-form-dropdown-options`).appendChild(option)
+}
+
+function appendToOptionsFromPackageSubmit(e, url, type) {
+  e.preventDefault();
+  type = type.toLowerCase()
+  url = getDomain(url)
   let option = document.createElement("option");
   let text = document.createTextNode(url);
   option.appendChild(text)
@@ -228,7 +308,13 @@ function clearInput(e, type) {
   let hrs = document.getElementById(`settings-${type}list-section-form-hrs`);
   let mins = document.getElementById(`settings-${type}list-section-form-mins`);
   url.value = "";
-  document.getElementById(`settings-${type}list-section-form-url`).placeholder = "google.com";
+  if (type === 'green') {
+    document.getElementById(`settings-${type}list-section-form-url`).placeholder = "www.nytimes.com";
+  }
+  if (type === "red") {
+    document.getElementById(`settings-${type}list-section-form-url`).placeholder = "www.facebook.com";
+  }
+
   hrs.value = null;
   mins.value = null;
 }
@@ -260,4 +346,40 @@ function clearListonDelete(e, type) {
   let selectElem = document.getElementById(`settings-${type}list-section-form-dropdown-options`);
   selectElem.removeChild(selectElem.childNodes[0])
 }
+
+
+function getDomainNoPrefix(url) {
+  let link = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+  let output = (link.split('.').length > 2) ? link.split('.').slice(-2).join('.') : link;
+
+  return output;
+}
+
+function saveSiteOneClick(e, type) {
+  e.preventDefault()
+  chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
+    let url = getDomainNoPrefix(tabs[0].url);
+    let urlObj = {
+      url: url,
+      type: type,
+      goalHrs: 1,
+      goalMins: 0,
+      browsingTime: 0
+    }
+    chrome.storage.sync.set({ [url]: urlObj }, () => {
+      let colorList;
+      if (type === 'red') {
+        colorList = 'black';
+      } else {
+        colorList = 'white';
+      }
+      const notification = new Notification('', {
+        body: `\n${url} is now on ${colorList}list`,
+        icon: 'images/littlegnome.png',
+        requireInteraction: false
+      })
+    })
+  })
+}
+
 

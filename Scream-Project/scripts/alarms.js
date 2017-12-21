@@ -1,42 +1,53 @@
 let _blacklistGoals = {};
 let _whiteList = [];
+let _totalBrowsingTime = {};
 
-function timeConverter(obj) {
-  let hrToSec = obj.goalHrs * 3600;
-  let minToSec = obj.goalMins * 60;
-  return hrToSec + minToSec;
-}
 
 // get goal times from storage
-function goalGetter() {
-  chrome.storage.sync.get(null, (items) => {
-    for (let domain in items) {
-      if (items.hasOwnProperty(domain)) {
-        if (items[domain].type === 'red') {
-          _blacklistGoals[domain] = timeConverter(items[domain]);
-        } else if (items[domain].type === 'green') {
-          _whiteList.push(domain);
+function getGoals() {
+  getData()
+    .then((data) => {
+      _blacklistGoals = data._blacklistGoals;
+      _whiteList = data._whiteList;
+    });
+}
+
+function getData() {
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(null, (items) => {
+      _blacklistGoals = {};
+      _whiteList = [];
+      _totalBrowsingTime = {};
+
+      for (let domain in items) {
+        if (items.hasOwnProperty(domain)) {
+          if (items[domain].type === 'red') {
+            _blacklistGoals[domain] = timeConverter(items[domain]);
+            _totalBrowsingTime[domain] = items[domain].browsingTime;
+          } else if (items[domain].type === 'green') {
+            _whiteList.push(domain);
+          }
         }
       }
-    }
+      resolve({ _blacklistGoals, _whiteList });
+    });
   });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  goalGetter();
-
-  chrome.storage.onChanged.addListener(() => {
-    goalGetter();
-  });
-});
 
 // get time in minuts for alarms
 function getBlacklistGoal() {
-  return Math.floor(_blacklistGoals[_currentUrl] / 60);
+  let minutes = (_blacklistGoals[_currentUrl] - _totalBrowsingTime[_currentUrl]) / 60;
+  return minutes;
 }
 
 function firstAlarm() {
-  if (_blacklistGoals.hasOwnProperty(_currentUrl)) {
+  // navigate away if browsing time is greater than goal time
+  if (_totalBrowsingTime[_currentUrl] >= _blacklistGoals[_currentUrl]) {
+    chrome.alarms.clearAll(() => { });
+    let randomUrl = 'http://' + _whiteList[Math.floor(Math.random() * _whiteList.length)];
+    chrome.tabs.update({ url: randomUrl });
+  } else if (_blacklistGoals.hasOwnProperty(_currentUrl)) {
     chrome.alarms.create('firstWarning', { delayInMinutes: getBlacklistGoal() * 0.5 });
   }
 }
@@ -46,15 +57,15 @@ function secondAlarm() {
 }
 
 function thirdAlarm() {
-  chrome.alarms.create('thirdWarning', { delayInMinutes: getBlacklistGoal() * 0.01 });
+  chrome.alarms.create('thirdWarning', { delayInMinutes: 0 });
 }
 
 function assignNotification() {
   let notification = new Notification('', {
-    body: `\nYou are halfway through your total time of ${_blacklistGoals[_currentUrl] / 60} minutes on ${_currentUrl}`,
+    body: `\nHalfway through ${_blacklistGoals[_currentUrl] / 60} minutes on ${_currentUrl}`,
     title: 'Hello',
     icon: 'images/littlegnome.png',
-    requireInteraction: true
+    requireInteraction: false
   });
 }
 
@@ -72,17 +83,3 @@ function notifyMe() {
     });
   }
 }
-
-// every alarm triggers the next one
-chrome.alarms.onAlarm.addListener(alarm => {
-  let randomUrl = 'http://' + _whiteList[Math.floor(Math.random() * _whiteList.length)];
-  if (alarm.name === 'firstWarning') {
-    secondAlarm();
-    notifyMe();
-  } else if (alarm.name === 'secondWarning') {
-    thirdAlarm();
-    alert(`Your time on ${_currentUrl} is almost up!`);
-  } else if (alarm.name === 'thirdWarning') {
-    chrome.tabs.update(_currentTabId, { url: randomUrl });
-  }
-});

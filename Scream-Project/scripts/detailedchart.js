@@ -42,3 +42,4 @@ function loadDetailedChart(data) {
         .attr("height", function (d) { return height - y(d.browsingTime); });
 
 }
+

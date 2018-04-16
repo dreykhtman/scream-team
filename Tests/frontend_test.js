@@ -1,3 +1,7 @@
+'use strict';
+
+const { expect } = require('chai');
+
 describe('The time converter function', function () {
   it('converts military time into standard format', function () {
     let result = convertTime('13:13');

@@ -1,110 +1,108 @@
 <!doctype html>
-
 <html>
-  <head>
-    <meta name="description" content="Browser extension that allows you to enter goals about your internet use, and thenalters your browsing experience to help you meet those goals.">
-    <title>Chrome Gnome</title>
-    <link rel='stylesheet' type='text/css' href='styles.css'>
-    <script src="scripts/d3.v4.js"></script>
-    <script src="scripts/bedtime.js"></script>
-    <script data-main="popup.js" src="scripts/popup.js"></script>
-    <script defer src="scripts/piechart.js"></script>
-  </head>
+<head>
+  <meta name="description" content="Browser extension that allows you to enter goals about your internet use, and thenalters your browsing experience to help you meet those goals.">
+  <title>Chrome Gnome</title>
+  <link rel='stylesheet' type='text/css' href='styles.css'>
+  <script src="scripts/d3.v4.js"></script>
+  <script src="scripts/bedtime.js"></script>
+  <script data-main="popup.js" src="scripts/popup.js"></script>
+  <script defer src="scripts/piechart.js"></script>
+</head>
 
-  <body>
-    <h1>Chrome Gnome</h1>
+<body>
+  <h1>Chrome Gnome</h1>
 
-    <section id="initial-view" class="show">
-      <div id="initial-view-oneclickadd">
-        <h3>Add current site to: </h3>
-        <button class="submit-button" id="initial-view-oneclickadd-redlist">Blacklist</button>
-        <button class="submit-button" id="initial-view-oneclickadd-greenlist">Whitelist</button>
-      </div>
-      <svg id='pieChart' height="300" width="300"></svg>
+  <!-- collapsed view -->
+  <main id="initial-view" class="show">
+    <div id="initial-view-oneclickadd">
+      <h3>Add current site to: </h3>
+      <button class="submit-button" id="initial-view-oneclickadd-redlist">Blacklist</button>
+      <button class="submit-button" id="initial-view-oneclickadd-greenlist">Whitelist</button>
+    </div>
+    <svg id='pieChart' height="300" width="300"></svg>
+  </main>
+  <!-- end collapsed view -->
+
+  <button id="initial-view-toggle-button">Expand / Collapse</button>
+
+  <!-- expanded view -->
+  <main id="settings" class="hide">
+
+    <section class="redlist">
+      <h2>Blacklist: </h2>
+      <form id="redlist-form">
+        <label for="redlist-form-url">URL:</label>
+        <input id="redlist-form-url" type="text" placeholder="www.facebook.com" />
+        <label>Max hrs: </label>
+        <input id="redlist-form-hrs" class="hrs" type="number" placeholder="0" />
+        <label>Mins: </label>
+        <input id="redlist-form-mins" class="mins" type="number" placeholder="00" />
+        <input id="redlist-form-submit" type="submit">
+        <div>My site list:</div>
+        <select id="redlist-form-dropdown-options">
+          <option selected disabled hidden value=''></option>
+        </select>
+        <button id="redlist-edit-btn" title="Edit"></button>
+        <button id="redlist-delete-btn" title="Delete"></button>
+      </form>
     </section>
 
-    <button id="initial-view-toggle-button">Expand / Collapse</button>
+    <section class="greenlist">
+      <h2>Whitelist: </h2>
+      <form id="greenlist-form">
+        <label>URL:</label>
+        <input id="greenlist-form-url" type="text" placeholder="www.nytimes.com" />
+        <label>Goal hrs: </label>
+        <input id="greenlist-form-hrs" class="hrs" type="number" placeholder="0" />
+        <label>Mins: </label>
+        <input id="greenlist-form-mins" class="mins" type="number" placeholder="00" />
+        <input id="greenlist-form-submit" type="submit">
+        <div>My site list:</div>
+        <select id="greenlist-form-dropdown-options">
+          <option selected disabled hidden value=''></option>
+        </select>
+        <button id="greenlist-edit-btn" title="Edit"></button>
+        <button id="greenlist-delete-btn" title="Delete"></button>
+      </form>
+    </section>
 
-    <section id="settings" class="hide">
-
-      <article class="settings-redlist">
-        <h2>Blacklist: </h2>
-          <form id="settings-redlist-section-form">
-            <label for="settings-redlist-section-form-url">URL:</label>
-            <input id="settings-redlist-section-form-url" type="text" placeholder="www.facebook.com"/>
-            <label>Max hrs: </label>
-            <input id="settings-redlist-section-form-hrs" class="hrs" type="number" placeholder="0"/>
-            <label>Mins: </label>
-            <input id="settings-redlist-section-form-mins" class="mins" type="number" placeholder="00"/>
-            <input id="settings-redlist-section-form-submit" type="submit">
-          </div>
-          <div class="settings-redlist-section-form-dropdown"></div>
-            <span>My site list:</span>
-            <select id="settings-redlist-section-form-dropdown-options">
-              <option selected disabled hidden value=''></option>
-            </select>
-            <button id="redlist-edit-btn" title="Edit"></button>
-            <button id="redlist-delete-btn" title="Delete"></button>
-          </form>
-      </article>
-
-      <article class="settings-greenlist">
-        <h2>Whitelist: </h2>
-          <form id="settings-greenlist-section-form">
-            <label>URL:</label>
-            <input id = "settings-greenlist-section-form-url" type="text" placeholder="www.nytimes.com"/>
-            <label>Goal hrs: </label>
-            <input id= "settings-greenlist-section-form-hrs" class="hrs" type="number" placeholder="0"/>
-            <label>Mins: </label>
-            <input id="settings-greenlist-section-form-mins" class="mins" type="number" placeholder="00"/>
-            <input id="settings-greenlist-section-form-submit" type="submit">
-          </div>
-          <div class="settings-greenlist-section-form-dropdown">
-            <span>My site list:</span>
-            <select id="settings-greenlist-section-form-dropdown-options">
-              <option selected disabled hidden value=''></option>
-            </select>
-            <button id="greenlist-edit-btn" title="Edit"></button>
-            <button id="greenlist-delete-btn" title="Delete"></button>
-          </form>
-      </article>
-
-      <span class="packages" id="settings-section-form-packages">Pre-made lists: </span>
-      <select id="settings-packagelist-section-form-url"> <!-- dropdown list of red packages -->
+    <section class='packageList'>
+      <span>Pre-made lists:</span>
+      <select id="packageList-form">
         <option selected disabled hidden value=''></option>
       </select>
-      <input id="settings-packagelist-section-form-url-submit" type="submit">
-      <div id="settings-bedtime-section">
-
-        <!-- bedtime & waketime -->
-        <h2>Bedtime: </h2>
-        <form id="settings-bedtime-section-form">
-          <label>Set bedtime: </label>
-          <input id="settings-bedtime-section-form-input" class="time" type="time" name="timeInput"/>
-          <input id="settings-bedtime-section-form-submit" type="submit">
-        </form>
-
-        <div id="settings-current-bedwake-time">
-          <h3>My bedtime: </h3>
-          <p id="settings-bedtime-section-load-bedtime"></p>
-        </div>
-
-        <form id="settings-bedtime-section-waketime-form"><!-- waketime form starts -->
-          <label>Set wake time: </label>
-          <input id="settings-bedtime-section-waketime-form-input" class="time" name="timeInput" type="time"/>
-          <input id="settings-bedtime-section-waketime-form-submit" type="submit">
-        </form>
-
-        <div id="settings-current-bedwake-time">
-          <h3>My wake time: </h3>
-          <p id="settings-bedtime-section-load-waketime"></p>
-        </div>
-
-      </div>
-      <!-- end bedtime & waketime -->
-
-      <img id="gnome" src="images/gnome.png" />
+      <input id="packageList-form-submit" type="submit">
     </section>
 
-  </body>
+    <section class='bedwake'>
+      <h2>Bedtime: </h2>
+
+      <form id="bedtime-form">
+        <label>Set bedtime: </label>
+        <input id="bedtime-form-input" class="time" type="time" name="timeInput" />
+        <input id="bedtime-form-submit" type="submit">
+      </form>
+      <div class="bedwake-set">
+        <h3>My bedtime: </h3>
+        <p id="bedtime-set"></p>
+      </div>
+
+      <form id="waketime-form">
+        <label>Set wake time: </label>
+        <input id="waketime-form-input" class="time" name="timeInput" type="time" />
+        <input id="waketime-form-submit" type="submit">
+      </form>
+      <div class="bedwake-set">
+        <h3>My wake time: </h3>
+        <p id="waketime-set"></p>
+      </div>
+    </section>
+
+    <img id="gnome" src="images/gnome.png" />
+
+  </main>
+  <!-- end expanded view -->
+
+</body>
 </html>

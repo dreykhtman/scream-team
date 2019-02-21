@@ -116,7 +116,7 @@ h3, p{
   font-size: 14px
 }
 
-#settings-current-bedwake-time {
+.bedwake-set {
   margin-top: 2px;
   margin-bottom: 10px;
 }

@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     toggleSettings();
 
     // populating package dropdown
-    let packageDropdown = document.getElementById('settings-packagelist-section-form-url');
+    let packageDropdown = document.getElementById('packageList-form');
     let packageHTML = "";
     if (!!packages) {
       packages.forEach((item) => {
@@ -81,10 +81,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   // populating user data from chrome storage into expanded section
   let { items } = await getInput()
     let waketime, bedtime;
-    let redListDropDown = document.getElementById('settings-redlist-section-form-dropdown-options');
-    let greenListDropDown = document.getElementById('settings-greenlist-section-form-dropdown-options');
-    let bedtimeArea = document.getElementById('settings-bedtime-section-load-bedtime');
-    let waketimeArea = document.getElementById('settings-bedtime-section-load-waketime');
+    let redListDropDown = document.getElementById('redlist-form-dropdown-options');
+    let greenListDropDown = document.getElementById('greenlist-form-dropdown-options');
+    let bedtimeArea = document.getElementById('bedtime-set');
+    let waketimeArea = document.getElementById('waketime-set');
     let militaryWaketime = items.waketime;
     let militaryBedtime = items.bedtime;
     militaryWaketime ? waketime = convertTime(items.waketime) : waketime = 'Not set';
@@ -102,22 +102,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     bedtimeArea.innerHTML = bedtime;
     waketimeArea.innerHTML = waketime;
 
-  let redlistForm = document.getElementById('settings-redlist-section-form')
-  let greenlistForm = document.getElementById('settings-greenlist-section-form')
-  let redlistButton = document.getElementById('settings-redlist-section-form-submit')
-  let greenlistButton = document.getElementById('settings-greenlist-section-form-submit')
+  let redlistForm = document.getElementById('redlist-form')
+  let greenlistForm = document.getElementById('greenlist-form')
+  let redlistButton = document.getElementById('redlist-form-submit')
+  let greenlistButton = document.getElementById('greenlist-form-submit')
   let greenlistEdit = document.getElementById('greenlist-edit-btn')
   let greenlistDelete = document.getElementById('greenlist-delete-btn')
   let redlistEdit = document.getElementById('redlist-edit-btn')
   let redlistDelete = document.getElementById('redlist-delete-btn')
   let oneClickGreen = document.getElementById('initial-view-oneclickadd-greenlist')
   let oneClickRed = document.getElementById('initial-view-oneclickadd-redlist')
-  let packageSubmit = document.getElementById('settings-packagelist-section-form-url-submit')
+  let packageSubmit = document.getElementById('packageList-form-submit')
 
   // adding a selected package to current user on submit!
   packageSubmit.addEventListener('click', (e) => {
     packages.forEach((package) => {
-      let dropdown = document.getElementById('settings-packagelist-section-form-url').value
+      let dropdown = document.getElementById('packageList-form').value
       if (package.name.includes(dropdown)) {
         package.sites.forEach(site => {
           savePackageToChromeDB(site.url, site.type, site.goalHrs, site.goalMins)
@@ -175,7 +175,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
 
-  let bedtimeForm = document.getElementById('settings-bedtime-section-form');
+  let bedtimeForm = document.getElementById('bedtime-form');
   bedtimeForm.addEventListener('submit', (e) => {
     e.preventDefault();
     saveTime(e, 'bedtime');
@@ -183,7 +183,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     clearBedTime(e);
   });
 
-  let waketimeForm = document.getElementById('settings-bedtime-section-waketime-form');
+  let waketimeForm = document.getElementById('waketime-form');
   waketimeForm.addEventListener('submit', (e) => {
     e.preventDefault()
     saveTime(e, 'waketime');
@@ -197,9 +197,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function saveInput(e, type) {
   e.preventDefault();
-  let url = getDomain(document.getElementById(`settings-${type}list-section-form-url`).value);
-  let hrs = document.getElementById(`settings-${type}list-section-form-hrs`).value;
-  let mins = document.getElementById(`settings-${type}list-section-form-mins`).value;
+  let url = getDomain(document.getElementById(`${type}list-form-url`).value);
+  let hrs = document.getElementById(`${type}list-form-hrs`).value;
+  let mins = document.getElementById(`${type}list-form-mins`).value;
   let urlObj = {
     type: type,
     goalHrs: +hrs,
@@ -235,11 +235,11 @@ function saveTime(e, type) {
 
 async function editInput(e, type) {
   e.preventDefault()
-  let selectElem = document.getElementById(`settings-${type}list-section-form-dropdown-options`);
+  let selectElem = document.getElementById(`${type}list-form-dropdown-options`);
   let optionValue = selectElem.options[selectElem.selectedIndex].value;
-  let formUrl = document.getElementById(`settings-${type}list-section-form-url`);
-  let formHrs = document.getElementById(`settings-${type}list-section-form-hrs`);
-  let formMins = document.getElementById(`settings-${type}list-section-form-mins`);
+  let formUrl = document.getElementById(`${type}list-form-url`);
+  let formHrs = document.getElementById(`${type}list-form-hrs`);
+  let formMins = document.getElementById(`${type}list-form-mins`);
   let { items } = await getInput();
   formUrl.value = optionValue;
   formHrs.value = items[optionValue].goalHrs;
@@ -249,7 +249,7 @@ async function editInput(e, type) {
 
 function deleteInput(e, type) {
   e.preventDefault();
-  let selectElem = document.getElementById(`settings-${type}list-section-form-dropdown-options`);
+  let selectElem = document.getElementById(`${type}list-form-dropdown-options`);
   let optionValue = selectElem.options[selectElem.selectedIndex].value;
   chrome.storage.sync.remove(optionValue)
 }
@@ -262,11 +262,11 @@ function getDomain(url) {
 function appendToOptions(e, type) {
   e.preventDefault();
   type = type.toLowerCase()
-  let url = getDomain(document.getElementById(`settings-${type}list-section-form-url`).value);
+  let url = getDomain(document.getElementById(`${type}list-form-url`).value);
   let option = document.createElement("option");
   let text = document.createTextNode(url);
   option.appendChild(text)
-  document.getElementById(`settings-${type}list-section-form-dropdown-options`).appendChild(option)
+  document.getElementById(`${type}list-form-dropdown-options`).appendChild(option)
 }
 
 function appendToOptionsFromPackageSubmit(e, url, type) {
@@ -276,20 +276,20 @@ function appendToOptionsFromPackageSubmit(e, url, type) {
   let option = document.createElement("option");
   let text = document.createTextNode(url);
   option.appendChild(text)
-  document.getElementById(`settings-${type}list-section-form-dropdown-options`).appendChild(option)
+  document.getElementById(`${type}list-form-dropdown-options`).appendChild(option)
 }
 
 function clearInput(e, type) {
   e.preventDefault();
-  let url = document.getElementById(`settings-${type}list-section-form-url`);
-  let hrs = document.getElementById(`settings-${type}list-section-form-hrs`);
-  let mins = document.getElementById(`settings-${type}list-section-form-mins`);
+  let url = document.getElementById(`${type}list-form-url`);
+  let hrs = document.getElementById(`${type}list-form-hrs`);
+  let mins = document.getElementById(`${type}list-form-mins`);
   url.value = "";
   if (type === 'green') {
-    document.getElementById(`settings-${type}list-section-form-url`).placeholder = "www.nytimes.com";
+    document.getElementById(`${type}list-form-url`).placeholder = "www.nytimes.com";
   }
   if (type === "red") {
-    document.getElementById(`settings-${type}list-section-form-url`).placeholder = "www.facebook.com";
+    document.getElementById(`${type}list-form-url`).placeholder = "www.facebook.com";
   }
 
   hrs.value = null;
@@ -298,29 +298,29 @@ function clearInput(e, type) {
 
 function clearBedTime(e) {
   e.preventDefault();
-  let timeInput = document.getElementById(`settings-bedtime-section-form-input`)
+  let timeInput = document.getElementById('bedtime-form-input')
   timeInput.value = "";
 }
 
 function clearWakeTime(e) {
   e.preventDefault();
-  let timeInput = document.getElementById(`settings-bedtime-section-waketime-form-input`)
+  let timeInput = document.getElementById('waketime-form-input')
   timeInput.value = "";
 }
 
 function appendBedTime(e) {
-  let timeInput = document.getElementById(`settings-bedtime-section-form-input`);
-  document.getElementById(`settings-bedtime-section-load-bedtime`).innerHTML = convertTime(timeInput.value)
+  let timeInput = document.getElementById('bedtime-form-input');
+  document.getElementById('bedtime-set').innerHTML = convertTime(timeInput.value)
 }
 
 function appendWakeTime(e) {
-  let timeInput = document.getElementById(`settings-bedtime-section-waketime-form-input`);
-  document.getElementById(`settings-bedtime-section-load-waketime`).innerHTML = convertTime(timeInput.value)
+  let timeInput = document.getElementById('waketime-form-input');
+  document.getElementById('waketime-set').innerHTML = convertTime(timeInput.value)
 }
 
 function clearListonDelete(e, type) {
   e.preventDefault()
-  let selectElem = document.getElementById(`settings-${type}list-section-form-dropdown-options`);
+  let selectElem = document.getElementById(`${type}list-form-dropdown-options`);
   selectElem.removeChild(selectElem.childNodes[0])
 }
 

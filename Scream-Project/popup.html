@@ -1,11 +1,8 @@
 <!doctype html>
-<!--
- This page is shown when the extension button is clicked, because the
- "browser_action" field in manifest.json contains the "default_popup" key with
- value "popup.html".
- -->
+
 <html>
   <head>
+    <meta name="description" content="Browser extension that allows you to enter goals about your internet use, and thenalters your browsing experience to help you meet those goals.">
     <title>Chrome Gnome</title>
     <link rel='stylesheet' type='text/css' href='styles.css'>
     <script src="scripts/d3.v4.js"></script>
@@ -16,52 +13,47 @@
 
   <body>
     <h1>Chrome Gnome</h1>
-    <div id="initial-view" class="show">
-      <!-- one click add buttons -->
+
+    <section id="initial-view" class="show">
       <div id="initial-view-oneclickadd">
-            <span><h3>Add current site to: </h3></span>
-              <button class="submit-button" id="initial-view-oneclickadd-redlist">Blacklist</button>
-              <button class="submit-button" id="initial-view-oneclickadd-greenlist">Whitelist</button>
-      </div>  <!-- end one click div -->
-      <div id="pieChart">
-        <!-- pie chart will go here -->
-        <svg height="300" width="300"></svg>
+        <h3>Add current site to: </h3>
+        <button class="submit-button" id="initial-view-oneclickadd-redlist">Blacklist</button>
+        <button class="submit-button" id="initial-view-oneclickadd-greenlist">Whitelist</button>
       </div>
-    </div>
+      <svg id='pieChart' height="300" width="300"></svg>
+    </section>
+
     <button id="initial-view-toggle-button">Expand / Collapse</button>
 
-    <div id="settings" class="hide"> <!-- settings section, what you see after clicking settings, dropdown extended section -->
-      <div class="settings-redlist"> <!-- blacklist section -->
-        <h2>Blacklist: </h2>
-        <div class="settings-redlist-section">
-          <form id="settings-redlist-section-form">
-              <label for="settings-redlist-section-form-url">URL:</label>
-              <input id="settings-redlist-section-form-url" type="text" placeholder="www.facebook.com"/> <!-- url -->
+    <section id="settings" class="hide">
 
-          <label>Max hrs: </label> <!-- time -->
-          <input id="settings-redlist-section-form-hrs" class="hrs" type="number" placeholder="0"/>
-          <label>Mins: </label>
-          <input id="settings-redlist-section-form-mins" class="mins" type="number" placeholder="00"/>
-          <input id="settings-redlist-section-form-submit" type="submit">
-        </div>
-        <div class="settings-redlist-section-form-dropdown">
-          <span>My site list:</span>
-          <select id="settings-redlist-section-form-dropdown-options"> <!-- dropdown list of sites -->
+      <article class="settings-redlist">
+        <h2>Blacklist: </h2>
+          <form id="settings-redlist-section-form">
+            <label for="settings-redlist-section-form-url">URL:</label>
+            <input id="settings-redlist-section-form-url" type="text" placeholder="www.facebook.com"/>
+            <label>Max hrs: </label>
+            <input id="settings-redlist-section-form-hrs" class="hrs" type="number" placeholder="0"/>
+            <label>Mins: </label>
+            <input id="settings-redlist-section-form-mins" class="mins" type="number" placeholder="00"/>
+            <input id="settings-redlist-section-form-submit" type="submit">
+          </div>
+          <div class="settings-redlist-section-form-dropdown"></div>
+            <span>My site list:</span>
+            <select id="settings-redlist-section-form-dropdown-options">
               <option selected disabled hidden value=''></option>
             </select>
             <button id="redlist-edit-btn" title="Edit"></button>
             <button id="redlist-delete-btn" title="Delete"></button>
           </form>
-        </div>
-      </div> <!-- end blacklist section -->
+      </article>
 
-      <div class="settings-greenlist"> <!-- Green List section -->
+      <article class="settings-greenlist">
         <h2>Whitelist: </h2>
-        <div class="settings-greenlist-section">
           <form id="settings-greenlist-section-form">
             <label>URL:</label>
-            <input id = "settings-greenlist-section-form-url" type="text" placeholder="www.nytimes.com"/> <!-- url -->
-            <label>Goal hrs: </label> <!-- time -->
+            <input id = "settings-greenlist-section-form-url" type="text" placeholder="www.nytimes.com"/>
+            <label>Goal hrs: </label>
             <input id= "settings-greenlist-section-form-hrs" class="hrs" type="number" placeholder="0"/>
             <label>Mins: </label>
             <input id="settings-greenlist-section-form-mins" class="mins" type="number" placeholder="00"/>
@@ -69,20 +61,22 @@
           </div>
           <div class="settings-greenlist-section-form-dropdown">
             <span>My site list:</span>
-            <select id="settings-greenlist-section-form-dropdown-options"> <!-- dropdown list of sites -->
-                <option selected disabled hidden value=''></option>
-              </select>
-              <button id="greenlist-edit-btn" title="Edit"></button>
-              <button id="greenlist-delete-btn" title="Delete"></button>
+            <select id="settings-greenlist-section-form-dropdown-options">
+              <option selected disabled hidden value=''></option>
+            </select>
+            <button id="greenlist-edit-btn" title="Edit"></button>
+            <button id="greenlist-delete-btn" title="Delete"></button>
           </form>
-        </div>
-      </div> <!-- end whitelist section -->
+      </article>
+
       <span class="packages" id="settings-section-form-packages">Pre-made lists: </span>
       <select id="settings-packagelist-section-form-url"> <!-- dropdown list of red packages -->
-          <option selected disabled hidden value=''></option>
+        <option selected disabled hidden value=''></option>
       </select>
       <input id="settings-packagelist-section-form-url-submit" type="submit">
-      <div id="settings-bedtime-section"> <!-- bedtime & waketime section -->
+      <div id="settings-bedtime-section">
+
+        <!-- bedtime & waketime -->
         <h2>Bedtime: </h2>
         <form id="settings-bedtime-section-form">
           <label>Set bedtime: </label>
@@ -106,8 +100,11 @@
           <p id="settings-bedtime-section-load-waketime"></p>
         </div>
 
-      </div> <!-- end bedtime & waketime section -->
+      </div>
+      <!-- end bedtime & waketime -->
+
       <img id="gnome" src="images/gnome.png" />
-    </div> <!-- end settings section -->
+    </section>
+
   </body>
 </html>

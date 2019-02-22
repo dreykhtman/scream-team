@@ -1,4 +1,3 @@
-//expand and shrinking app
 togglePopup = () => {
   const settings = document.querySelector('#settings');
   const usage = document.querySelector('#usage');
@@ -16,20 +15,22 @@ togglePopup = () => {
   }
 }
 
-// getting data object with all user data from chrome storage
-function getInput() {
+//get all user data from chrome storage
+getInput = () => {
   return new Promise((resolve, reject) => {
-    chrome.storage.sync.get(null, function (items) {
-      if (!items) reject(new Error('no data found'))
+    chrome.storage.sync.get(null, (items) => {
+      if (!items) {
+        reject(new Error('no data found'));
+      }
+
+      //re-structure chrome storage output for d3 array input
       let dataForChart = [];
       for (let site in items) {
-        let value = items[site]
-        value['url'] = site
-        if (typeof value === 'object') {
-          dataForChart.push(value);
-        }
-      }
-      resolve({ dataForChart, items })
+        let obj = typeof items[site] === 'object' ? items[site] : null;
+        dataForChart.push({...obj, 'url': site});
+      };
+
+      resolve({dataForChart, items});
     })
   })
 }

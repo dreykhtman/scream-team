@@ -1,13 +1,18 @@
 //expand and shrinking app
-function toggleSettings(option) {
-  let settings = document.getElementById('settings');
-  let initialView = document.getElementById('initial-view');
-  if (settings.className === 'hide') {
-    settings.className = 'show';
-    initialView.className = 'hide';
-  } else if (settings.className === 'show') {
-    settings.className = 'hide';
-    initialView.className = 'show';
+togglePopup = () => {
+  const settings = document.querySelector('#settings');
+  const usage = document.querySelector('#usage');
+
+  switch (settings.className) {
+    case 'hide':
+      settings.className = 'show';
+      usage.className = 'hide';
+      break;
+    case 'show':
+      settings.className = 'hide';
+      usage.className = 'show';
+      break;
+    default: return;
   }
 }
 
@@ -54,7 +59,6 @@ async function getPackages() {
   return packages;
 }
 
-
 //wait for DOM to load
 document.addEventListener('DOMContentLoaded', async () => {
 
@@ -65,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   let settingsButton = document.getElementById('initial-view-toggle-button');
   settingsButton.addEventListener('click', (e) => {
     e.preventDefault();
-    toggleSettings();
+    togglePopup();
 
     // populating package dropdown
     let packageDropdown = document.getElementById('packageList-form');
@@ -80,27 +84,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // populating user data from chrome storage into expanded section
   let { items } = await getInput()
-    let waketime, bedtime;
-    let redListDropDown = document.getElementById('redlist-form-dropdown-options');
-    let greenListDropDown = document.getElementById('greenlist-form-dropdown-options');
-    let bedtimeArea = document.getElementById('bedtime-set');
-    let waketimeArea = document.getElementById('waketime-set');
-    let militaryWaketime = items.waketime;
-    let militaryBedtime = items.bedtime;
-    militaryWaketime ? waketime = convertTime(items.waketime) : waketime = 'Not set';
-    militaryBedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not set';
-    let redHTML = '';
-    let greenHTML = '';
-    if (!!items) {
-      for (let url in items) {
-        if (items[url].type === "red") redHTML += "<option value" + url + ">" + url + "</option>";
-        if (items[url].type === "green") greenHTML += "<option value" + url + ">" + url + "</option>";
-      }
+  let waketime, bedtime;
+  let redListDropDown = document.getElementById('redlist-form-dropdown-options');
+  let greenListDropDown = document.getElementById('greenlist-form-dropdown-options');
+  let bedtimeArea = document.getElementById('bedtime-set');
+  let waketimeArea = document.getElementById('waketime-set');
+  let militaryWaketime = items.waketime;
+  let militaryBedtime = items.bedtime;
+  militaryWaketime ? waketime = convertTime(items.waketime) : waketime = 'Not set';
+  militaryBedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not set';
+  let redHTML = '';
+  let greenHTML = '';
+  if (!!items) {
+    for (let url in items) {
+      if (items[url].type === "red") redHTML += "<option value" + url + ">" + url + "</option>";
+      if (items[url].type === "green") greenHTML += "<option value" + url + ">" + url + "</option>";
     }
-    redListDropDown.innerHTML = redHTML;
-    greenListDropDown.innerHTML = greenHTML;
-    bedtimeArea.innerHTML = bedtime;
-    waketimeArea.innerHTML = waketime;
+  }
+  redListDropDown.innerHTML = redHTML;
+  greenListDropDown.innerHTML = greenHTML;
+  bedtimeArea.innerHTML = bedtime;
+  waketimeArea.innerHTML = waketime;
 
   let redlistForm = document.getElementById('redlist-form')
   let greenlistForm = document.getElementById('greenlist-form')
@@ -225,7 +229,6 @@ function savePackageToChromeDB(url, type, hrs, mins) {
   })
 }
 
-
 function saveTime(e, type) {
   e.preventDefault()
   let setTime = e.target.timeInput.value
@@ -324,7 +327,6 @@ function clearListonDelete(e, type) {
   selectElem.removeChild(selectElem.childNodes[0])
 }
 
-
 function getDomainNoPrefix(url) {
   let link = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
   let output = (link.split('.').length > 2) ? link.split('.').slice(-2).join('.') : link;
@@ -358,5 +360,3 @@ function saveSiteOneClick(e, type) {
     })
   })
 }
-
-

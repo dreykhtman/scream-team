@@ -13,7 +13,7 @@ togglePopup = () => {
       break;
     default: return;
   }
-}
+};
 
 //get all user data from chrome storage
 getInput = () => {
@@ -27,16 +27,16 @@ getInput = () => {
       let dataForChart = [];
       for (let site in items) {
         let obj = typeof items[site] === 'object' ? items[site] : null;
-        dataForChart.push({...obj, 'url': site});
-      };
+        dataForChart.push({ ...obj, 'url': site });
+      }
 
-      resolve({dataForChart, items});
+      resolve({ dataForChart, items })
     })
   })
-}
+};
 
 //for bed/wake time section
-function convertTime(time) {
+convertTime = (time) => {
   let hr = time.slice(0, 2);
   let min = time.slice(2);
   if (hr > 12) {
@@ -46,28 +46,29 @@ function convertTime(time) {
     time = hr + min + 'AM';
   }
   return time;
-}
+};
 
-//fetch to get package data from deployed database
-async function getPackages() {
-  let packages = await window.fetch('https://frozen-castle-90148.herokuapp.com/api/packages').then(function (response) {
-    let contentType = response.headers.get("content-type");
-    if (contentType && contentType.includes("application/json")) {
-      return response.json();
-    }
-    throw new TypeError("no JSON");
-  })
+//get package data from deployed database api
+getPackages = async () => {
+  const packages = await window.fetch('https://frozen-castle-90148.herokuapp.com/api/packages')
+    .then((response) => {
+      const contentType = response.headers.get("content-type");
+      if (contentType && contentType.includes("application/json")) {
+        return response.json();
+      } else {
+        throw new TypeError("no JSON");
+      };
+    });
+
   return packages;
-}
+};
 
-//wait for DOM to load
+//on DOM load...
 document.addEventListener('DOMContentLoaded', async () => {
+  const packages = await getPackages();
 
-  // getting package data from deployed database
-  let packages = await getPackages();
-
-  // click listener to load & populate all user data fields when expand button is clicked
-  let settingsButton = document.getElementById('initial-view-toggle-button');
+  //load & populate all user data fields on togglePopup()
+  let settingsButton = document.getElementById('usage-toggle-btn');
   settingsButton.addEventListener('click', (e) => {
     e.preventDefault();
     togglePopup();

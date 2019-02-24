@@ -22,18 +22,18 @@ h1 {
   text-align: center
 }
 
-.initial-view.show {
+.usage.show {
   align-items: center;
   display: block;
   justify-content: space-between;
   margin: 2px;
 }
 
-#initial-view.hide {
+#usage.hide {
     display: none;
 }
 
-#initial-view-toggle-button {
+#usage-toggle-btn {
   font-size: 15px;
   font-family: Georgia, Serif;
   font-weight: bold;

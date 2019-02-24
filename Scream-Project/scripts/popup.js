@@ -35,8 +35,7 @@ getInput = () => {
   })
 };
 
-//for bed/wake time section
-convertTime = (time) => {
+formatTime = (time) => {
   let hr = time.slice(0, 2);
   let min = time.slice(2);
   if (hr > 12) {
@@ -66,64 +65,65 @@ getPackages = async () => {
 //on DOM load...
 document.addEventListener('DOMContentLoaded', async () => {
   const packages = await getPackages();
+  const { items } = await getInput();
+  let settingsButton = document.querySelector('#usage-toggle-btn');
+  let redListDropDown = document.querySelector('#redlist-form-dropdown-options');
+  let greenListDropDown = document.querySelector('#greenlist-form-dropdown-options');
+  let bedtimeArea = document.querySelector('#bedtime-set');
+  let waketimeArea = document.querySelector('#waketime-set');
+  let redlistForm = document.querySelector('#redlist-form');
+  let greenlistForm = document.querySelector('#greenlist-form');
+  let greenlistEdit = document.querySelector('#greenlist-edit-btn');
+  let greenlistDelete = document.querySelector('#greenlist-delete-btn');
+  let redlistEdit = document.querySelector('#redlist-edit-btn');
+  let redlistDelete = document.querySelector('#redlist-delete-btn');
+  let oneClickGreen = document.querySelector('#initial-view-oneclickadd-greenlist');
+  let oneClickRed = document.querySelector('#initial-view-oneclickadd-redlist');
+  let packageSubmit = document.querySelector('#packageList-form-submit');
+  let packageList = document.querySelector('#packageList-form');
 
-  //load & populate all user data fields on togglePopup()
-  let settingsButton = document.getElementById('usage-toggle-btn');
+  //togglePopup() on button click
   settingsButton.addEventListener('click', (e) => {
     e.preventDefault();
     togglePopup();
-
-    // populating package dropdown
-    let packageDropdown = document.getElementById('packageList-form');
-    let packageHTML = "";
+    let packageOptions = "";
     if (!!packages) {
-      packages.forEach((item) => {
-        packageHTML += "<option value=" + item.name + ">" + item.name + "</option>";
-        packageDropdown.innerHTML = packageHTML
+      packages.forEach((package) => {
+        packageOptions += `<option value=${package.name}>${package.name}</option>`;
+        packageList.innerHTML = packageOptions;
       })
     }
-  })
+  });
 
   // populating user data from chrome storage into expanded section
-  let { items } = await getInput()
-  let waketime, bedtime;
-  let redListDropDown = document.getElementById('redlist-form-dropdown-options');
-  let greenListDropDown = document.getElementById('greenlist-form-dropdown-options');
-  let bedtimeArea = document.getElementById('bedtime-set');
-  let waketimeArea = document.getElementById('waketime-set');
-  let militaryWaketime = items.waketime;
-  let militaryBedtime = items.bedtime;
-  militaryWaketime ? waketime = convertTime(items.waketime) : waketime = 'Not set';
-  militaryBedtime ? bedtime = convertTime(items.bedtime) : bedtime = 'Not set';
+  const waketime = items.waketime ? formatTime(items.waketime) : 'Not set';
+  const bedtime = items.bedtime ? formatTime(items.bedtime) : 'Not set';
   let redHTML = '';
   let greenHTML = '';
+
   if (!!items) {
     for (let url in items) {
-      if (items[url].type === "red") redHTML += "<option value" + url + ">" + url + "</option>";
-      if (items[url].type === "green") greenHTML += "<option value" + url + ">" + url + "</option>";
+      const option = `<option value=${url}>${url}</option>`;
+      switch (items[url].type) {
+        case 'red':
+          redHTML += option;
+          break;
+        case 'green':
+          greenHTML += option;
+          break;
+      }
     }
-  }
+  };
+
   redListDropDown.innerHTML = redHTML;
   greenListDropDown.innerHTML = greenHTML;
   bedtimeArea.innerHTML = bedtime;
   waketimeArea.innerHTML = waketime;
 
-  let redlistForm = document.getElementById('redlist-form')
-  let greenlistForm = document.getElementById('greenlist-form')
-  let redlistButton = document.getElementById('redlist-form-submit')
-  let greenlistButton = document.getElementById('greenlist-form-submit')
-  let greenlistEdit = document.getElementById('greenlist-edit-btn')
-  let greenlistDelete = document.getElementById('greenlist-delete-btn')
-  let redlistEdit = document.getElementById('redlist-edit-btn')
-  let redlistDelete = document.getElementById('redlist-delete-btn')
-  let oneClickGreen = document.getElementById('initial-view-oneclickadd-greenlist')
-  let oneClickRed = document.getElementById('initial-view-oneclickadd-redlist')
-  let packageSubmit = document.getElementById('packageList-form-submit')
-
   // adding a selected package to current user on submit!
   packageSubmit.addEventListener('click', (e) => {
     packages.forEach((package) => {
-      let dropdown = document.getElementById('packageList-form').value
+      let dropdown = document.querySelector('#packageList-form').value
       if (package.name.includes(dropdown)) {
         package.sites.forEach(site => {
           savePackageToChromeDB(site.url, site.type, site.goalHrs, site.goalMins)
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
 
-  let bedtimeForm = document.getElementById('bedtime-form');
+  let bedtimeForm = document.querySelector('#bedtime-form');
   bedtimeForm.addEventListener('submit', (e) => {
     e.preventDefault();
     saveTime(e, 'bedtime');
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     clearBedTime(e);
   });
 
-  let waketimeForm = document.getElementById('waketime-form');
+  let waketimeForm = document.querySelector('#waketime-form');
   waketimeForm.addEventListener('submit', (e) => {
     e.preventDefault()
     saveTime(e, 'waketime');
@@ -203,9 +203,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 function saveInput(e, type) {
   e.preventDefault();
-  let url = getDomain(document.getElementById(`${type}list-form-url`).value);
-  let hrs = document.getElementById(`${type}list-form-hrs`).value;
-  let mins = document.getElementById(`${type}list-form-mins`).value;
+  let url = getDomain(document.querySelector(`#${type}list-form-url`).value);
+  let hrs = document.querySelector(`#${type}list-form-hrs`).value;
+  let mins = document.querySelector(`#${type}list-form-mins`).value;
   let urlObj = {
     type: type,
     goalHrs: +hrs,
@@ -240,11 +240,11 @@ function saveTime(e, type) {
 
 async function editInput(e, type) {
   e.preventDefault()
-  let selectElem = document.getElementById(`${type}list-form-dropdown-options`);
+  let selectElem = document.querySelector(`#${type}list-form-dropdown-options`);
   let optionValue = selectElem.options[selectElem.selectedIndex].value;
-  let formUrl = document.getElementById(`${type}list-form-url`);
-  let formHrs = document.getElementById(`${type}list-form-hrs`);
-  let formMins = document.getElementById(`${type}list-form-mins`);
+  let formUrl = document.querySelector(`#${type}list-form-url`);
+  let formHrs = document.querySelector(`#${type}list-form-hrs`);
+  let formMins = document.querySelector(`#${type}list-form-mins`);
   let { items } = await getInput();
   formUrl.value = optionValue;
   formHrs.value = items[optionValue].goalHrs;
@@ -254,7 +254,7 @@ async function editInput(e, type) {
 
 function deleteInput(e, type) {
   e.preventDefault();
-  let selectElem = document.getElementById(`${type}list-form-dropdown-options`);
+  let selectElem = document.querySelector(`#${type}list-form-dropdown-options`);
   let optionValue = selectElem.options[selectElem.selectedIndex].value;
   chrome.storage.sync.remove(optionValue)
 }
@@ -267,11 +267,11 @@ function getDomain(url) {
 function appendToOptions(e, type) {
   e.preventDefault();
   type = type.toLowerCase()
-  let url = getDomain(document.getElementById(`${type}list-form-url`).value);
+  let url = getDomain(document.querySelector(`#${type}list-form-url`).value);
   let option = document.createElement("option");
   let text = document.createTextNode(url);
   option.appendChild(text)
-  document.getElementById(`${type}list-form-dropdown-options`).appendChild(option)
+  document.querySelector(`#${type}list-form-dropdown-options`).appendChild(option)
 }
 
 function appendToOptionsFromPackageSubmit(e, url, type) {
@@ -281,20 +281,20 @@ function appendToOptionsFromPackageSubmit(e, url, type) {
   let option = document.createElement("option");
   let text = document.createTextNode(url);
   option.appendChild(text)
-  document.getElementById(`${type}list-form-dropdown-options`).appendChild(option)
+  document.querySelector(`#${type}list-form-dropdown-options`).appendChild(option)
 }
 
 function clearInput(e, type) {
   e.preventDefault();
-  let url = document.getElementById(`${type}list-form-url`);
-  let hrs = document.getElementById(`${type}list-form-hrs`);
-  let mins = document.getElementById(`${type}list-form-mins`);
+  let url = document.querySelector(`#${type}list-form-url`);
+  let hrs = document.querySelector(`#${type}list-form-hrs`);
+  let mins = document.querySelector(`#${type}list-form-mins`);
   url.value = "";
   if (type === 'green') {
-    document.getElementById(`${type}list-form-url`).placeholder = "www.nytimes.com";
+    document.querySelector(`#${type}list-form-url`).placeholder = "www.nytimes.com";
   }
   if (type === "red") {
-    document.getElementById(`${type}list-form-url`).placeholder = "www.facebook.com";
+    document.querySelector(`#${type}list-form-url`).placeholder = "www.facebook.com";
   }
 
   hrs.value = null;
@@ -303,29 +303,29 @@ function clearInput(e, type) {
 
 function clearBedTime(e) {
   e.preventDefault();
-  let timeInput = document.getElementById('bedtime-form-input')
+  let timeInput = document.querySelector('#bedtime-form-input')
   timeInput.value = "";
 }
 
 function clearWakeTime(e) {
   e.preventDefault();
-  let timeInput = document.getElementById('waketime-form-input')
+  let timeInput = document.querySelector('#waketime-form-input')
   timeInput.value = "";
 }
 
 function appendBedTime(e) {
-  let timeInput = document.getElementById('bedtime-form-input');
-  document.getElementById('bedtime-set').innerHTML = convertTime(timeInput.value)
+  let timeInput = document.querySelector('#bedtime-form-input');
+  document.querySelector('#bedtime-set').innerHTML = formatTime(timeInput.value)
 }
 
 function appendWakeTime(e) {
-  let timeInput = document.getElementById('waketime-form-input');
-  document.getElementById('waketime-set').innerHTML = convertTime(timeInput.value)
+  let timeInput = document.querySelector('#waketime-form-input');
+  document.querySelector('#waketime-set').innerHTML = formatTime(timeInput.value)
 }
 
 function clearListonDelete(e, type) {
   e.preventDefault()
-  let selectElem = document.getElementById(`${type}list-form-dropdown-options`);
+  let selectElem = document.querySelector(`#${type}list-form-dropdown-options`);
   selectElem.removeChild(selectElem.childNodes[0])
 }
 

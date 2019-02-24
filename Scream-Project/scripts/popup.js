@@ -16,7 +16,7 @@ togglePopup = () => {
 };
 
 //get all user data from chrome storage
-getInput = () => {
+getUserData = () => {
   return new Promise((resolve, reject) => {
     chrome.storage.sync.get(null, (items) => {
       if (!items) {
@@ -33,18 +33,6 @@ getInput = () => {
       resolve({ dataForChart, items })
     })
   })
-};
-
-formatTime = (time) => {
-  let hr = time.slice(0, 2);
-  let min = time.slice(2);
-  if (hr > 12) {
-    hr %= 12
-    time = hr + min + 'PM'
-  } else {
-    time = hr + min + 'AM';
-  }
-  return time;
 };
 
 //get package data from deployed database api
@@ -65,39 +53,15 @@ getPackages = async () => {
 //on DOM load...
 document.addEventListener('DOMContentLoaded', async () => {
   const packages = await getPackages();
-  const { items } = await getInput();
-  let settingsButton = document.querySelector('#usage-toggle-btn');
-  let redListDropDown = document.querySelector('#redlist-form-dropdown-options');
-  let greenListDropDown = document.querySelector('#greenlist-form-dropdown-options');
-  let bedtimeArea = document.querySelector('#bedtime-set');
-  let waketimeArea = document.querySelector('#waketime-set');
-  let redlistForm = document.querySelector('#redlist-form');
-  let greenlistForm = document.querySelector('#greenlist-form');
-  let greenlistEdit = document.querySelector('#greenlist-edit-btn');
-  let greenlistDelete = document.querySelector('#greenlist-delete-btn');
-  let redlistEdit = document.querySelector('#redlist-edit-btn');
-  let redlistDelete = document.querySelector('#redlist-delete-btn');
-  let oneClickGreen = document.querySelector('#initial-view-oneclickadd-greenlist');
-  let oneClickRed = document.querySelector('#initial-view-oneclickadd-redlist');
-  let packageSubmit = document.querySelector('#packageList-form-submit');
-  let packageList = document.querySelector('#packageList-form');
+  const { items, dataForChart } = await getUserData();
 
-  //togglePopup() on button click
-  settingsButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    togglePopup();
-    let packageOptions = "";
-    if (!!packages) {
-      packages.forEach((package) => {
-        packageOptions += `<option value=${package.name}>${package.name}</option>`;
-        packageList.innerHTML = packageOptions;
-      })
-    }
-  });
-
-  // populating user data from chrome storage into expanded section
+  //populate set/waketime
   const waketime = items.waketime ? formatTime(items.waketime) : 'Not set';
   const bedtime = items.bedtime ? formatTime(items.bedtime) : 'Not set';
+  grab('#bedtime-set').innerHTML = bedtime;
+  grab('#waketime-set').innerHTML = waketime;
+
+  //populate red/green dropdown options
   let redHTML = '';
   let greenHTML = '';
 
@@ -115,106 +79,114 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
   };
 
-  redListDropDown.innerHTML = redHTML;
-  greenListDropDown.innerHTML = greenHTML;
-  bedtimeArea.innerHTML = bedtime;
-  waketimeArea.innerHTML = waketime;
+  grab('#redlist-form-dropdown-options').innerHTML = redHTML;
+  grab('#greenlist-form-dropdown-options').innerHTML = greenHTML;
 
-  // adding a selected package to current user on submit!
-  packageSubmit.addEventListener('click', (e) => {
+  /**********EVENT LISTENERS BELOW **********/
+  //togglePopup() button
+  grab('#usage-toggle-btn').addEventListener('click', (e) => {
+    e.preventDefault();
+    togglePopup();
+    let packageOptions = "";
+    if (!!packages) {
+      packages.forEach((package) => {
+        packageOptions += `<option value=${package.name}>${package.name}</option>`;
+        grab('#packageList-form').innerHTML = packageOptions;
+      })
+    }
+  });
+
+  // add a selected package to a user
+  grab('#packageList-form-submit').addEventListener('click', (e) => {
     packages.forEach((package) => {
-      let dropdown = document.querySelector('#packageList-form').value
-      if (package.name.includes(dropdown)) {
+      const selectedPackage = grab('#packageList-form').value;
+      if (package.name.includes(selectedPackage)) {
         package.sites.forEach(site => {
-          savePackageToChromeDB(site.url, site.type, site.goalHrs, site.goalMins)
-          appendToOptionsFromPackageSubmit(e, site.url, site.type)
+          savePackageToChromeDB(site.url, site.type, site.goalHrs, site.goalMins);
+          appendOptionFromPackageSubmit(e, site.url, site.type);
         })
       }
     })
-  })
+  });
 
-  redlistForm.addEventListener('submit', (e) => {
+  grab('#redlist-form').addEventListener('submit', (e) => {
     e.preventDefault();
     saveInput(e, 'red');
-    appendToOptions(e, 'red');
+    appendOption(e, 'red');
     clearInput(e, 'red');
   });
 
-  greenlistForm.addEventListener('submit', (e) => {
+  grab('#greenlist-form').addEventListener('submit', (e) => {
     e.preventDefault();
     saveInput(e, 'green');
-    appendToOptions(e, 'green');
+    appendOption(e, 'green');
     clearInput(e, 'green');
   });
 
-  greenlistEdit.addEventListener('click', (e) => {
+  grab('#greenlist-edit-btn').addEventListener('click', (e) => {
     e.preventDefault();
     editInput(e, 'green');
 
   });
-  redlistEdit.addEventListener('click', (e) => {
+
+  grab('#redlist-edit-btn').addEventListener('click', (e) => {
     e.preventDefault();
     editInput(e, 'red');
   });
 
-  greenlistDelete.addEventListener('click', (e) => {
+  grab('#greenlist-delete-btn').addEventListener('click', (e) => {
     e.preventDefault();
     deleteInput(e, 'green');
     clearListonDelete(e, 'green')
   });
 
-  redlistDelete.addEventListener('click', (e) => {
+  grab('#redlist-delete-btn').addEventListener('click', (e) => {
     e.preventDefault();
     deleteInput(e, 'red');
     clearListonDelete(e, 'red')
   });
 
-  oneClickGreen.addEventListener('click', (e) => {
+  grab('#initial-view-oneclickadd-greenlist').addEventListener('click', (e) => {
     e.preventDefault();
     saveSiteOneClick(e, 'green')
 
   });
 
-  oneClickRed.addEventListener('click', (e) => {
+  grab('#initial-view-oneclickadd-redlist').addEventListener('click', (e) => {
     e.preventDefault();
     saveSiteOneClick(e, 'red')
   });
 
-
-  let bedtimeForm = document.querySelector('#bedtime-form');
-  bedtimeForm.addEventListener('submit', (e) => {
+  grab('#bedtime-form').addEventListener('submit', (e) => {
     e.preventDefault();
     saveTime(e, 'bedtime');
     appendBedTime(e);
     clearBedTime(e);
   });
 
-  let waketimeForm = document.querySelector('#waketime-form');
-  waketimeForm.addEventListener('submit', (e) => {
+  grab('#waketime-form').addEventListener('submit', (e) => {
     e.preventDefault()
     saveTime(e, 'waketime');
     appendWakeTime(e);
     clearWakeTime(e);
   })
 
-  let { dataForChart } = await getInput();
-  loadPieChart(dataForChart)
+  loadPieChart(dataForChart);
 });
 
-function saveInput(e, type) {
+saveInput = (e, type) => {
   e.preventDefault();
-  let url = getDomain(document.querySelector(`#${type}list-form-url`).value);
-  let hrs = document.querySelector(`#${type}list-form-hrs`).value;
-  let mins = document.querySelector(`#${type}list-form-mins`).value;
-  let urlObj = {
-    type: type,
+  const url = getDomain(grab(`#${type}list-form-url`).value);
+  const hrs = grab(`#${type}list-form-hrs`).value;
+  const mins = grab(`#${type}list-form-mins`).value;
+  const urlObj = {
+    type,
     goalHrs: +hrs,
     goalMins: +mins,
     browsingTime: 0
-  }
-  chrome.storage.sync.set({ [url]: urlObj }, () => {
-  })
-}
+  };
+  chrome.storage.sync.set({ [url]: urlObj }, () => { console.log('data saved!') })
+};
 
 function savePackageToChromeDB(url, type, hrs, mins) {
   type = type.toLowerCase()
@@ -229,114 +201,110 @@ function savePackageToChromeDB(url, type, hrs, mins) {
   chrome.storage.sync.set({ [url]: urlObj }, () => {
     console.log('saved', urlObj)
   })
-}
+};
 
 function saveTime(e, type) {
   e.preventDefault()
   let setTime = e.target.timeInput.value
   chrome.storage.sync.set({ [type]: setTime }, () => {
   })
-}
+};
 
-async function editInput(e, type) {
-  e.preventDefault()
-  let selectElem = document.querySelector(`#${type}list-form-dropdown-options`);
-  let optionValue = selectElem.options[selectElem.selectedIndex].value;
-  let formUrl = document.querySelector(`#${type}list-form-url`);
-  let formHrs = document.querySelector(`#${type}list-form-hrs`);
-  let formMins = document.querySelector(`#${type}list-form-mins`);
-  let { items } = await getInput();
+editInput = async (e, type) => {
+  e.preventDefault();
+  const { items } = await getUserData();
+
+  const selectElem = grab(`#${type}list-form-dropdown-options`);
+  const optionValue = selectElem.options[selectElem.selectedIndex].value;
+  const formUrl = grab(`#${type}list-form-url`);
+  const formHrs = grab(`#${type}list-form-hrs`);
+  const formMins = grab(`#${type}list-form-mins`);
   formUrl.value = optionValue;
   formHrs.value = items[optionValue].goalHrs;
   formMins.value = items[optionValue].goalMins;
   deleteInput(e, type);
-}
+};
 
 function deleteInput(e, type) {
   e.preventDefault();
-  let selectElem = document.querySelector(`#${type}list-form-dropdown-options`);
+  let selectElem = grab(`#${type}list-form-dropdown-options`);
   let optionValue = selectElem.options[selectElem.selectedIndex].value;
   chrome.storage.sync.remove(optionValue)
-}
+};
 
-//parse url for domain
-function getDomain(url) {
-  return url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
-}
-
-function appendToOptions(e, type) {
+appendOption = (e, type) => {
   e.preventDefault();
-  type = type.toLowerCase()
-  let url = getDomain(document.querySelector(`#${type}list-form-url`).value);
-  let option = document.createElement("option");
-  let text = document.createTextNode(url);
-  option.appendChild(text)
-  document.querySelector(`#${type}list-form-dropdown-options`).appendChild(option)
-}
+  type = type.toLowerCase();
+  const url = getDomain(grab(`#${type}list-form-url`).value);
+  const option = document.createElement("option");
+  const text = document.createTextNode(url);
+  option.appendChild(text);
+  grab(`#${type}list-form-dropdown-options`).appendChild(option);
+};
 
-function appendToOptionsFromPackageSubmit(e, url, type) {
+function appendOptionFromPackageSubmit(e, url, type) {
   e.preventDefault();
   type = type.toLowerCase()
   url = getDomain(url)
   let option = document.createElement("option");
   let text = document.createTextNode(url);
   option.appendChild(text)
-  document.querySelector(`#${type}list-form-dropdown-options`).appendChild(option)
-}
+  grab(`#${type}list-form-dropdown-options`).appendChild(option);
+};
 
 function clearInput(e, type) {
   e.preventDefault();
-  let url = document.querySelector(`#${type}list-form-url`);
-  let hrs = document.querySelector(`#${type}list-form-hrs`);
-  let mins = document.querySelector(`#${type}list-form-mins`);
+  let url = grab(`#${type}list-form-url`);
+  let hrs = grab(`#${type}list-form-hrs`);
+  let mins = grab(`#${type}list-form-mins`);
   url.value = "";
   if (type === 'green') {
-    document.querySelector(`#${type}list-form-url`).placeholder = "www.nytimes.com";
+    grab(`#${type}list-form-url`).placeholder = "www.nytimes.com";
   }
   if (type === "red") {
-    document.querySelector(`#${type}list-form-url`).placeholder = "www.facebook.com";
+    grab(`#${type}list-form-url`).placeholder = "www.facebook.com";
   }
 
   hrs.value = null;
   mins.value = null;
-}
+};
 
 function clearBedTime(e) {
   e.preventDefault();
-  let timeInput = document.querySelector('#bedtime-form-input')
+  let timeInput = grab('#bedtime-form-input')
   timeInput.value = "";
-}
+};
 
 function clearWakeTime(e) {
   e.preventDefault();
-  let timeInput = document.querySelector('#waketime-form-input')
+  let timeInput = grab('#waketime-form-input')
   timeInput.value = "";
-}
+};
 
 function appendBedTime(e) {
-  let timeInput = document.querySelector('#bedtime-form-input');
-  document.querySelector('#bedtime-set').innerHTML = formatTime(timeInput.value)
-}
+  let timeInput = grab('#bedtime-form-input');
+  grab('#bedtime-set').innerHTML = formatTime(timeInput.value)
+};
 
 function appendWakeTime(e) {
-  let timeInput = document.querySelector('#waketime-form-input');
-  document.querySelector('#waketime-set').innerHTML = formatTime(timeInput.value)
-}
+  let timeInput = grab('#waketime-form-input');
+  grab('#waketime-set').innerHTML = formatTime(timeInput.value)
+};
 
 function clearListonDelete(e, type) {
   e.preventDefault()
-  let selectElem = document.querySelector(`#${type}list-form-dropdown-options`);
+  let selectElem = grab(`#${type}list-form-dropdown-options`);
   selectElem.removeChild(selectElem.childNodes[0])
-}
+};
 
 function getDomainNoPrefix(url) {
   let link = url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
   let output = (link.split('.').length > 2) ? link.split('.').slice(-2).join('.') : link;
 
   return output;
-}
+};
 
-function saveSiteOneClick(e, type) {
+saveSiteOneClick = (e, type) => {
   e.preventDefault()
   chrome.tabs.query({ currentWindow: true, active: true }, function (tabs) {
     let url = getDomainNoPrefix(tabs[0].url);
@@ -361,4 +329,25 @@ function saveSiteOneClick(e, type) {
       })
     })
   })
-}
+};
+
+//helpers
+formatTime = (time) => {
+  let hr = time.slice(0, 2);
+  let min = time.slice(2);
+  if (hr > 12) {
+    hr %= 12
+    time = hr + min + 'PM'
+  } else {
+    time = hr + min + 'AM';
+  }
+  return time;
+};
+
+getDomain = (url) => {
+  return url.match(/^(?:https?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im)[1];
+};
+
+grab = (element) => {
+  return document.querySelector(element);
+};

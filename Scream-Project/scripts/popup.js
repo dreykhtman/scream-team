@@ -53,8 +53,8 @@ formatTime = (time) => {
 //get package data from database api
 getPackages = async () => {
   const packages=await window.fetch(
-    // 'https://frozen-castle-90148.herokuapp.com/api/packages'
-    'http://localhost:5000/api/packages'
+    'https://frozen-castle-90148.herokuapp.com/api/packages'
+    // 'http://localhost:5000/api/packages'
     )
     .then((response) => {
       const contentType = response.headers.get("content-type");

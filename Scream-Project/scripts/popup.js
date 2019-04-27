@@ -1,3 +1,6 @@
+//define console variable to log to the chrome extension background page
+const console = chrome.extension.getBackgroundPage().console;
+
 togglePopup = () => {
   const settings = document.querySelector('#settings');
   const usage = document.querySelector('#usage');
@@ -47,9 +50,12 @@ formatTime = (time) => {
   return time;
 };
 
-//get package data from deployed database api
+//get package data from database api
 getPackages = async () => {
-  const packages = await window.fetch('https://frozen-castle-90148.herokuapp.com/api/packages')
+  const packages=await window.fetch(
+    'https://frozen-castle-90148.herokuapp.com/api/packages'
+    // 'http://localhost:5000/api/packages'
+    )
     .then((response) => {
       const contentType = response.headers.get("content-type");
       if (contentType && contentType.includes("application/json")) {
@@ -136,7 +142,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   redlistForm.addEventListener('submit', (e) => {
     e.preventDefault();
     saveInput(e, 'red');
-    appendToOptions(e, 'red');
     clearInput(e, 'red');
   });
 
@@ -152,6 +157,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     editInput(e, 'green');
 
   });
+
   redlistEdit.addEventListener('click', (e) => {
     e.preventDefault();
     editInput(e, 'red');
@@ -180,7 +186,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     saveSiteOneClick(e, 'red')
   });
 
-
   let bedtimeForm = document.querySelector('#bedtime-form');
   bedtimeForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -197,24 +202,37 @@ document.addEventListener('DOMContentLoaded', async () => {
     clearWakeTime(e);
   })
 
-  let { dataForChart } = await getInput();
+  const { dataForChart } = await getInput();
   loadPieChart(dataForChart)
 });
 
-function saveInput(e, type) {
+const saveInput = async (e, type) => {
   e.preventDefault();
-  let url = getDomain(document.querySelector(`#${type}list-form-url`).value);
-  let hrs = document.querySelector(`#${type}list-form-hrs`).value;
-  let mins = document.querySelector(`#${type}list-form-mins`).value;
-  let urlObj = {
+  const formUrl = document.querySelector(`#${type}list-form-url`);
+  const formHrs = document.querySelector(`#${type}list-form-hrs`);
+  const formMins = document.querySelector(`#${type}list-form-mins`);
+  const url = getDomain(formUrl.value);
+  let append = true;
+
+  const urlObj = {
     type: type,
-    goalHrs: +hrs,
-    goalMins: +mins,
+    goalHrs: +formHrs.value,
+    goalMins: +formMins.value,
     browsingTime: 0
-  }
+  };
+
+  //if url already exists, edit the original instead of saving a duplicate, and don't append a new option
+  const {items} = await getInput();
+  if (items[url]) {
+    deleteInput(e, type);
+    append = false;
+  };
+
   chrome.storage.sync.set({ [url]: urlObj }, () => {
+    append ? appendToOptions(e, type) : null;
+    console.log('saved ', url)
   })
-}
+};
 
 function savePackageToChromeDB(url, type, hrs, mins) {
   type = type.toLowerCase()
@@ -238,26 +256,33 @@ function saveTime(e, type) {
   })
 }
 
-async function editInput(e, type) {
+const editInput = async (e, type) => {
   e.preventDefault()
-  let selectElem = document.querySelector(`#${type}list-form-dropdown-options`);
-  let optionValue = selectElem.options[selectElem.selectedIndex].value;
+  const { items } = await getInput();
+  const selectElem = document.querySelector(`#${type}list-form-dropdown-options`);
+  const {options, selectedIndex} = selectElem;
+  const value = ((options[selectedIndex] || {}).value) || null;
+
   let formUrl = document.querySelector(`#${type}list-form-url`);
   let formHrs = document.querySelector(`#${type}list-form-hrs`);
   let formMins = document.querySelector(`#${type}list-form-mins`);
-  let { items } = await getInput();
-  formUrl.value = optionValue;
-  formHrs.value = items[optionValue].goalHrs;
-  formMins.value = items[optionValue].goalMins;
-  deleteInput(e, type);
-}
 
-function deleteInput(e, type) {
+  if (value) {
+    formUrl.value = value;
+    formHrs.value = items[value].goalHrs;
+    formMins.value = items[value].goalMins;
+  };
+};
+
+const deleteInput = (e, type) => {
   e.preventDefault();
-  let selectElem = document.querySelector(`#${type}list-form-dropdown-options`);
-  let optionValue = selectElem.options[selectElem.selectedIndex].value;
-  chrome.storage.sync.remove(optionValue)
-}
+  const selectElem = document.querySelector(`#${type}list-form-dropdown-options`);
+  const {options, selectedIndex} = selectElem;
+  const value = (options[selectedIndex] || {}).value || null;
+
+  console.log('deleting ', value)
+  chrome.storage.sync.remove(value);
+  };
 
 //parse url for domain
 function getDomain(url) {
@@ -270,8 +295,8 @@ function appendToOptions(e, type) {
   let url = getDomain(document.querySelector(`#${type}list-form-url`).value);
   let option = document.createElement("option");
   let text = document.createTextNode(url);
-  option.appendChild(text)
-  document.querySelector(`#${type}list-form-dropdown-options`).appendChild(option)
+  option.appendChild(text);
+  document.querySelector(`#${type}list-form-dropdown-options`).appendChild(option);
 }
 
 function appendToOptionsFromPackageSubmit(e, url, type) {
